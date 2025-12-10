@@ -3,6 +3,9 @@
 
 {% block title %}Detail Artikel | Ruang Dengar{% endblock %}
 
+<!-- Quill CSS for rich text rendering -->
+<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+
 {% block content %}
 
 <div style="max-width:900px; margin:auto; padding:20px;">
@@ -15,7 +18,7 @@
 
     <!-- Judul -->
     <h1 style="font-size:30px; font-weight:800; color:#222;">
-        {{ data.judul }}
+        {{ artikel.judul }}
     </h1>
 
     <!-- Info Artikel -->
@@ -34,12 +37,12 @@
         <div style="flex:1; min-width:260px;">
             <p style="margin:0; font-size:14px; color:#555;">Kategori:</p>
             <span style="font-size:16px; font-weight:700; display:block; margin-bottom:15px;">
-                {{ data.kategori }}
+                {{ artikel.get_kategori_display }}
             </span>
 
             <p style="margin:0; font-size:14px; color:#555;">Tanggal Publikasi:</p>
             <span style="font-size:16px; font-weight:700;">
-                {{ data.tanggal }}
+                {{ artikel.created_at|date:"d M Y" }}
             </span>
         </div>
 
@@ -61,13 +64,13 @@
 
             <p style="margin:0; font-size:14px; color:#555;">Terakhir Diperbarui:</p>
             <span style="font-size:16px; font-weight:700;">
-                {{ data.updated }}
+                {{ artikel.updated_at|date:"d M Y, H:i" }} WIB
             </span>
         </div>
         <div style="flex:1;">
             <p style="margin:0; font-size:14px; color:#555;">Penulis:</p>
             <span style="font-size:16px; font-weight:700;">
-                {{ data.penulis }}
+                {{ artikel.penulis }}
             </span>
         </div>
 
@@ -85,27 +88,142 @@
 ">
 
         <!-- Gambar -->
-        <img src="{% static data.gambar %}" style="
+        {% if artikel.gambar %}
+        <img src="{{ artikel.gambar.url }}" style="
         width:100%; 
         height:350px; 
         object-fit:cover;
         display:block;
-    ">
+    " alt="{{ artikel.judul }}">
+        {% else %}
+        <img src="{% static 'images/artikel1.jpg' %}" style="
+        width:100%; 
+        height:350px; 
+        object-fit:cover;
+        display:block;
+    " alt="{{ artikel.judul }}">
+        {% endif %}
 
         <!-- Konten Artikel -->
-        <div style="
+        <div class="ql-editor" style="
         padding:25px;
         line-height:1.75; 
         font-size:17px; 
-        color:#333; 
-        white-space:pre-line;
+        color:#333;
+        border: none;
     ">
-            {{ data.konten }}
+            {{ artikel.konten|safe }}
         </div>
 
+        <!-- Media Tambahan (YouTube/PDF/Link) -->
+        {% if artikel.media_url %}
+        <div style="padding:25px; padding-top:0;">
+            <div style="background:#f8f9fa; padding:20px; border-radius:12px; border:2px solid #e0e0e0; text-align:center;">
+                <h3 style="margin:0 0 15px 0; color:#333; font-size:18px; font-weight:700;">📎 Media Tambahan</h3>
+                
+                {% if 'youtube.com/watch?v=' in artikel.media_url or 'youtu.be/' in artikel.media_url %}
+                    <!-- YouTube Video -->
+                    <div onclick="openMediaPopup('{{ artikel.media_url }}')" style="cursor:pointer; position:relative; display:inline-block;">
+                        {% if 'youtu.be/' in artikel.media_url %}
+                            <img src="https://img.youtube.com/vi/{{ artikel.media_url|cut:'https://youtu.be/'|cut:'?'|slice:':11' }}/mqdefault.jpg" 
+                                style="max-width:100%; border-radius:8px; box-shadow:0 4px 6px rgba(0,0,0,0.1);" alt="YouTube Thumbnail">
+                        {% else %}
+                            <img src="https://img.youtube.com/vi/{{ artikel.media_url|cut:'watch?v=' }}/mqdefault.jpg" 
+                                style="max-width:100%; border-radius:8px; box-shadow:0 4px 6px rgba(0,0,0,0.1);" alt="YouTube Thumbnail">
+                        {% endif %}
+                        <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); background:rgba(255,0,0,0.9); width:68px; height:48px; border-radius:12px; display:flex; align-items:center; justify-content:center;">
+                            <div style="width:0; height:0; border-left:20px solid white; border-top:12px solid transparent; border-bottom:12px solid transparent; margin-left:5px;"></div>
+                        </div>
+                    </div>
+                    <p style="margin-top:12px; color:#666; font-size:14px;">📹 Klik untuk memutar video YouTube</p>
+                
+                {% elif '.pdf' in artikel.media_url %}
+                    <!-- PDF Document -->
+                    <div onclick="openMediaPopup('{{ artikel.media_url }}')" style="cursor:pointer;">
+                        <div style="font-size:72px; margin-bottom:10px;">📄</div>
+                        <p style="color:#333; font-weight:600; margin:8px 0;">Dokumen PDF</p>
+                        <p style="color:#666; font-size:14px;">Klik untuk membuka dokumen</p>
+                    </div>
+                
+                {% elif 'drive.google.com' in artikel.media_url %}
+                    <!-- Google Drive -->
+                    <div onclick="openMediaPopup('{{ artikel.media_url }}')" style="cursor:pointer;">
+                        <div style="font-size:72px; margin-bottom:10px;">☁️</div>
+                        <p style="color:#333; font-weight:600; margin:8px 0;">Google Drive</p>
+                        <p style="color:#666; font-size:14px;">Klik untuk membuka file</p>
+                    </div>
+                
+                {% else %}
+                    <!-- General Link -->
+                    <div onclick="openMediaPopup('{{ artikel.media_url }}')" style="cursor:pointer;">
+                        <div style="font-size:72px; margin-bottom:10px;">🔗</div>
+                        <p style="color:#333; font-weight:600; margin:8px 0;">Link Eksternal</p>
+                        <p style="color:#666; font-size:14px; word-break:break-all;">{{ artikel.media_url }}</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+
     </div>
-
-
 </div>
+
+<!-- Modal Pop-up untuk Media -->
+<div id="mediaModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:9999; padding:20px;">
+    <button onclick="closeMediaPopup()" style="position:absolute; top:20px; right:30px; background:transparent; border:none; color:white; font-size:40px; cursor:pointer; z-index:10000;">×</button>
+    <div style="height:100%; display:flex; align-items:center; justify-content:center;">
+        <div id="mediaContent" style="max-width:1200px; width:100%; background:white; border-radius:12px; padding:0; overflow:hidden;"></div>
+    </div>
+</div>
+
+<script>
+function openMediaPopup(url) {
+    const modal = document.getElementById('mediaModal');
+    const content = document.getElementById('mediaContent');
+    
+    let mediaHtml = '';
+    
+    // YouTube
+    if (url.includes('youtube.com/watch?v=') || url.includes('youtu.be/')) {
+        const videoId = url.includes('youtu.be/') 
+            ? url.split('youtu.be/')[1].split('?')[0]
+            : url.split('v=')[1].split('&')[0];
+        mediaHtml = `<iframe width="100%" height="600" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>`;
+    }
+    // PDF
+    else if (url.includes('.pdf')) {
+        mediaHtml = `<iframe src="${url}" width="100%" height="600" style="border:none;"></iframe>`;
+    }
+    // Lainnya
+    else {
+        window.open(url, '_blank');
+        return;
+    }
+    
+    content.innerHTML = mediaHtml;
+    modal.style.display = 'block';
+    document.body.style.overflow = 'hidden';
+}
+
+function closeMediaPopup() {
+    document.getElementById('mediaModal').style.display = 'none';
+    document.getElementById('mediaContent').innerHTML = '';
+    document.body.style.overflow = 'auto';
+}
+
+// Close on ESC key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeMediaPopup();
+    }
+});
+
+// Close on click outside
+document.getElementById('mediaModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeMediaPopup();
+    }
+});
+</script>
 
 {% endblock %}

@@ -1,5 +1,9 @@
 {% extends 'base.html' %} {% load static %} {% block title %}Kelola Konten
 {%endblock %} {% block content %}
+
+<!-- Quill CSS -->
+<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+
 <style>
   /* ===== core styles (kept clean & consistent) ===== */
   :root {
@@ -94,28 +98,82 @@
 
   .aksi {
     display: flex;
-    gap: 8px;
+    gap: 6px;
+    justify-content: flex-start;
   }
   .icon-btn {
-    width: 36px;
-    height: 36px;
+    width: 34px;
+    height: 34px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    border-radius: 8px;
+    border-radius: 6px;
     cursor: pointer;
-    border: none;
-    background: transparent;
+    border: 1px solid #e5e7eb;
+    background: #ffffff;
     font-size: 16px;
+    transition: all 0.2s;
+  }
+  .icon-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
   }
   .icon-btn.view {
-    color: #5a509b;
+    border-color: #5a509b;
+  }
+  .icon-btn.view:hover {
+    background: #5a509b;
+    border-color: #5a509b;
   }
   .icon-btn.edit {
-    color: #f59e0b;
+    border-color: #f59e0b;
+  }
+  .icon-btn.edit:hover {
+    background: #f59e0b;
+    border-color: #f59e0b;
   }
   .icon-btn.del {
-    color: #ef4444;
+    border-color: #ef4444;
+  }
+  .icon-btn.del:hover {
+    background: #ef4444;
+    border-color: #ef4444;
+  }
+
+  .badge {
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    display: inline-block;
+  }
+  .badge-success {
+    background: #dcfce7;
+    color: #16a34a;
+  }
+  .badge-draft {
+    background: #f3f4f6;
+    color: #6b7280;
+  }
+  .badge-warning {
+    background: #fef3c7;
+    color: #d97706;
+  }
+  .badge-kesadaran {
+    background: #dbeafe;
+    color: #2563eb;
+  }
+  .badge-pencegahan {
+    background: #dcfce7;
+    color: #16a34a;
+  }
+  .badge-dukungan {
+    background: #fce7f3;
+    color: #db2777;
+  }
+  .badge-informasi {
+    background: #f3e8ff;
+    color: #9333ea;
   }
 
   /* modal fullscreen */
@@ -284,6 +342,26 @@
     min-height: 140px;
     resize: vertical;
   }
+  
+  /* Quill Editor Styles */
+  #editor-container {
+    min-height: 300px;
+    background: white;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+  }
+  .ql-toolbar {
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    background: #f9fafb;
+  }
+  .ql-container {
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+    font-size: 14px;
+    font-family: "Poppins", sans-serif;
+  }
+  
   .img-preview {
     width: 140px;
     height: 84px;
@@ -362,7 +440,57 @@
       <th>Aksi</th>
     </tr>
   </thead>
-  <tbody id="kontenBody"></tbody>
+  <tbody id="kontenBody">
+    {% for konten in konten_list %}
+    <tr data-konten-id="{{ konten.id }}">
+      <td style="max-width: 300px;">
+        <strong>{{ konten.judul }}</strong>
+        <p style="margin: 4px 0 0; color: #6b7280; font-size: 13px;">
+          {{ konten.deskripsi|truncatewords:15 }}
+          {% if konten.gambar %}<span style="color:#10b981;">🖼️</span>{% endif %}
+          {% if konten.media_url %}<span style="color:#3b82f6;">🔗</span>{% endif %}
+        </p>
+      </td>
+      <td>{{ konten.created_at|date:"d M Y" }}</td>
+      <td>{{ konten.penulis }}</td>
+      <td><span class="badge badge-{{ konten.kategori }}">{{ konten.get_kategori_display }}</span></td>
+      <td>
+        {% if konten.scheduled_date %}
+        <span class="badge badge-warning">Terjadwal {{ konten.scheduled_date|date:"d M Y H:i" }}</span>
+        {% elif konten.is_published %}
+        <span class="badge badge-success">Aktif</span>
+        {% else %}
+        <span class="badge badge-draft">Draft</span>
+        {% endif %}
+      </td>
+      <td>
+        <div class="aksi">
+          <button class="icon-btn edit" 
+            data-id="{{ konten.id }}"
+            onclick="editKonten(this)"
+            title="Edit">
+            ✏️
+          </button>
+          <form action="{% url 'toggle-konten' konten.id %}" method="POST" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit" class="icon-btn view" title="{% if konten.is_published %}Sembunyikan{% else %}Publikasikan{% endif %}">
+              {% if konten.is_published %}🔒{% else %}👁️{% endif %}
+            </button>
+          </form>
+          <button class="icon-btn del" onclick="confirmDelete({{ konten.id }}, '{{ konten.judul|escapejs }}')" title="Hapus">
+            🗑️
+          </button>
+        </div>
+      </td>
+    </tr>
+    {% empty %}
+    <tr>
+      <td colspan="6" style="text-align: center; padding: 40px; color: #9ca3af;">
+        Belum ada konten. Klik "Tambah Konten" untuk membuat konten baru.
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
 </table>
 
 <!-- VIEW (FULLSCREEN) -->
@@ -437,15 +565,22 @@
 
     <div class="form-body">
       <h2 id="formTitle">Tambah Konten</h2>
+      
+      <form method="POST" action="{% url 'kelola-konten' %}" id="kontenForm" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="add_konten" id="formAction">
+        <input type="hidden" name="konten_id" id="kontenId">
 
       <div class="form-row">
         <div class="form-col">
           <div class="form-group">
-            <label for="judulInput">Judul</label>
+            <label for="judulInput">Judul *</label>
             <input
               id="judulInput"
+              name="judul"
               type="text"
               placeholder="Masukkan judul..."
+              required
             />
           </div>
 
@@ -453,36 +588,74 @@
             <label for="penulisInput">Penulis</label>
             <input
               id="penulisInput"
+              name="penulis"
               type="text"
               placeholder="Nama penulis..."
+              value="Tim Ruang Dengar"
             />
           </div>
 
           <div class="form-group">
-            <label for="tanggalInput">Tanggal Publikasi</label>
-            <input id="tanggalInput" type="date" />
-          </div>
-
-          <div class="form-group">
-            <label for="kategoriInput">Kategori</label>
-            <select id="kategoriInput">
-              <option>Artikel</option>
-              <option>Berita</option>
-              <option>Panduan</option>
+            <label for="kategoriInput">Kategori *</label>
+            <select id="kategoriInput" name="kategori" required>
+              <option value="kesadaran">Kesadaran</option>
+              <option value="pencegahan">Pencegahan</option>
+              <option value="dukungan">Dukungan</option>
+              <option value="informasi">Informasi</option>
             </select>
           </div>
 
           <div class="form-group">
-            <label for="statusInput">Status</label>
-            <select id="statusInput">
-              <option>Draft</option>
-              <option>Publik</option>
-              <option>Arsip</option>
-            </select>
+            <label for="deskripsiInput">Deskripsi Singkat *</label>
+            <textarea id="deskripsiInput" name="deskripsi" rows="3" placeholder="Deskripsi untuk card artikel..." required></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="tagsInput">Tags (Kata Kunci)</label>
+            <input
+              id="tagsInput"
+              name="tags"
+              type="text"
+              placeholder="Pisahkan dengan koma: bullying,kekerasan fisik,pelecehan"
+            />
+            <small style="color:#666; font-size:12px; display: block; margin-top: 5px;">
+              🏷️ Tags untuk rekomendasi artikel. Contoh: bullying,mental health,kekerasan seksual
+            </small>
+          </div>
+
+          <div class="form-group">
+            <label for="gambarInput">Upload Gambar Artikel</label>
+            <input type="file" id="gambarInput" name="gambar" accept="image/*" onchange="previewImage(event)" 
+              style="padding: 8px; border: 2px dashed #ddd; border-radius: 8px; cursor: pointer;">
+            <div id="imagePreviewContainer" style="margin-top: 10px; display: none;">
+              <img id="previewImg" src="" alt="Preview" style="max-width: 100%; max-height: 200px; border-radius: 8px; border: 2px solid #ddd;">
+              <button type="button" onclick="removeImage()" style="margin-top: 8px; background: #ef4444; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 13px;">🗑️ Hapus Gambar</button>
+            </div>
+            <input type="hidden" id="currentGambar" name="current_gambar">
+            <small style="color:#666; font-size:12px; display: block; margin-top: 5px;">Format: JPG, PNG, GIF. Max 10MB</small>
+          </div>
+
+          <div class="form-group">
+            <label for="mediaUrlInput">Link Media Tambahan (Opsional)</label>
+            <input type="url" id="mediaUrlInput" name="media_url" placeholder="https://youtube.com/... atau link PDF"
+              style="padding: 8px; border: 1px solid #ddd; border-radius: 6px; width: 100%;" onchange="previewMediaUrl(event)">
+            <div id="mediaPreviewContainer" style="margin-top: 10px; display: none; padding: 10px; background: #f8f9fa; border-radius: 8px; border: 1px solid #ddd;">
+              <div id="mediaPreviewContent"></div>
+              <button type="button" onclick="removeMediaUrl()" style="margin-top: 8px; background: #ef4444; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 12px;">🗑️ Hapus Link</button>
+            </div>
+            <small style="color:#666; font-size:12px; display: block; margin-top: 5px;">
+              📹 YouTube • 📄 PDF • 🔗 Link lainnya
+            </small>
+          </div>
+
+          <div class="form-group">
+            <label for="scheduledInput">Jadwalkan Publikasi (Opsional)</label>
+            <input id="scheduledInput" name="scheduled_date" type="datetime-local" placeholder="Kosongkan untuk publish langsung">
+            <small style="color:#666; font-size:12px;">Konten akan otomatis publish pada tanggal ini</small>
           </div>
         </div>
 
-        <div class="form-col" style="min-width: 220px">
+        <div class="form-col" style="min-width: 220px; display: none;">
           <div class="form-group">
             <label for="urlInput"
               >URL Media (gambar / pdf / youtube / link)</label
@@ -507,107 +680,37 @@
       </div>
 
       <div class="form-group">
-        <label for="isiInput">Isi Konten</label>
-        <textarea id="isiInput" placeholder="Tulis isi konten..."></textarea>
+        <label for="isiInput">Isi Konten Lengkap *</label>
+        <div id="editor-container"></div>
+        <textarea id="isiInput" name="konten" style="display:none;"></textarea>
       </div>
 
       <div class="form-actions">
-        <button class="btn-save" id="btnSave">💾 Simpan</button>
+        <button type="submit" class="btn-save" id="btnSave">💾 Simpan</button>
       </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div id="deleteModal" class="modal" style="display:none;">
+  <div class="modal-panel" style="max-width: 400px;">
+    <h3 style="margin-top:0;">Konfirmasi Hapus</h3>
+    <p id="deleteMessage">Yakin ingin menghapus konten ini?</p>
+    <div class="form-actions">
+      <button onclick="closeDeleteModal()" class="btn-cancel" style="background:#ccc;padding:8px 16px;border:none;border-radius:6px;cursor:pointer;">Batal</button>
+      <form id="deleteForm" method="POST" style="display:inline;">
+        {% csrf_token %}
+        <button type="submit" class="btn-save" style="background:#dc2626;">Hapus</button>
+      </form>
     </div>
   </div>
 </div>
 
 <script>
-  const STORAGE_KEY = "kelola_konten_local_v2";
-  let articles = [];
-  let editingId = null;
-
-  function load() {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) articles = JSON.parse(raw);
-      else {
-        articles = [
-          {
-            id: Date.now(),
-            title: "Keindahan Alam Tropis",
-            date: "2025-11-08",
-            author: "Admin",
-            category: "Artikel",
-            status: "Publik",
-            image: "https://......",
-            content:
-              "Artikel tentang keindahan alam tropis.\nMenjelajahi hutan dan pantai.",
-            lastUpdated: new Date().toISOString(),
-          },
-        ];
-        save();
-      }
-    } catch (e) {
-      console.error(e);
-      articles = [];
-    }
-  }
-  function save() {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(articles));
-  }
-
-  // ---------- render table optimisasi ----------
-  const tbody = document.getElementById("kontenBody");
-  function renderTable() {
-    tbody.innerHTML = "";
-    const filterCat = document.getElementById("filterKategori").value;
-    const filterStatus = document.getElementById("filterStatus").value;
-    const search = document
-      .getElementById("searchInput")
-      .value.trim()
-      .toLowerCase();
-
-    const filtered = articles.filter((a) => {
-      const matchCat = filterCat === "semua" || a.category === filterCat;
-      const matchStatus = filterStatus === "semua" || a.status === filterStatus;
-      const matchSearch =
-        a.title.toLowerCase().includes(search) ||
-        (a.content || "").toLowerCase().includes(search);
-      return matchCat && matchStatus && matchSearch;
-    });
-
-    if (filtered.length === 0) {
-      const tr = document.createElement("tr");
-      tr.innerHTML = `<td colspan="6" style="text-align:center; padding:20px; color:var(--muted)">Tidak ada konten</td>`;
-      tbody.appendChild(tr);
-      return;
-    }
-
-    const frag = document.createDocumentFragment();
-    filtered.forEach((a) => {
-      const tr = document.createElement("tr");
-      const dateDisp = a.date
-        ? new Date(a.date).toLocaleDateString("id-ID", {
-            day: "2-digit",
-            month: "short",
-            year: "numeric",
-          })
-        : "";
-      tr.innerHTML = `
-        <td style="max-width:360px;">${escapeHtml(a.title)}</td>
-        <td>${escapeHtml(dateDisp)}</td>
-        <td>${escapeHtml(a.author || "—")}</td>
-        <td>${escapeHtml(a.category)}</td>
-        <td>${escapeHtml(a.status)}</td>
-        <td>
-          <div class="aksi" data-id="${a.id}">
-            <button class="icon-btn view" title="Lihat">👁️</button>
-            <button class="icon-btn edit" title="Edit">✏️</button>
-            <button class="icon-btn del" title="Hapus">🗑️</button>
-          </div>
-        </td>`;
-      frag.appendChild(tr);
-    });
-    tbody.appendChild(frag);
-  }
-
+  // Hapus localStorage logic, gunakan data dari Django backend
+  
   function escapeHtml(s = "") {
     return String(s).replace(
       /[&<>"']/g,
@@ -620,6 +723,100 @@
           "'": "&#39;",
         }[c])
     );
+  }
+
+  // Image preview functions
+  function previewImage(event) {
+    const file = event.target.files[0];
+    if (file) {
+      if (file.size > 10 * 1024 * 1024) { // 10MB limit
+        alert('Ukuran file terlalu besar! Maksimal 10MB');
+        event.target.value = '';
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        document.getElementById('previewImg').src = e.target.result;
+        document.getElementById('imagePreviewContainer').style.display = 'block';
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  function removeImage() {
+    document.getElementById('gambarInput').value = '';
+    document.getElementById('imagePreviewContainer').style.display = 'none';
+    document.getElementById('previewImg').src = '';
+    document.getElementById('currentGambar').value = '';
+  }
+
+  // Media URL preview functions
+  function previewMediaUrl(event) {
+    const url = event.target.value;
+    const container = document.getElementById('mediaPreviewContainer');
+    const content = document.getElementById('mediaPreviewContent');
+    
+    if (!url) {
+      container.style.display = 'none';
+      return;
+    }
+
+    let preview = '';
+    
+    // YouTube
+    if (url.includes('youtube.com/watch?v=') || url.includes('youtu.be/')) {
+      const videoId = url.includes('youtu.be/') 
+        ? url.split('youtu.be/')[1].split('?')[0]
+        : url.split('v=')[1].split('&')[0];
+      preview = `
+        <div style="text-align: center;">
+          <img src="https://img.youtube.com/vi/${videoId}/mqdefault.jpg" 
+            style="max-width: 100%; border-radius: 8px; cursor: pointer;" 
+            onclick="window.open('${url}', '_blank')"
+            alt="YouTube Thumbnail">
+          <p style="margin-top: 8px; color: #666; font-size: 13px;">📹 Video YouTube</p>
+        </div>
+      `;
+    }
+    // PDF
+    else if (url.toLowerCase().endsWith('.pdf')) {
+      preview = `
+        <div style="text-align: center; padding: 20px;">
+          <div style="font-size: 48px;">📄</div>
+          <p style="margin-top: 8px; color: #666; font-size: 13px;">Dokumen PDF</p>
+          <a href="${url}" target="_blank" style="color: #5a67d8; text-decoration: underline; font-size: 12px;">Buka PDF</a>
+        </div>
+      `;
+    }
+    // Google Drive
+    else if (url.includes('drive.google.com')) {
+      preview = `
+        <div style="text-align: center; padding: 20px;">
+          <div style="font-size: 48px;">☁️</div>
+          <p style="margin-top: 8px; color: #666; font-size: 13px;">Google Drive</p>
+          <a href="${url}" target="_blank" style="color: #5a67d8; text-decoration: underline; font-size: 12px;">Buka Link</a>
+        </div>
+      `;
+    }
+    // General link
+    else {
+      preview = `
+        <div style="text-align: center; padding: 20px;">
+          <div style="font-size: 48px;">🔗</div>
+          <p style="margin-top: 8px; color: #666; font-size: 13px;">Link Eksternal</p>
+          <a href="${url}" target="_blank" style="color: #5a67d8; text-decoration: underline; font-size: 12px; word-break: break-all;">${url.substring(0, 50)}...</a>
+        </div>
+      `;
+    }
+    
+    content.innerHTML = preview;
+    container.style.display = 'block';
+  }
+
+  function removeMediaUrl() {
+    document.getElementById('mediaUrlInput').value = '';
+    document.getElementById('mediaPreviewContainer').style.display = 'none';
+    document.getElementById('mediaPreviewContent').innerHTML = '';
   }
 
   // ---------- modal helpers ----------
@@ -682,90 +879,229 @@
 
   f_url.addEventListener("input", () => (f_preview.src = f_url.value));
 
-  document.getElementById("btnAdd").addEventListener("click", () => {
-    document.getElementById("formTitle").innerText = "Tambah Konten";
-    showModal(modalForm);
+  // Modal functions
+  function showModal(modal) {
+    modal.style.display = 'flex';
+    modal.setAttribute('aria-hidden', 'false');
+  }
+
+  function hideModal(modal) {
+    modal.style.display = 'none';
+    modal.setAttribute('aria-hidden', 'true');
+  }
+
+  // Close modal buttons
+  document.querySelectorAll('.modal-close').forEach(btn => {
+    btn.addEventListener('click', () => hideModal(btn.closest('.modal')));
   });
 
-  document.getElementById("btnSave").addEventListener("click", () => {
-    const data = {
-      id: editingId || Date.now(),
-      title: f_title.value.trim(),
-      date: f_date.value,
-      author: f_author.value.trim(),
-      category: f_kategori.value,
-      status: f_status.value,
-      image: f_url.value.trim(),
-      content: f_isi.value.trim(),
-      lastUpdated: new Date().toISOString(),
-    };
-    if (!data.title) {
-      alert("Judul wajib diisi");
-      return;
-    }
-    if (editingId) {
-      articles = articles.map((a) => (a.id === editingId ? data : a));
-    } else articles.push(data);
-    save();
-    renderTable();
-    hideModal(modalForm);
+  // Function to edit konten - load from API endpoint
+  function editKonten(button) {
+    const id = button.dataset.id;
+    console.log('Edit konten ID:', id);
+    
+    // Show loading in modal
+    document.getElementById('formTitle').innerText = 'Loading...';
+    document.getElementById('modalForm').style.display = 'flex';
+    document.getElementById('modalForm').setAttribute('aria-hidden', 'false');
+    
+    // Fetch konten data from API
+    fetch(`/api/konten/${id}/`)
+      .then(response => {
+        console.log('API Response status:', response.status);
+        if (!response.ok) throw new Error('Failed to load konten');
+        return response.json();
+      })
+      .then(data => {
+        console.log('Konten data loaded:', data);
+        // Set form values
+        document.getElementById('formTitle').innerText = 'Edit Konten';
+        document.getElementById('formAction').value = 'edit_konten';
+        document.getElementById('judulInput').value = data.judul || '';
+        document.getElementById('kategoriInput').value = data.kategori || '';
+        document.getElementById('deskripsiInput').value = data.deskripsi || '';
+        document.getElementById('penulisInput').value = data.penulis || '';
+        document.getElementById('tagsInput').value = data.tags || '';
+        document.getElementById('kontenForm').action = `/dashboard/konten/${id}/edit/`;
+        
+        // Load konten HTML to Quill editor
+        if (quill && data.konten) {
+          quill.root.innerHTML = data.konten;
+        }
+        
+        // Show current image if exists
+        if (data.gambar) {
+          document.getElementById('previewImg').src = data.gambar;
+          document.getElementById('imagePreviewContainer').style.display = 'block';
+          document.getElementById('currentGambar').value = data.gambar;
+        } else {
+          document.getElementById('imagePreviewContainer').style.display = 'none';
+          document.getElementById('currentGambar').value = '';
+        }
+        
+        // Show current media URL if exists
+        if (data.media_url) {
+          document.getElementById('mediaUrlInput').value = data.media_url;
+          previewMediaUrl({target: {value: data.media_url}});
+        } else {
+          document.getElementById('mediaPreviewContainer').style.display = 'none';
+        }
+      })
+      .catch(error => {
+        console.error('Error loading konten:', error);
+        alert('Gagal memuat data konten. Silakan coba lagi.');
+        document.getElementById('modalForm').style.display = 'none';
+      });
+  }
+
+  function confirmDelete(id, judul) {
+    document.getElementById('deleteMessage').innerText = `Yakin ingin menghapus konten "${judul}"?`;
+    document.getElementById('deleteForm').action = `/dashboard/konten/${id}/delete/`;
+    document.getElementById('deleteModal').style.display = 'flex';
+  }
+
+  function closeDeleteModal() {
+    document.getElementById('deleteModal').style.display = 'none';
+  }
+
+  // Close modal buttons - executed immediately
+  document.querySelectorAll('.modal-close').forEach(btn => {
+    btn.addEventListener('click', () => hideModal(btn.closest('.modal')));
   });
-
-  // ---------- table actions ----------
-  tbody.addEventListener("click", (e) => {
-    const aksi = e.target.closest(".aksi");
-    if (!aksi) return;
-    const id = Number(aksi.dataset.id);
-    const artikel = articles.find((a) => a.id === id);
-    if (e.target.classList.contains("view")) {
-      document.getElementById("lihatJudul").innerText = artikel.title;
-      document.getElementById("lihatMeta").innerText = `${new Date(
-        artikel.date
-      ).toLocaleDateString("id-ID")} • ${artikel.author} • ${artikel.category}`;
-      document.getElementById("lihatIsi").innerText = artikel.content;
-      document.getElementById("viewMedia").innerHTML = detectMedia(
-        artikel.image
-      );
-      document.getElementById("infoKategori").innerText = artikel.category;
-      document.getElementById("infoPenulis").innerText = artikel.author;
-      document.getElementById("infoStatus").innerText = artikel.status;
-      document.getElementById("infoTanggal").innerText = artikel.date;
-      document.getElementById("infoUpdated").innerText = new Date(
-        artikel.lastUpdated
-      ).toLocaleString("id-ID");
-      document.getElementById("infoMediaAnchor").href = artikel.image;
-      showModal(modalLihat);
-    } else if (e.target.classList.contains("edit")) {
-      editingId = id;
-      f_title.value = artikel.title;
-      f_author.value = artikel.author;
-      f_date.value = artikel.date;
-      f_url.value = artikel.image;
-      f_preview.src = artikel.image;
-      f_kategori.value = artikel.category;
-      f_status.value = artikel.status;
-      f_isi.value = artikel.content;
-      document.getElementById("formTitle").innerText = "Edit Konten";
-      showModal(modalForm);
-    } else if (e.target.classList.contains("del")) {
-      if (confirm("Yakin ingin menghapus konten ini?")) {
-        articles = articles.filter((a) => a.id !== id);
-        save();
-        renderTable();
-      }
-    }
-  });
-  
-
-  document
-    .getElementById("filterKategori")
-    .addEventListener("change", renderTable);
-  document
-    .getElementById("filterStatus")
-    .addEventListener("change", renderTable);
-  document.getElementById("searchInput").addEventListener("input", renderTable);
-
-  load();
-  renderTable();
 </script>
+
+<!-- Quill JS -->
+<script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+<script>
+  // Initialize everything when DOM is ready
+  var quill;
+  
+  document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM Content Loaded - Initializing...');
+    
+    // Initialize Quill editor
+    quill = new Quill('#editor-container', {
+      theme: 'snow',
+      placeholder: 'Tulis isi konten lengkap...',
+      modules: {
+        toolbar: [
+          [{ 'header': [1, 2, 3, false] }],
+          ['bold', 'italic', 'underline', 'strike'],
+          [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+          [{ 'indent': '-1'}, { 'indent': '+1' }],
+          ['blockquote', 'code-block'],
+          ['link'],
+          [{ 'color': [] }, { 'background': [] }],
+          [{ 'align': [] }],
+          ['clean']
+        ]
+      }
+    });
+    
+    console.log('Quill initialized');
+
+    // Setup form submit handler
+    var kontenForm = document.getElementById('kontenForm');
+    console.log('Form element:', kontenForm);
+    
+    kontenForm.addEventListener('submit', function(e) {
+      e.preventDefault(); // Prevent default untuk handle dengan AJAX
+      
+      console.log('Form submit triggered');
+      
+      var content = quill.root.innerHTML;
+      var text = quill.getText().trim();
+      
+      // Validasi konten tidak boleh kosong
+      if (text.length === 0) {
+        alert('❌ Isi konten lengkap tidak boleh kosong!');
+        return false;
+      }
+      
+      // Set konten ke hidden textarea
+      document.getElementById('isiInput').value = content;
+      
+      console.log('Content set, submitting form...');
+      console.log('Konten length:', content.length);
+      
+      // Submit form dengan FormData untuk handle file upload
+      var formData = new FormData(this);
+      var formAction = this.getAttribute('action');
+      console.log('Form action URL:', formAction);
+      
+      // Disable button sementara
+      var btnSave = document.getElementById('btnSave');
+      var originalText = btnSave.innerHTML;
+      btnSave.disabled = true;
+      btnSave.innerHTML = '⏳ Menyimpan...';
+      
+      fetch(formAction, {
+        method: 'POST',
+        body: formData,
+        credentials: 'same-origin'
+      })
+      .then(response => {
+        console.log('Response status:', response.status);
+        if (response.redirected) {
+          // Redirect otomatis ke halaman kelola konten (sudah ada Django messages)
+          window.location.href = response.url;
+        } else if (response.ok) {
+          // Reload halaman untuk tampilkan Django messages
+          window.location.reload();
+        } else {
+          throw new Error('Server error: ' + response.status);
+        }
+      })
+      .catch(error => {
+        console.error('Error submitting form:', error);
+        alert('❌ Gagal menyimpan konten: ' + error.message);
+        btnSave.disabled = false;
+        btnSave.innerHTML = originalText;
+      });
+      
+      return false;
+    });
+    
+    console.log('Form submit handler attached');
+    
+    // Setup button Add handler
+    document.getElementById('btnAdd').addEventListener('click', function() {
+      console.log('Opening add konten modal');
+      document.getElementById('formTitle').innerText = 'Tambah Konten';
+      kontenForm.reset();
+      kontenForm.action = '{% url "kelola-konten" %}';
+      document.getElementById('formAction').value = 'add_konten';
+      document.getElementById('imagePreviewContainer').style.display = 'none';
+      document.getElementById('currentGambar').value = '';
+      document.getElementById('previewImg').src = '';
+      document.getElementById('mediaPreviewContainer').style.display = 'none';
+      document.getElementById('mediaPreviewContent').innerHTML = '';
+      // Reset Quill editor
+      if (quill) {
+        quill.setText('');
+      }
+      // Show modal
+      document.getElementById('modalForm').style.display = 'flex';
+      document.getElementById('modalForm').setAttribute('aria-hidden', 'false');
+      console.log('Modal should be visible now');
+    });
+    
+    // Close form modal
+    document.getElementById('closeForm').addEventListener('click', function() {
+      document.getElementById('modalForm').style.display = 'none';
+      document.getElementById('modalForm').setAttribute('aria-hidden', 'true');
+    });
+    
+    // Close modal when clicking outside
+    document.getElementById('modalForm').addEventListener('click', function(e) {
+      if (e.target.id === 'modalForm') {
+        document.getElementById('modalForm').style.display = 'none';
+        document.getElementById('modalForm').setAttribute('aria-hidden', 'true');
+      }
+    });
+    
+    console.log('All event handlers attached successfully');
+  });
+</script>
+
 {% endblock %}

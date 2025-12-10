@@ -35,6 +35,7 @@
             padding: 20px;
             display: flex;
             flex-direction: column;
+            position: relative;
         }
 
         .sidebar-header {
@@ -42,16 +43,21 @@
             align-items: center;
             gap: 12px;
             margin-bottom: 25px;
+            position: relative;
         }
 
         .sidebar-header img {
             width: 38px;
+            flex-shrink: 0;
         }
 
         .sidebar-header h2 {
             margin: 0;
-            font-size: 18px;
+            font-size: 22px;
+            font-weight: 700;
             color: #3a307b;
+            letter-spacing: -0.5px;
+            white-space: nowrap;
         }
 
         .menu {
@@ -69,16 +75,22 @@
             align-items: center;
             padding: 12px 14px;
             border-radius: 10px;
-            color: #333;
+            color: #5a509b;
             font-size: 15px;
             margin-bottom: 6px;
             gap: 10px;
             transition: 0.2s;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        .menu ul li a svg {
+            flex-shrink: 0;
         }
 
         .menu ul li a:hover {
-            background-color: #ecebff;
-            color: #6a5acd;
+            background-color: #5a509b;
+            color: #ffffff;
         }
 
         .menu ul li a.active {
@@ -103,9 +115,33 @@
             border-radius: 50%;
         }
 
+        .sidebar-footer .profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .sidebar-footer .profile > div {
+            flex: 1;
+            min-width: 0; /* Important for flexbox text truncation */
+            overflow: hidden;
+        }
+        
         .sidebar-footer h4 {
             margin: 0;
             font-size: 14px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 100%;
+        }
+        
+        .sidebar-footer span {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 100%;
+            display: block;
         }
 
         .logout-btn {
@@ -117,8 +153,9 @@
             border-radius: 8px;
             color: #555;
             align-items: center;
-            gap: 10px;
-            justify-items: center;
+            gap: 5px;
+            white-space: nowrap;
+            text-decoration: none;
         }
 
         .logout-btn:hover {
@@ -182,6 +219,85 @@
             font-size: 16px;
         }
 
+        /* Logout Confirmation Modal */
+        .logout-modal {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.3s;
+        }
+        .logout-modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            min-width: 400px;
+            animation: slideDown 0.3s;
+        }
+        .logout-modal-header {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        .logout-modal-body {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+        .logout-modal-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+        .logout-modal-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .logout-modal-btn.cancel {
+            background: #e0e0e0;
+            color: #333;
+        }
+        .logout-modal-btn.cancel:hover {
+            background: #d0d0d0;
+        }
+        .logout-modal-btn.confirm {
+            background: #f44336;
+            color: white;
+        }
+        .logout-modal-btn.confirm:hover {
+            background: #d32f2f;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideDown {
+            from { 
+                opacity: 0;
+                transform: translate(-50%, -60%);
+            }
+            to { 
+                opacity: 1;
+                transform: translate(-50%, -50%);
+            }
+        }
+
         .content {
             padding: 30px;
             overflow-y: auto;
@@ -215,10 +331,11 @@
 </head>
 
 <body>
+    {% csrf_token %}
     <div class="layout">
 
         <!-- SIDEBAR -->
-        <aside class="sidebar">
+        <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <img src="{% static 'images/logo.png' %}" alt="logo">
                 <h2>Ruang Dengar</h2>
@@ -276,19 +393,39 @@
                             Booking Konseling
                         </a>
                     </li>
+                    <li>
+                        <a href="{% url 'bantuan' %}" class="{% if active == 'bantuan' %}active{% endif %}">
+                            <span>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                    class="bi bi-question-circle-fill" viewBox="0 0 16 16">
+                                    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M5.496 6.033h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286a.237.237 0 0 0 .241.247m2.325 6.443c.61 0 1.029-.394 1.029-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94 0 .533.425.927 1.01.927z"/>
+                                </svg>
+                            </span>
+                            Bantuan & Kontak
+                        </a>
+                    </li>
                 </ul>
             </nav>
 
             <div class="sidebar-footer">
                 <div class="profile">
-                    <img src="{% static 'images/placeholder_avatar.png' %}" alt="Avatar">
+                    {% if user.profile_picture %}
+                        <img src="{{ user.profile_picture.url }}" alt="Avatar">
+                    {% else %}
+                        <img src="{% static 'images/placeholder_avatar.png' %}" alt="Avatar">
+                    {% endif %}
                     <div>
                         <h4>{{ nama_user|default:'User' }}</h4>
-                        <span style="font-size: 12px; color:#666;">{{ email_user|default:'email@user.com' }}</span>
+                        <span style="font-size: 12px; color:#666; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 160px;">{{ email_user|default:'email@user.com' }}</span>
                     </div>
                 </div>
 
-                <a class="logout-btn" href="{% url 'logout' %}">
+                <a class="logout-btn" href="{% url 'edit-profile' %}" style="margin-bottom: 8px;">
+                    <span>⚙️</span>
+                    Edit Profile
+                </a>
+                
+                <a class="logout-btn" href="#" onclick="showLogoutModal(); return false;">
                     <span>
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                             class="bi bi-box-arrow-in-right" viewBox="0 0 16 16">
@@ -307,7 +444,7 @@
         <main class="main-content">
             <header class="main-header">
                 <div class="header-user-info">
-                    <a href="#" class="notification-link">
+                    <a href="{% url 'notifikasi' %}" class="notification-link">
                         <span class="bell-icon">🔔</span>
                         Notifikasi ({{ unread_count|default:0 }})
                     </a>
@@ -323,18 +460,82 @@
             <!-- FOOTER -->
             <footer class="footer">
                 <div>
-                    © 2024 RuangDengar. Semua hak cipta dilindungi undang-undang.
+                    © 2025 RuangDengar. Semua hak cipta dilindungi undang-undang.
                 </div>
 
                 <div>
-                    <a href="#">Kebijakan Privasi</a>
-                    <a href="#">Dukungan: support@educounsel.com</a>
+                    <a href="{% url 'kebijakan-privasi' %}">Kebijakan Privasi & Kerahasiaan</a>
+                    <a href="#">Dukungan: support@ruangdengar.com</a>
                 </div>
             </footer>
         </main>
-
-
     </div>
+
+    <!-- Logout Confirmation Modal -->
+    <div id="logoutModal" class="logout-modal">
+        <div class="logout-modal-content">
+            <div class="logout-modal-header">🚪 Konfirmasi Keluar</div>
+            <div class="logout-modal-body">
+                Apakah Anda yakin ingin keluar dari sistem?
+            </div>
+            <div class="logout-modal-buttons">
+                <button class="logout-modal-btn cancel" onclick="hideLogoutModal()">Batal</button>
+                <button class="logout-modal-btn confirm" onclick="confirmLogout()">Keluar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showLogoutModal() {
+            document.getElementById('logoutModal').style.display = 'block';
+        }
+        
+        function hideLogoutModal() {
+            document.getElementById('logoutModal').style.display = 'none';
+        }
+        
+        function confirmLogout() {
+            // Get CSRF token from cookie
+            function getCookie(name) {
+                let cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    const cookies = document.cookie.split(';');
+                    for (let i = 0; i < cookies.length; i++) {
+                        const cookie = cookies[i].trim();
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+            
+            const csrftoken = getCookie('csrftoken');
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = "{% url 'logout' %}";
+            
+            if (csrftoken) {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'csrfmiddlewaretoken';
+                input.value = csrftoken;
+                form.appendChild(input);
+            }
+            
+            document.body.appendChild(form);
+            form.submit();
+        }
+        
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('logoutModal');
+            if (event.target === modal) {
+                hideLogoutModal();
+            }
+        }
+    </script>
 </body>
 
 </html>

@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Edit Laporan | Ruang Dengar{% endblock %}
+
+{% block content %}
+<style>
+  .form-card { background:#fff;padding:28px;border-radius:10px;max-width:820px;margin:0 auto;box-shadow:0 6px 18px rgba(0,0,0,0.06);} 
+  .form-row{display:flex;gap:18px;align-items:flex-start;margin-bottom:14px}
+  .form-label{width:180px;font-weight:600;color:#374151}
+  select,input,textarea{width:100%;padding:10px;border:1px solid #e6e6f2;border-radius:8px}
+  textarea{min-height:120px}
+  .actions{display:flex;justify-content:flex-end;gap:12px;margin-top:18px}
+  .btn-send{background:#5a509b;color:#fff;padding:10px 14px;border-radius:8px;border:none}
+  .btn-cancel{background:#fff;border:1px solid #6a5acd;color:#6a5acd;padding:10px 14px;border-radius:8px;text-decoration:none}
+</style>
+
+<div class="form-card">
+  <h2 style="margin-top:0;color:#1f2937">Edit Status Laporan</h2>
+  <p style="color:#6b7280;margin-bottom:18px">ID: {{ laporan.kode }}</p>
+  <form method="POST">
+    {% csrf_token %}
+    <div class="form-row">
+      <div class="form-label">Status</div>
+      <div>
+        <select name="status">
+          <!-- TAHAP 1: PELAPORAN -->
+          <optgroup label="📋 Tahap 1: Pelaporan">
+            <option value="diterima" {% if laporan.status == 'diterima' %}selected{% endif %}>🔵 Laporan Diterima</option>
+            <option value="verifikasi_awal" {% if laporan.status == 'verifikasi_awal' %}selected{% endif %}>⏳ Verifikasi Awal</option>
+          </optgroup>
+          
+          <!-- TAHAP 2: TINDAK LANJUT AWAL -->
+          <optgroup label="🔄 Tahap 2: Tindak Lanjut Awal">
+            <option value="wawancara_pelapor" {% if laporan.status == 'wawancara_pelapor' %}selected{% endif %}>🗣️ Wawancara Pelapor</option>
+            <option value="pengumpulan_bukti" {% if laporan.status == 'pengumpulan_bukti' %}selected{% endif %}>📁 Pengumpulan Bukti Tambahan</option>
+          </optgroup>
+          
+          <!-- TAHAP 3: PEMERIKSAAN -->
+          <optgroup label="🔍 Tahap 3: Pemeriksaan">
+            <option value="wawancara_terlapor" {% if laporan.status == 'wawancara_terlapor' %}selected{% endif %}>⏳ Wawancara Terlapor</option>
+            <option value="analisis_kronologi" {% if laporan.status == 'analisis_kronologi' %}selected{% endif %}>🔍 Pemeriksaan Kronologi & Analisis Bukti</option>
+            <option value="rapat_pemutusan" {% if laporan.status == 'rapat_pemutusan' %}selected{% endif %}>🧩 Rapat Pemutusan Kasus</option>
+          </optgroup>
+          
+          <!-- TAHAP 4: PENANGANAN -->
+          <optgroup label="⚖️ Tahap 4: Penanganan">
+            <option value="rekomendasi" {% if laporan.status == 'rekomendasi' %}selected{% endif %}>📌 Rekomendasi Tindak Lanjut</option>
+          </optgroup>
+          
+          <!-- TAHAP 5: TINDAK LANJUT -->
+          <optgroup label="✅ Tahap 5: Tindak Lanjut">
+            <option value="pelaksanaan" {% if laporan.status == 'pelaksanaan' %}selected{% endif %}>🚀 Pelaksanaan Tindak Lanjut</option>
+            <option value="ditutup" {% if laporan.status == 'ditutup' %}selected{% endif %}>✔ Kasus Ditutup</option>
+          </optgroup>
+          
+          <!-- STATUS KHUSUS -->
+          <optgroup label="⚠️ Status Khusus">
+            <option value="ditolak" {% if laporan.status == 'ditolak' %}selected{% endif %}>❌ Ditolak</option>
+          </optgroup>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-label">Catatan (opsional)</div>
+      <div><textarea name="catatan" placeholder="Catatan singkat untuk progres atau alasan penolakan"></textarea></div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-label">Rekomendasi (opsional)</div>
+      <div><textarea name="rekomendasi" placeholder="Rekomendasi tindak lanjut jika ada">{{ laporan.rekomendasi }}</textarea></div>
+    </div>
+
+    <div class="actions">
+      <a href="{% url 'kelola-laporan' %}" class="btn-cancel">Batal</a>
+      <button type="submit" class="btn-send">Simpan</button>
+    </div>
+  </form>
+</div>
+
+{% endblock %}

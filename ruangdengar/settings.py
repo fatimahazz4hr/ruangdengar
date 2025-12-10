@@ -38,8 +38,19 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
+    'django.contrib.sites',
+    
+    # Third party apps
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.microsoft',
+    
+    # Local apps
     'users.apps.UsersConfig',
 ]
+
+SITE_ID = 1
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -49,6 +60,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
 ]
 
 ROOT_URLCONF = 'ruangdengar.urls'
@@ -64,9 +76,16 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'users.context_processors.unread_notifications',
             ],
         },
     },
+]
+
+# Authentication backends
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
 WSGI_APPLICATION = 'ruangdengar.wsgi.application'
@@ -77,10 +96,36 @@ WSGI_APPLICATION = 'ruangdengar.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'ruangdengar_db',
+        'USER': 'postgres',
+        'PASSWORD': 'V!nividivic1',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
+
+# Uncomment untuk kembali ke SQLite (development)
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
+# ATAU gunakan user lain jika ada:
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'ruangdengar_db',
+#         'USER': 'nama_user_lain',
+#         'PASSWORD': 'password_user_lain',
+#         'HOST': 'localhost',
+#         'PORT': '5432',
+#     }
+# }
+#     }
+# }
 
 
 # Password validation
@@ -129,3 +174,38 @@ STATICFILES_DIRS = [
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'users.CustomUser'
+
+# Media files (uploaded evidence)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
+# Django Allauth Configuration
+LOGIN_REDIRECT_URL = 'lengkapi_profil'  # Redirect ke lengkapi profil dulu, nanti cek kelengkapan
+ACCOUNT_LOGOUT_REDIRECT_URL = 'login'
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_EMAIL_VERIFICATION = 'optional'
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+ACCOUNT_USERNAME_REQUIRED = False
+SOCIALACCOUNT_AUTO_SIGNUP = True
+SOCIALACCOUNT_QUERY_EMAIL = True
+
+# Allowed email domains (restrict ke email Telkom University)
+ACCOUNT_ADAPTER = 'users.adapters.EmailDomainAdapter'
+ALLOWED_EMAIL_DOMAINS = ['telkomuniversity.ac.id', 'student.telkomuniversity.ac.id']
+
+# Microsoft OAuth Settings (Azure AD)
+# IMPORTANT: Client ID dan Secret diisi via Django Admin > Social Applications
+# Jangan isi di sini, biarkan kosong dan configure via admin panel
+SOCIALACCOUNT_PROVIDERS = {
+    'microsoft': {
+        'SCOPE': [
+            'User.Read',
+            'email',
+            'profile',
+            'openid',
+        ],
+        'AUTH_PARAMS': {
+            'prompt': 'select_account',  # Paksa pilih akun setiap login
+        },
+    }
+}

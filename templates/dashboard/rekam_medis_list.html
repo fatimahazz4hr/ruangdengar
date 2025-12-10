@@ -1,0 +1,174 @@
+{% extends 'base.html' %}
+
+{% block title %}Rekam Medis - {{ klien_nama }}{% endblock %}
+
+{% block content %}
+<div class="main-content" style="padding: 30px; max-width: 1400px; margin: 0 auto;">
+    <div style="margin-bottom: 30px;">
+        <div style="background: linear-gradient(135deg, #6a5acd 0%, #5a509b 100%); padding: 25px 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(106, 90, 205, 0.2);">
+            <h1 style="color: white; margin: 0 0 8px 0; font-size: 28px; font-weight: 600;">🩺 Rekam Medis Konseling</h1>
+            <p style="color: rgba(255,255,255,0.9); margin: 0; font-size: 15px;">Dokumentasi lengkap sesi konseling untuk {{ klien_nama }}</p>
+        </div>
+    </div>
+
+    <!-- Main content area -->
+    <!-- Info Klien Card -->
+    <div style="background: white; border-radius: 12px; padding: 25px; margin-bottom: 25px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 2px solid #f0f0f0;">
+            <h3 style="margin: 0; color: #333; font-size: 18px; font-weight: 600;">📋 Informasi Klien</h3>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+            <div>
+                <p style="margin: 0 0 5px 0; color: #666; font-size: 13px;">Nama Klien</p>
+                <p style="margin: 0; color: #333; font-size: 15px; font-weight: 500;">{{ booking.nama }}</p>
+            </div>
+            <div>
+                <p style="margin: 0 0 5px 0; color: #666; font-size: 13px;">Tanggal & Waktu</p>
+                <p style="margin: 0; color: #333; font-size: 15px; font-weight: 500;">{{ booking.tanggal }} • {{ booking.waktu }}</p>
+            </div>
+            <div>
+                <p style="margin: 0 0 5px 0; color: #666; font-size: 13px;">Topik</p>
+                <p style="margin: 0; color: #333; font-size: 15px; font-weight: 500;">{{ booking.topik|default:"Tidak disebutkan" }}</p>
+            </div>
+            <div>
+                <p style="margin: 0 0 5px 0; color: #666; font-size: 13px;">Jenis</p>
+                <p style="margin: 0; color: #333; font-size: 15px; font-weight: 500;">{{ booking.jenis|default:"Tidak disebutkan" }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Messages -->
+    {% if messages %}
+        {% for message in messages %}
+            <div style="background: {% if message.tags == 'success' %}#d1fae5{% elif message.tags == 'error' %}#fee2e2{% else %}#dbeafe{% endif %}; border-left: 4px solid {% if message.tags == 'success' %}#10b981{% elif message.tags == 'error' %}#ef4444{% else %}#3b82f6{% endif %}; padding: 15px 20px; border-radius: 8px; margin-bottom: 20px;">
+                <p style="margin: 0; color: #333; font-size: 14px;">{{ message }}</p>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- Action Buttons -->
+    <div style="margin-bottom: 25px; display: flex; gap: 12px; flex-wrap: wrap;">
+        <a href="{% url 'rekam-medis-add' booking.id %}" style="background: #10b981; color: white; padding: 12px 24px; border-radius: 10px; font-weight: 500; display: inline-flex; align-items: center; gap: 8px; transition: 0.2s; box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);">
+            <span style="font-size: 18px;">➕</span> Tambah Rekam Medis Baru
+        </a>
+        <a href="{% url 'lihat-jadwal' %}" style="background: #6b7280; color: white; padding: 12px 24px; border-radius: 10px; font-weight: 500; display: inline-flex; align-items: center; gap: 8px; transition: 0.2s;">
+            <span style="font-size: 18px;">←</span> Kembali ke Jadwal
+        </a>
+    </div>
+
+    <!-- List Rekam Medis -->
+    {% if rekam_medis_list %}
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 20px;">
+            {% for rekam in rekam_medis_list %}
+                <div style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.08); transition: transform 0.2s, box-shadow 0.2s; border: 1px solid #e5e7eb;">
+                    <!-- Header Card -->
+                    <div style="background: linear-gradient(135deg, #6a5acd 0%, #5a509b 100%); padding: 18px 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+                        <div>
+                            <h3 style="margin: 0; color: white; font-size: 20px; font-weight: 600;">Sesi {{ rekam.sesi_ke }}</h3>
+                            <p style="margin: 4px 0 0 0; color: rgba(255,255,255,0.9); font-size: 12px;">Jadwal: {{ rekam.konseling.tanggal }} • {{ rekam.konseling.waktu }} • {{ rekam.konseling.konselor }}</p>
+                        </div>
+                        <span style="background: rgba(255,255,255,0.2); color: white; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 500;">{{ rekam.tanggal_sesi|date:"d M Y" }}</span>
+                    </div>
+
+                    <!-- Body Card -->
+                    <div style="padding: 20px;">
+                        <!-- Assessment -->
+                        <div style="display: flex; gap: 15px; margin-bottom: 18px; flex-wrap: wrap;">
+                            <div style="background: #dbeafe; padding: 10px 16px; border-radius: 8px; flex: 1; min-width: 120px;">
+                                <p style="margin: 0 0 4px 0; color: #3b82f6; font-size: 12px; font-weight: 600; text-transform: uppercase;">Mood</p>
+                                <p style="margin: 0; color: #1e40af; font-size: 18px; font-weight: 700;">{{ rekam.mood_klien }}/10</p>
+                            </div>
+                            <div style="background: {% if rekam.risiko_bunuh_diri == 'tinggi' or rekam.risiko_self_harm == 'tinggi' %}#fee2e2{% elif rekam.risiko_bunuh_diri == 'sedang' or rekam.risiko_self_harm == 'sedang' %}#fef3c7{% else %}#d1fae5{% endif %}; padding: 10px 16px; border-radius: 8px; flex: 1; min-width: 120px;">
+                                <p style="margin: 0 0 4px 0; color: {% if rekam.risiko_bunuh_diri == 'tinggi' or rekam.risiko_self_harm == 'tinggi' %}#dc2626{% elif rekam.risiko_bunuh_diri == 'sedang' or rekam.risiko_self_harm == 'sedang' %}#ca8a04{% else %}#059669{% endif %}; font-size: 12px; font-weight: 600; text-transform: uppercase;">Risiko</p>
+                                <p style="margin: 0; color: {% if rekam.risiko_bunuh_diri == 'tinggi' or rekam.risiko_self_harm == 'tinggi' %}#991b1b{% elif rekam.risiko_bunuh_diri == 'sedang' or rekam.risiko_self_harm == 'sedang' %}#92400e{% else %}#065f46{% endif %}; font-size: 14px; font-weight: 700;">
+                                    {% if rekam.risiko_bunuh_diri == 'tinggi' or rekam.risiko_self_harm == 'tinggi' %}
+                                        Tinggi
+                                    {% elif rekam.risiko_bunuh_diri == 'sedang' or rekam.risiko_self_harm == 'sedang' %}
+                                        Sedang
+                                    {% else %}
+                                        Rendah
+                                    {% endif %}
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Preview Catatan -->
+                        <div style="background: #f9fafb; padding: 15px; border-radius: 8px; margin-bottom: 15px; border-left: 3px solid #6a5acd;">
+                            <p style="margin: 0 0 8px 0; color: #6b7280; font-size: 12px; font-weight: 600;">Catatan:</p>
+                            <p style="margin: 0; color: #374151; font-size: 14px; line-height: 1.6;">{{ rekam.catatan_konselor|truncatewords:15 }}</p>
+                        </div>
+
+                        <!-- Sesi Selanjutnya -->
+                        {% if rekam.sesi_selanjutnya %}
+                            <div style="background: #fef3c7; padding: 12px 15px; border-radius: 8px; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+                                <span style="font-size: 20px;">📅</span>
+                                <div>
+                                    <p style="margin: 0; color: #92400e; font-size: 12px; font-weight: 600;">Sesi Berikutnya</p>
+                                    <p style="margin: 0; color: #78350f; font-size: 14px; font-weight: 600;">{{ rekam.sesi_selanjutnya|date:"d M Y" }}</p>
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        <!-- Action Buttons -->
+                        <div style="display: flex; gap: 10px;">
+                            <a href="{% url 'rekam-medis-detail' rekam.id %}" style="flex: 1; background: #3b82f6; color: white; padding: 10px; border-radius: 8px; text-align: center; font-weight: 500; font-size: 14px; transition: 0.2s;">
+                                👁️ Detail
+                            </a>
+                            <a href="{% url 'rekam-medis-edit' rekam.id %}" style="flex: 1; background: #f59e0b; color: white; padding: 10px; border-radius: 8px; text-align: center; font-weight: 500; font-size: 14px; transition: 0.2s;">
+                                ✏️ Edit
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div style="background: #dbeafe; border-left: 4px solid #3b82f6; padding: 20px 25px; border-radius: 10px; display: flex; align-items: center; gap: 15px;">
+            <span style="font-size: 32px;">ℹ️</span>
+            <div>
+                <p style="margin: 0; color: #1e40af; font-size: 16px; font-weight: 600;">Belum ada rekam medis untuk klien ini</p>
+                <p style="margin: 5px 0 0 0; color: #3b82f6; font-size: 14px;">Klik tombol "Tambah Rekam Medis Baru" untuk memulai dokumentasi sesi konseling.</p>
+            </div>
+        </div>
+    {% endif %}
+        </main>
+    </div>
+</div>
+
+<style>
+.card-header {
+    font-weight: bold;
+}
+.badge {
+    font-size: 0.9rem;
+}
+.sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 100;
+    padding: 48px 0 0;
+    box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
+}
+.sidebar-sticky {
+    position: relative;
+    top: 0;
+    height: calc(100vh - 48px);
+    padding-top: .5rem;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+.nav-link {
+    font-weight: 500;
+    color: #333;
+    padding: 10px 20px;
+}
+.nav-link:hover {
+    color: #007bff;
+}
+main {
+    margin-top: 20px;
+}
+</style>
+{% endblock %}

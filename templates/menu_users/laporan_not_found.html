@@ -1,0 +1,11 @@
+{% extends 'base_user.html' %}
+
+{% block title %}Laporan Tidak Ditemukan{% endblock %}
+
+{% block content %}
+<div style="max-width:720px;margin:0 auto;background:#fff;padding:28px;border-radius:8px;">
+    <h2 style="margin-top:0;color:#3a307b;">Laporan Tidak Ditemukan</h2>
+    <p>Maaf, laporan yang Anda cari tidak ditemukan atau telah dihapus.</p>
+    <p style="margin-top:18px;"><a href="{% url 'riwayat-laporan' %}" style="color:#6a5acd;">Kembali ke Riwayat Laporan</a></p>
+</div>
+{% endblock %}

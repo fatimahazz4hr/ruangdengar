@@ -186,30 +186,36 @@ Dengar{% endblock %} {% block content %}
   <h1>Dashboard Admin</h1>
 
   <section class="stat-cards">
-    <div class="card">
-      <div class="card-info">
-        <div class="card-title">Sesi Konseling Mendatang</div>
-        <div class="card-value">15 Sesi</div>
-        <div class="card-desc">Total 30 sesi bulan ini</div>
+    <a href="{% url 'lihat-jadwal' %}" style="text-decoration: none; color: inherit;">
+      <div class="card">
+        <div class="card-info">
+          <div class="card-title">Sesi Konseling Mendatang</div>
+          <div class="card-value">{{ upcoming_sessions }} Sesi</div>
+          <div class="card-desc">Total {{ total_sessions_month }} sesi bulan ini</div>
+        </div>
+        <div class="card-icon-container card-icon-sesi">📈</div>
       </div>
-      <div class="card-icon-container card-icon-sesi">📈</div>
-    </div>
-    <div class="card">
-      <div class="card-info">
-        <div class="card-title">Laporan Terbaru</div>
-        <div class="card-value">5 Laporan</div>
-        <div class="card-desc">Perlu ditinjau</div>
+    </a>
+    <a href="{% url 'kelola-laporan' %}" style="text-decoration: none; color: inherit;">
+      <div class="card">
+        <div class="card-info">
+          <div class="card-title">Total Laporan</div>
+          <div class="card-value">{{ total_reports }} Laporan</div>
+          <div class="card-desc">{{ new_reports }} perlu ditinjau</div>
+        </div>
+        <div class="card-icon-container card-icon-laporan">📄</div>
       </div>
-      <div class="card-icon-container card-icon-laporan">📄</div>
-    </div>
-    <div class="card">
-      <div class="card-info">
-        <div class="card-title">Konten Edukasi</div>
-        <div class="card-value">89</div>
-        <div class="card-desc">2 konten baru</div>
+    </a>
+    <a href="{% url 'kelola-konten' %}" style="text-decoration: none; color: inherit;">
+      <div class="card">
+        <div class="card-info">
+          <div class="card-title">Konten Edukasi</div>
+          <div class="card-value">{{ total_content }}</div>
+          <div class="card-desc">Artikel & Materi</div>
+        </div>
+        <div class="card-icon-container card-icon-konten">🎓</div>
       </div>
-      <div class="card-icon-container card-icon-konten">🎓</div>
-    </div>
+    </a>
   </section>
 
   <section class="chart-container">
@@ -235,36 +241,34 @@ Dengar{% endblock %} {% block content %}
         </tr>
       </thead>
       <tbody>
+        {% for activity in activities %}
         <tr>
-          <td>Pengguna Baru Terdaftar</td>
-          <td>2 menit lalu</td>
-          <td>John Doe telah mendaftar</td>
-          <td><span class="status baru">Baru</span></td>
+          <td>
+            {% if activity.type == 'booking' %}
+              📅 Booking Konseling
+            {% else %}
+              📄 Laporan Baru
+            {% endif %}
+          </td>
+          <td>{{ activity.time|timesince }} lalu</td>
+          <td>{{ activity.description }}</td>
+          <td>
+            <span class="status {% if activity.status == 'terjadwal' or activity.status == 'diterima' %}baru{% elif activity.status == 'selesai' or activity.status == 'ditutup' %}selesai{% elif activity.status == 'dibatalkan' or activity.status == 'ditolak' %}diperbarui{% else %}berlangsung{% endif %}">
+              {% if activity.status == 'terjadwal' %}Terjadwal
+              {% elif activity.status == 'selesai' %}Selesai
+              {% elif activity.status == 'dibatalkan' %}Dibatalkan
+              {% elif activity.status == 'diterima' %}Diterima
+              {% elif activity.status == 'verifikasi_awal' %}Verifikasi
+              {% else %}{{ activity.status|title }}
+              {% endif %}
+            </span>
+          </td>
         </tr>
+        {% empty %}
         <tr>
-          <td>Sesi Konseling Dimulai</td>
-          <td>1 jam lalu</td>
-          <td>Sesi dengan Jane Smith</td>
-          <td><span class="status berlangsung">Berlangsung</span></td>
+          <td colspan="4" style="text-align: center; color: #9ca3af; padding: 30px;">Belum ada aktivitas</td>
         </tr>
-        <tr>
-          <td>Laporan Ditambahkan</td>
-          <td>3 jam lalu</td>
-          <td>Laporan mingguan pengguna</td>
-          <td><span class="status selesai">Selesai</span></td>
-        </tr>
-        <tr>
-          <td>Konten Edukasi Baru Dipublikasikan</td>
-          <td>1 hari lalu</td>
-          <td>Artikel "Kesehatan Mental"</td>
-          <td><span class="status baru">Baru</span></td>
-        </tr>
-        <tr>
-          <td>Jadwal Konselor Diperbarui</td>
-          <td>2 hari lalu</td>
-          <td>Update ketersediaan Dr. Anna</td>
-          <td><span class="status diperbarui">Diperbarui</span></td>
-        </tr>
+        {% endfor %}
       </tbody>
     </table>
   </section>
@@ -272,27 +276,26 @@ Dengar{% endblock %} {% block content %}
 {% endblock %} {% block scripts %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+  // Data from backend
+  const jenisData = [
+    {% for item in jenis_stats %}
+    { jenis: "{{ item.jenis }}", count: {{ item.count }} },
+    {% endfor %}
+  ];
+  
+  const labels = jenisData.map(item => item.jenis || 'Lainnya');
+  const data = jenisData.map(item => item.count);
+  const colors = ["#6366f1", "#3b82f6", "#fbbf24", "#10b981", "#a855f7", "#ef4444"];
+
   const ctxDonut = document.getElementById("donutChart").getContext("2d");
   new Chart(ctxDonut, {
     type: "doughnut",
     data: {
-      labels: [
-        "Kesehatan Mental",
-        "akademik & Studi",
-        "Hubungan Interpersonal",
-        "Kekerasan & Pelecehan",
-        "Karier & Pengembangan Diri",
-      ],
+      labels: labels,
       datasets: [
         {
-          data: [12, 19, 8, 5, 10],
-          backgroundColor: [
-            "#6366f1",
-            "#3b82f6",
-            "#fbbf24",
-            "#10b981",
-            "#a855f7",
-          ],
+          data: data,
+          backgroundColor: colors.slice(0, labels.length),
           borderWidth: 2,
         },
       ],
@@ -305,31 +308,30 @@ Dengar{% endblock %} {% block content %}
     },
   });
 
+  // Monthly Trends Data from backend
+  const monthlyLabels = [
+    {% for label in months_labels %}
+    "{{ label }}",
+    {% endfor %}
+  ];
+  
+  const monthlyDatasets = [
+    {% for dataset in monthly_datasets %}
+    {
+      label: "{{ dataset.label }}",
+      data: {{ dataset.data|safe }},
+      backgroundColor: "{{ dataset.backgroundColor }}",
+      borderRadius: 4,
+    },
+    {% endfor %}
+  ];
+
   const ctxBar = document.getElementById("barChart").getContext("2d");
   new Chart(ctxBar, {
     type: "bar",
     data: {
-      labels: ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun"],
-      datasets: [
-        {
-          label: "Karier & Pengembangan Diri",
-          data: [65, 59, 80, 81, 56, 55],
-          backgroundColor: "#6366f1",
-          borderRadius: 4,
-        },
-        {
-          label: "akademik & Studi",
-          data: [40, 68, 56, 75, 48, 60],
-          backgroundColor: "#3b82f6",
-          borderRadius: 4,
-        },
-        {
-          label: "Hubungan Interpersonal",
-          data: [30, 48, 40, 19, 86, 27],
-          backgroundColor: "#fbbf24",
-          borderRadius: 4,
-        },
-      ],
+      labels: monthlyLabels,
+      datasets: monthlyDatasets,
     },
     options: {
       responsive: true,
@@ -338,7 +340,14 @@ Dengar{% endblock %} {% block content %}
       },
       scales: {
         x: { stacked: true, grid: { display: false } },
-        y: { stacked: true },
+        y: { 
+          stacked: true,
+          beginAtZero: true,
+          ticks: {
+            stepSize: 1,
+            precision: 0
+          }
+        },
       },
     },
   });

@@ -1,0 +1,70 @@
+# Add this to .gitignore
+*.log
+*.pot
+*.pyc
+__pycache__/
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+
+# Environment variables
+.env
+.env.local
+.env.production
+
+# Virtual environment
+venv/
+myenv/
+env/
+ENV/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Media files (don't commit user uploads in production)
+media/evidence/*
+media/konten/*
+!media/evidence/.gitkeep
+!media/konten/.gitkeep
+
+# Static files (generated)
+staticfiles/
+static_root/
+
+# Logs
+logs/
+*.log
+
+# Backups
+backups/
+*.sql
+*.dump
+
+# AI Model cache (will be downloaded automatically)
+.cache/
+
+# Coverage reports
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+
+# Pytest
+.pytest_cache/
+
+# Celery
+celerybeat-schedule
+celerybeat.pid
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/

@@ -1,7 +1,7 @@
 {% extends "base_user.html" %}
 {% load static %}
 
-{% block title %}Buat Laporan | Ruang Dengar{% endblock %}
+{% block title %}Buat Laporan PPKPT | Ruang Dengar{% endblock %}
 
 {% block content %}
 
@@ -13,33 +13,67 @@
 
     .card {
         background: #fff;
-        padding: 50px;
+        padding: 40px 50px;
         border-radius: 16px;
-        max-width: 800px;
-        margin: 40px auto;
+        max-width: 900px;
+        margin: 30px auto;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     }
 
-    h2 {
-        margin: 0;
-        font-size: 24px;
+    .header-section {
+        text-align: center;
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+        border-bottom: 2px solid #f0f0f0;
+    }
+
+    .header-section h2 {
+        margin: 0 0 8px 0;
+        font-size: 26px;
         font-weight: 700;
         color: #222;
     }
 
-    p.subtitle {
+    .header-section p {
         color: #666;
-        margin-top: 5px;
-        margin-bottom: 25px;
+        font-size: 14px;
+        margin: 0;
+    }
+
+    /* Section Styling */
+    .form-section {
+        margin-bottom: 35px;
+        padding: 25px;
+        background: #f9f9fb;
+        border-radius: 12px;
+        border-left: 4px solid #7e68f3;
+    }
+
+    .form-section h3 {
+        margin: 0 0 20px 0;
+        font-size: 18px;
+        font-weight: 700;
+        color: #3a307b;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .form-section h3 .badge {
+        background: #7e68f3;
+        color: white;
+        font-size: 11px;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-weight: 600;
     }
 
     .form-group {
-        margin-bottom: 20px;
-        width: 100%;
+        margin-bottom: 18px;
     }
 
     label {
-        font-size: 15px;
+        font-size: 14px;
         font-weight: 600;
         color: #333;
         display: block;
@@ -52,17 +86,23 @@
 
     select,
     input[type="text"],
-    input[type="date"],
-    textarea {
+    input[type="number"],
+    textarea,
+    input[type="url"] {
         width: 100%;
-        padding: 12px 14px;
-        font-size: 15px;
+        padding: 11px 14px;
+        font-size: 14px;
         border: 1px solid #dcdaf7;
         border-radius: 10px;
         outline: none;
         transition: 0.2s;
         box-sizing: border-box;
         font-family: "Poppins", sans-serif;
+    }
+
+    input:read-only {
+        background: #f5f5f5;
+        color: #888;
     }
 
     select:focus,
@@ -73,8 +113,18 @@
     }
 
     textarea {
-        height: 120px;
+        height: 100px;
         resize: vertical;
+    }
+
+    textarea.large {
+        height: 150px;
+    }
+
+    .help-text {
+        font-size: 12px;
+        color: #888;
+        margin-top: 4px;
     }
 
     .upload-box {
@@ -82,10 +132,9 @@
         border: 2px dashed #d0cdfa;
         border-radius: 12px;
         text-align: center;
-        padding: 40px 20px;
+        padding: 30px 20px;
         color: #666;
         font-size: 14px;
-        box-sizing: border-box;
         cursor: pointer;
         transition: all 0.3s;
         position: relative;
@@ -106,20 +155,13 @@
         cursor: pointer;
     }
 
-    .upload-icon {
-        font-size: 32px;
-        color: #7e68f3;
-        margin-bottom: 10px;
-        display: block;
-    }
-
     .file-preview {
         margin-top: 10px;
         display: none;
-        text-align: left;
         padding: 10px;
-        background: #f8f9fa;
+        background: #fff;
         border-radius: 8px;
+        border: 1px solid #e0e0e0;
     }
 
     .file-preview.active {
@@ -131,7 +173,7 @@
         align-items: center;
         justify-content: space-between;
         padding: 8px;
-        background: #fff;
+        background: #f8f9fa;
         border-radius: 6px;
         margin-bottom: 5px;
         font-size: 13px;
@@ -145,32 +187,49 @@
         border-radius: 4px;
         cursor: pointer;
         font-size: 12px;
-        margin: 0;
+    }
+
+    .checkbox-wrapper {
+        margin: 25px 0;
+        padding: 15px;
+        background: #fff3cd;
+        border-left: 4px solid #ffc107;
+        border-radius: 8px;
     }
 
     .checkbox {
-        margin-top: 15px;
         display: flex;
         align-items: center;
         gap: 10px;
-        color: #444;
     }
 
     .checkbox input[type="checkbox"] {
-        width: 18px;
-        height: 18px;
+        width: 20px;
+        height: 20px;
         cursor: pointer;
+    }
+
+    .checkbox label {
+        margin: 0;
+        cursor: pointer;
+        font-weight: 500;
+    }
+
+    .action-buttons {
+        text-align: right;
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 2px solid #f0f0f0;
     }
 
     button[type="submit"],
     button[type="button"] {
         border: none;
-        padding: 10px 24px;
+        padding: 12px 28px;
         border-radius: 10px;
         cursor: pointer;
         font-size: 15px;
         font-weight: 600;
-        margin-top: 25px;
         transition: all 0.3s;
     }
 
@@ -191,21 +250,8 @@
 
     .btn-send:hover {
         background: #6d56e0;
-    }
-
-    .action-buttons {
-        text-align: right;
-    }
-
-    .error-message {
-        color: #e74c3c;
-        font-size: 13px;
-        margin-top: 5px;
-        display: none;
-    }
-
-    .error-message.active {
-        display: block;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(126, 104, 243, 0.3);
     }
 
     .alert {
@@ -226,14 +272,40 @@
         color: #721c24;
         border: 1px solid #f5c6cb;
     }
+
+    .info-box {
+        background: #e8f4f8;
+        border-left: 4px solid #3498db;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 25px;
+        font-size: 13px;
+        color: #2c3e50;
+    }
+
+    .grid-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+    }
+
+    @media (max-width: 768px) {
+        .grid-2 {
+            grid-template-columns: 1fr;
+        }
+    }
 </style>
 
 <div class="card">
+    <div class="header-section">
+        <h2>📋 Form Pelaporan PPKPT</h2>
+        <p>Form Pelaporan Pencegahan dan Penanganan Kekerasan di Lingkungan Perguruan Tinggi</p>
+    </div>
 
-    <h2>Buat Laporan</h2>
-    <p class="subtitle">Identitas Anda akan terlindungi sepenuhnya.</p>
+    <div class="info-box">
+        <strong>🔒 Kerahasiaan Terjamin:</strong> Data Anda akan dilindungi sepenuhnya. Identitas dapat disembunyikan jika memilih pelaporan anonim.
+    </div>
 
-    <!-- Alert Messages -->
     {% if messages %}
     {% for message in messages %}
     <div class="alert alert-{{ message.tags }}">
@@ -245,60 +317,250 @@
     <form method="POST" enctype="multipart/form-data" id="laporanForm">
         {% csrf_token %}
 
-        <div class="form-group">
-            <label>Jenis Insiden <span class="required">*</span></label>
-            <select name="jenis_insiden" id="jenis_insiden" required>
-                <option value="">Pilih Insiden</option>
-                <option value="Kekerasan Verbal">Kekerasan Verbal</option>
-                <option value="Kekerasan Fisik">Kekerasan Fisik</option>
-                <option value="Kekerasan Seksual">Kekerasan Seksual</option>
-                <option value="Perundungan">Perundungan</option>
-                <option value="Diskriminasi">Diskriminasi</option>
-                <option value="Pelecehan">Pelecehan</option>
-                <option value="Lainnya">Lainnya</option>
-            </select>
-            <span class="error-message" id="error-jenis">Pilih jenis insiden</span>
-        </div>
+        <!-- SECTION 1: INFORMASI PELAPOR -->
+        <div class="form-section" id="section-pelapor">
+            <h3>
+                <span>👤</span> Informasi Pelapor
+                <span class="badge">Otomatis dari profil</span>
+            </h3>
 
-        <div class="form-group">
-            <label>Tanggal Kejadian <span class="required">*</span></label>
-            <input type="date" name="tanggal_kejadian" id="tanggal_kejadian" required>
-            <span class="error-message" id="error-tanggal">Masukkan tanggal kejadian</span>
-        </div>
-
-        <div class="form-group">
-            <label>Tempat Kejadian <span class="required">*</span></label>
-            <input type="text" name="tempat_kejadian" id="tempat_kejadian"
-                placeholder="Contoh: Gedung A, Lantai 3, Ruang 305" required>
-            <span class="error-message" id="error-tempat">Masukkan tempat kejadian</span>
-        </div>
-
-        <div class="form-group">
-            <label>Deskripsi Kejadian <span class="required">*</span></label>
-            <textarea name="deskripsi" id="deskripsi" placeholder="Ceritakan kronologi kejadian secara lengkap..."
-                required></textarea>
-            <span class="error-message" id="error-deskripsi">Masukkan deskripsi kejadian</span>
-        </div>
-
-        <div class="form-group">
-            <label>Upload Bukti (Opsional)</label>
-            <div class="upload-box" id="uploadBox">
-                <input type="file" name="bukti" id="bukti" accept="image/png,image/jpeg,image/jpg" multiple>
-                <span class="upload-icon">⤴</span>
-                Drop files here or click to upload<br>
-                <span style="font-size:12px; color:#999;">Supported format: PNG, JPG (Max 5MB per file)</span>
+            <div class="form-group">
+                <label>Nama Lengkap Pelapor</label>
+                <input type="text" value="{{ user.nama_lengkap }}" readonly>
             </div>
-            <div class="file-preview" id="filePreview"></div>
+
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="text" value="{{ user.email }}" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Status</label>
+                    <input type="text" value="{{ user.status_pengguna|default:'Belum diisi' }}" readonly>
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>Fakultas</label>
+                    <input type="text" value="{{ user.fakultas|default:'Belum diisi' }}" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Prodi</label>
+                    <input type="text" value="{{ user.prodi|default:'Belum diisi' }}" readonly>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Apakah pelapor merupakan korban langsung? <span class="required">*</span></label>
+                <select name="apakah_korban_langsung" id="apakah_korban_langsung" required>
+                    <option value="true">Ya, saya adalah korban langsung</option>
+                    <option value="false">Tidak, saya melapor atas nama korban</option>
+                </select>
+            </div>
+
+            <div class="form-group" id="hubungan-pelapor-korban" style="display: none;">
+                <label>Hubungan dengan Korban <span class="required">*</span></label>
+                <input type="text" name="hubungan_pelapor_korban" id="hubungan_pelapor_korban" placeholder="Contoh: Teman, Saksi, dll">
+                <p class="help-text">Jelaskan hubungan Anda dengan korban</p>
+            </div>
         </div>
 
-        <div class="checkbox">
-            <input type="checkbox" name="is_anonim" id="is_anonim" value="true">
-            <label for="is_anonim" style="margin: 0; cursor: pointer;">Pelaporan secara Anonim?</label>
+        <!-- SECTION 2: DATA KORBAN (Conditional) -->
+        <div class="form-section" id="section-korban" style="display: none;">
+            <h3>
+                <span>👥</span> Data Korban
+                <span class="badge">Wajib diisi</span>
+            </h3>
+
+            <div class="form-group">
+                <label>Nama Lengkap Korban <span class="required">*</span></label>
+                <input type="text" name="nama_korban" id="nama_korban" placeholder="Masukkan nama lengkap korban">
+            </div>
+
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>NIM/NIP/NIK Korban <span class="required">*</span></label>
+                    <input type="text" name="nim_nip_korban" id="nim_nip_korban" placeholder="Contoh: 1301190123">
+                </div>
+                <div class="form-group">
+                    <label>Status Korban <span class="required">*</span></label>
+                    <select name="status_korban" id="status_korban">
+                        <option value="">-- Pilih Status --</option>
+                        <option value="Mahasiswa">Mahasiswa</option>
+                        <option value="Dosen">Dosen</option>
+                        <option value="Tenaga Penunjang Akademik">Tenaga Penunjang Akademik</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>Fakultas Korban <span class="required">*</span></label>
+                    <select name="fakultas_korban" id="fakultas_korban">
+                        <option value="">-- Pilih Fakultas --</option>
+                        <option value="Fakultas Teknik Elektro">Fakultas Teknik Elektro</option>
+                        <option value="Fakultas Rekayasa Industri">Fakultas Rekayasa Industri</option>
+                        <option value="Fakultas Informatika">Fakultas Informatika</option>
+                        <option value="Fakultas Ekonomi dan Bisnis">Fakultas Ekonomi dan Bisnis</option>
+                        <option value="Fakultas Komunikasi dan Ilmu Sosial">Fakultas Komunikasi dan Ilmu Sosial</option>
+                        <option value="Fakultas Industri Kreatif">Fakultas Industri Kreatif</option>
+                        <option value="Fakultas Ilmu Terapan">Fakultas Ilmu Terapan</option>
+                        <option value="Telkom University Purwokerto">Telkom University Purwokerto</option>
+                        <option value="Telkom University Jakarta">Telkom University Jakarta</option>
+                        <option value="Telkom University Surabaya">Telkom University Surabaya</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Program Studi Korban <span class="required">*</span></label>
+                    <input type="text" name="prodi_korban" id="prodi_korban" placeholder="Contoh: S1 Teknik Elektro (tidak disingkat)">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Jenis Kelamin Korban <span class="required">*</span></label>
+                <select name="jenis_kelamin_korban" id="jenis_kelamin_korban">
+                    <option value="">-- Pilih Jenis Kelamin --</option>
+                    <option value="Laki-laki">Laki-laki</option>
+                    <option value="Perempuan">Perempuan</option>
+                </select>
+            </div>
         </div>
 
+        <!-- SECTION 3: DATA TERLAPOR -->
+        <div class="form-section">
+            <h3>
+                <span>🎯</span> Data Terlapor
+                <span class="badge">Wajib diisi</span>
+            </h3>
+
+            <div class="form-group">
+                <label>Nama Lengkap Terlapor <span class="required">*</span></label>
+                <input type="text" name="nama_terlapor" id="nama_terlapor" placeholder="Masukkan nama lengkap terlapor. Jika lebih dari 1 orang, pisahkan dengan koma." required>
+                <p class="help-text">Jika ada lebih dari 1 terlapor, tuliskan semua nama dipisahkan dengan koma (contoh: Budi Santoso, Andi Wijaya)</p>
+            </div>
+
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>NIM/NIP/NIK Terlapor</label>
+                    <input type="text" name="nim_nip_terlapor" id="nim_nip_terlapor" placeholder="Contoh: 1301190123">
+                </div>
+                <div class="form-group">
+                    <label>Asal Instansi Terlapor</label>
+                    <input type="text" name="asal_instansi_terlapor" id="asal_instansi_terlapor" value="Telkom University">
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>Fakultas Terlapor</label>
+                    <input type="text" name="fakultas_terlapor" id="fakultas_terlapor" placeholder="Tuliskan fakultas">
+                </div>
+                <div class="form-group">
+                    <label>Program Studi Terlapor</label>
+                    <input type="text" name="prodi_terlapor" id="prodi_terlapor" placeholder="Contoh: S1 Teknik Elektro (tidak disingkat)">
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>No WhatsApp Terlapor</label>
+                    <input type="text" name="no_wa_terlapor" id="no_wa_terlapor" placeholder="Contoh: 081234567890">
+                </div>
+                <div class="form-group">
+                    <label>Hubungan Terlapor dengan Korban <span class="required">*</span></label>
+                    <input type="text" name="hubungan_terlapor_korban" id="hubungan_terlapor_korban" placeholder="Contoh: Teman, Dosen, dll" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Ciri-ciri Pelaku (Deskripsi Fisik) <span class="required">*</span></label>
+                <textarea name="ciri_ciri_pelaku" id="ciri_ciri_pelaku" placeholder="Contoh: Tinggi ±170cm, rambut hitam, tanda tangan di lengan kiri, menggunakan kacamata hitam" style="height:80px;" required></textarea>
+                <p class="help-text">Jelaskan ciri fisik pelaku, pakaian yang dikenakan, tanda khusus, atau identifikasi lainnya</p>
+            </div>
+        </div>
+
+        <!-- SECTION 4: DESKRIPSI MASALAH -->
+        <div class="form-section">
+            <h3>
+                <span>📝</span> Deskripsi Masalah
+                <span class="badge">Wajib diisi</span>
+            </h3>
+
+            <div class="form-group">
+                <label>Jenis Dugaan Kekerasan <span class="required">*</span></label>
+                <select name="jenis" id="jenis" required>
+                    <option value="">-- Pilih Jenis Kekerasan --</option>
+                    <option value="Kekerasan Fisik">Kekerasan Fisik</option>
+                    <option value="Kekerasan Psikis">Kekerasan Psikis</option>
+                    <option value="Kekerasan Fisik dan Psikis">Kekerasan Fisik dan Psikis</option>
+                    <option value="Perundungan (Bullying)">Perundungan (Bullying)</option>
+                    <option value="Kekerasan Seksual">Kekerasan Seksual</option>
+                    <option value="Diskriminasi dan Intoleransi">Diskriminasi dan Intoleransi</option>
+                    <option value="Kebijakan yang Mengandung Kekerasan">Kebijakan yang Mengandung Kekerasan</option>
+                    <option value="Lainnya">Lainnya</option>
+                </select>
+                <p class="help-text">Sesuai Permendikbudristek No. 55 Tahun 2024</p>
+            </div>
+
+            <div class="form-group">
+                <label>Tempat Kejadian <span class="required">*</span></label>
+                <input type="text" name="lokasi" id="lokasi" placeholder="Contoh: Gedung A, Lantai 3, Ruang 305" required>
+            </div>
+
+            <div class="form-group">
+                <label>Deskripsi Lengkap Kejadian <span class="required">*</span></label>
+                <textarea name="deskripsi" id="deskripsi" class="large" placeholder="Ceritakan kronologi kejadian secara lengkap dan detail..." style="height:150px;" required></textarea>
+                <p class="help-text">Ceritakan kejadian secara detail, termasuk waktu, tempat, dan kronologi lengkap</p>
+            </div>
+
+            <div class="form-group">
+                <label>Link Bukti Pendukung (Opsional)</label>
+                <input type="url" name="link_pelaporan" id="link_pelaporan" placeholder="https://drive.google.com/... atau https://onedrive.live.com/...">
+                <p class="help-text">Anda dapat upload dokumen kronologi lengkap ke Google Drive/OneDrive dan share link-nya di sini (pastikan akses "Anyone with the link can view")</p>
+            </div>
+        </div>
+
+        <!-- SECTION 5: UPLOAD BUKTI -->
+        <div class="form-section">
+            <h3>
+                <span>📎</span> Upload Bukti Pendukung
+                <span class="badge" style="background: #6c757d;">Opsional</span>
+            </h3>
+
+            <div class="form-group">
+                <label>Upload Bukti (Foto/Dokumen) <span class="required">*</span></label>
+                <p style="font-size: 12px; color: #856404; margin: -4px 0 10px 0;">Minimal 1 bukti (foto/dokumen) ATAU isi link pelaporan di atas</p>
+                <div class="upload-box" id="uploadBox">
+                    <input type="file" name="bukti" id="bukti" accept="image/png,image/jpeg,image/jpg,application/pdf" multiple>
+                    <span style="font-size: 32px; color: #7e68f3; display: block; margin-bottom: 10px;">⤴</span>
+                    <strong>Drop files here or click to upload</strong><br>
+                    <span style="font-size:12px; color:#999;">Format: PNG, JPG, PDF (Max 5MB per file)</span>
+                </div>
+                <div class="file-preview" id="filePreview"></div>
+            </div>
+        </div>
+
+        <!-- CHECKBOX ANONIM -->
+        <div class="checkbox-wrapper">
+            <div class="checkbox">
+                <input type="checkbox" name="is_anonim" id="is_anonim" value="true">
+                <label for="is_anonim">
+                    🔒 <strong>Laporan Anonim</strong> (Identitas Sepenuhnya Tersembunyi)
+                </label>
+            </div>
+            <p style="margin: 8px 0 0 30px; font-size: 12px; color: #856404;">
+                ✓ Identitas Anda <strong>TIDAK akan tersimpan di database</strong><br>
+                ✓ Admin dan semua pihak <strong>tidak dapat melihat siapa pelapor</strong><br>
+                ✓ Hanya data terlapor, korban (jika ada), dan kronologi yang tersimpan<br>
+                ✓ Anda tetap dapat <strong>melacak status laporan</strong> melalui akun Anda
+            </p>
+        </div>
+
+        <!-- ACTION BUTTONS -->
         <div class="action-buttons">
             <button type="button" class="btn-cancel" onclick="history.back()">Batal</button>
-            <button type="submit" class="btn-send">Kirim</button>
+            <button type="submit" class="btn-send">Kirim Laporan</button>
         </div>
 
     </form>
@@ -306,6 +568,59 @@
 </div>
 
 <script>
+    // Toggle Data Korban section based on "Apakah korban langsung"
+    const apakahKorbanLangsung = document.getElementById('apakah_korban_langsung');
+    const sectionKorban = document.getElementById('section-korban');
+    const hubunganPelaporKorban = document.getElementById('hubungan-pelapor-korban');
+    
+    // Fields in section korban
+    const namaKorban = document.getElementById('nama_korban');
+    const nimNipKorban = document.getElementById('nim_nip_korban');
+    const statusKorban = document.getElementById('status_korban');
+    const fakultasKorban = document.getElementById('fakultas_korban');
+    const prodiKorban = document.getElementById('prodi_korban');
+    const jenisKelaminKorban = document.getElementById('jenis_kelamin_korban');
+    const hubunganPelaporKorbanInput = document.getElementById('hubungan_pelapor_korban');
+
+    apakahKorbanLangsung.addEventListener('change', function() {
+        if (this.value === 'false') {
+            // Show section korban and hubungan
+            sectionKorban.style.display = 'block';
+            hubunganPelaporKorban.style.display = 'block';
+            
+            // Make fields required
+            namaKorban.required = true;
+            nimNipKorban.required = true;
+            statusKorban.required = true;
+            fakultasKorban.required = true;
+            prodiKorban.required = true;
+            jenisKelaminKorban.required = true;
+            hubunganPelaporKorbanInput.required = true;
+        } else {
+            // Hide and clear
+            sectionKorban.style.display = 'none';
+            hubunganPelaporKorban.style.display = 'none';
+            
+            // Remove required
+            namaKorban.required = false;
+            nimNipKorban.required = false;
+            statusKorban.required = false;
+            fakultasKorban.required = false;
+            prodiKorban.required = false;
+            jenisKelaminKorban.required = false;
+            hubunganPelaporKorbanInput.required = false;
+            
+            // Clear values
+            namaKorban.value = '';
+            nimNipKorban.value = '';
+            statusKorban.value = '';
+            fakultasKorban.value = '';
+            prodiKorban.value = '';
+            jenisKelaminKorban.value = '';
+            hubunganPelaporKorbanInput.value = '';
+        }
+    });
+
     // File Upload Handler
     const uploadBox = document.getElementById('uploadBox');
     const fileInput = document.getElementById('bukti');
@@ -319,7 +634,7 @@
                 alert(`File ${file.name} terlalu besar. Maksimal 5MB`);
                 return;
             }
-            if (selectedFiles.length < 5) {
+            if (selectedFiles.length < 10) {
                 selectedFiles.push(file);
             }
         });
@@ -350,78 +665,39 @@
         fileInput.files = dt.files;
     }
 
-    // Drag and Drop
-    uploadBox.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        uploadBox.style.borderColor = '#7e68f3';
-        uploadBox.style.background = '#f8f7ff';
-    });
+    // Form validation
+    document.getElementById('laporanForm').addEventListener('submit', function(e) {
+        // Basic validation (HTML5 will handle most of it)
+        const jenis = document.getElementById('jenis').value;
+        const lokasi = document.getElementById('lokasi').value;
+        const kronologi = document.getElementById('kronologi_singkat').value;
+        const deskripsi = document.getElementById('deskripsi').value;
+        const linkPelaporan = document.getElementById('link_pelaporan').value.trim();
 
-    uploadBox.addEventListener('dragleave', () => {
-        uploadBox.style.borderColor = '#d0cdfa';
-        uploadBox.style.background = 'transparent';
-    });
-
-    uploadBox.addEventListener('drop', (e) => {
-        e.preventDefault();
-        uploadBox.style.borderColor = '#d0cdfa';
-        uploadBox.style.background = 'transparent';
-
-        const files = Array.from(e.dataTransfer.files);
-        files.forEach(file => {
-            if (file.type.match('image.*') && file.size <= 5 * 1024 * 1024 && selectedFiles.length < 5) {
-                selectedFiles.push(file);
-            }
-        });
-
-        const dt = new DataTransfer();
-        selectedFiles.forEach(file => dt.items.add(file));
-        fileInput.files = dt.files;
-
-        updateFilePreview();
-    });
-
-    // Form Validation
-    const form = document.getElementById('laporanForm');
-    form.addEventListener('submit', function (e) {
-        let isValid = true;
-
-        // Reset errors
-        document.querySelectorAll('.error-message').forEach(el => el.classList.remove('active'));
-
-        // Validate jenis insiden
-        if (!document.getElementById('jenis_insiden').value) {
-            document.getElementById('error-jenis').classList.add('active');
-            isValid = false;
-        }
-
-        // Validate tanggal
-        if (!document.getElementById('tanggal_kejadian').value) {
-            document.getElementById('error-tanggal').classList.add('active');
-            isValid = false;
-        }
-
-        // Validate tempat
-        if (!document.getElementById('tempat_kejadian').value.trim()) {
-            document.getElementById('error-tempat').classList.add('active');
-            isValid = false;
-        }
-
-        // Validate deskripsi
-        if (!document.getElementById('deskripsi').value.trim()) {
-            document.getElementById('error-deskripsi').classList.add('active');
-            isValid = false;
-        }
-
-        if (!isValid) {
+        if (!jenis || !lokasi || !kronologi || !deskripsi) {
             e.preventDefault();
-            alert('Mohon lengkapi semua field yang wajib diisi');
+            alert('Mohon lengkapi semua field yang wajib diisi (*)');
+            return false;
+        }
+
+        // Validasi minimal 1 evidence (file atau link)
+        if (selectedFiles.length === 0 && !linkPelaporan) {
+            e.preventDefault();
+            alert('Minimal upload 1 bukti (foto/dokumen) ATAU isi link pelaporan.');
+            return false;
+        }
+
+        // Confirm before submit
+        const isAnonim = document.getElementById('is_anonim').checked;
+        const confirmMsg = isAnonim 
+            ? 'Anda akan mengirim laporan secara ANONIM. Identitas Anda tidak akan terlihat oleh terlapor. Lanjutkan?' 
+            : 'Anda akan mengirim laporan dengan identitas. Admin dapat melihat data Anda. Lanjutkan?';
+        
+        if (!confirm(confirmMsg)) {
+            e.preventDefault();
+            return false;
         }
     });
-
-    // Set max date to today
-    const today = new Date().toISOString().split('T')[0];
-    document.getElementById('tanggal_kejadian').setAttribute('max', today);
 </script>
 
 {% endblock %}

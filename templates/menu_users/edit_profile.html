@@ -1,0 +1,268 @@
+{% extends 'base_user.html' %}
+{% load static %}
+
+{% block title %}Edit Profile | Ruang Dengar{% endblock %}
+
+{% block content %}
+<style>
+  .profile-container {
+    max-width: 900px;
+    margin: 30px auto;
+    padding: 30px;
+  }
+  
+  .profile-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    margin-bottom: 25px;
+  }
+  
+  .profile-card h2 {
+    font-size: 22px;
+    color: #5a509b;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #5a509b;
+    padding-bottom: 10px;
+  }
+  
+  .profile-avatar-section {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    margin-bottom: 30px;
+  }
+  
+  .profile-avatar-preview img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #5a509b;
+  }
+  
+  .profile-avatar-info h3 {
+    margin: 0 0 10px 0;
+    color: #1f2937;
+    font-size: 18px;
+  }
+  
+  .profile-avatar-info p {
+    color: #6b7280;
+    font-size: 14px;
+    margin-bottom: 15px;
+  }
+  
+  .form-group {
+    margin-bottom: 20px;
+  }
+  
+  .form-group label {
+    display: block;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 8px;
+    font-size: 14px;
+  }
+  
+  .form-group input[type="text"],
+  .form-group input[type="file"],
+  .form-group input[type="password"],
+  .form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: inherit;
+  }
+  
+  .form-group input[type="file"] {
+    padding: 10px;
+  }
+  
+  .form-group small {
+    display: block;
+    color: #6b7280;
+    font-size: 12px;
+    margin-top: 5px;
+  }
+  
+  .btn-primary {
+    background-color: #5a509b;
+    color: #fff;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: 0.3s;
+  }
+  
+  .btn-primary:hover {
+    background-color: #4338ca;
+  }
+  
+  .alert {
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 14px;
+  }
+  
+  .alert-success {
+    background-color: #d1fae5;
+    color: #065f46;
+    border-left: 4px solid #10b981;
+  }
+  
+  .alert-error {
+    background-color: #fee2e2;
+    color: #991b1b;
+    border-left: 4px solid #ef4444;
+  }
+  
+  .errorlist {
+    list-style: none;
+    padding: 0;
+    margin: 5px 0 0 0;
+  }
+  
+  .errorlist li {
+    color: #dc2626;
+    font-size: 13px;
+  }
+</style>
+
+<div class="profile-container">
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-{% if message.tags == 'error' %}error{% else %}{{ message.tags }}{% endif %}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+
+  <!-- Profile Information Card -->
+  <div class="profile-card">
+    <h2>📝 Edit Profile</h2>
+    
+    <form method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+      
+      <div class="profile-avatar-section">
+        <div class="profile-avatar-preview">
+          {% if user.profile_picture %}
+            <img src="{{ user.profile_picture.url }}" alt="Profile Picture" id="preview">
+          {% else %}
+            <img src="{% static 'images/placeholder_avatar.png' %}" alt="Default Avatar" id="preview">
+          {% endif %}
+        </div>
+        
+        <div class="profile-avatar-info">
+          <h3>{{ user.nama_lengkap }}</h3>
+          <p>{{ user.email }}</p>
+          <div class="form-group">
+            {{ profile_form.profile_picture }}
+            <small>{{ profile_form.profile_picture.help_text }}</small>
+            {{ profile_form.profile_picture.errors }}
+          </div>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label for="{{ profile_form.nama_lengkap.id_for_label }}">{{ profile_form.nama_lengkap.label }}</label>
+        {{ profile_form.nama_lengkap }}
+        <small style="color: #6b7280;">{{ profile_form.nama_lengkap.help_text }}</small>
+        {{ profile_form.nama_lengkap.errors }}
+      </div>
+      
+      <!-- Data Pribadi Section -->
+      <div style="margin-top: 30px; padding-top: 20px; border-top: 2px solid #e5e7eb;">
+        <h3 style="color: #5a509b; font-size: 16px; margin-bottom: 15px;">
+          🔒 Data Pribadi (Privat - Hanya Anda yang dapat melihat)
+        </h3>
+        <p style="font-size: 13px; color: #6b7280; margin-bottom: 20px;">
+          ℹ️ Data di bawah ini <strong>tidak akan terlihat oleh admin</strong> jika Anda melaporkan secara anonim.
+        </p>
+        
+        <div class="form-group">
+          <label for="{{ profile_form.nomor_telepon.id_for_label }}">{{ profile_form.nomor_telepon.label }}</label>
+          {{ profile_form.nomor_telepon }}
+          {{ profile_form.nomor_telepon.errors }}
+        </div>
+        
+        <div class="form-group">
+          <label for="{{ profile_form.alamat.id_for_label }}">{{ profile_form.alamat.label }}</label>
+          {{ profile_form.alamat }}
+          {{ profile_form.alamat.errors }}
+        </div>
+        
+        <div class="form-group">
+          <label for="{{ profile_form.nomor_telepon_kerabat.id_for_label }}">{{ profile_form.nomor_telepon_kerabat.label }}</label>
+          {{ profile_form.nomor_telepon_kerabat }}
+          <small style="color: #6b7280;">{{ profile_form.nomor_telepon_kerabat.help_text }}</small>
+          {{ profile_form.nomor_telepon_kerabat.errors }}
+        </div>
+      </div>
+      
+      <button type="submit" name="update_profile" class="btn-primary">💾 Simpan Perubahan</button>
+    </form>
+  </div>
+
+  <!-- Change Password Card -->
+  <div class="profile-card">
+    <h2>🔒 Ganti Password</h2>
+    
+    <form method="POST">
+      {% csrf_token %}
+      
+      <div class="form-group">
+        <label for="{{ password_form.old_password.id_for_label }}">{{ password_form.old_password.label }}</label>
+        {{ password_form.old_password }}
+        {{ password_form.old_password.errors }}
+      </div>
+      
+      <div class="form-group">
+        <label for="{{ password_form.new_password1.id_for_label }}">{{ password_form.new_password1.label }}</label>
+        {{ password_form.new_password1 }}
+        {{ password_form.new_password1.errors }}
+      </div>
+      
+      <div class="form-group">
+        <label for="{{ password_form.new_password2.id_for_label }}">{{ password_form.new_password2.label }}</label>
+        {{ password_form.new_password2 }}
+        {{ password_form.new_password2.errors }}
+      </div>
+      
+      {% if password_form.non_field_errors %}
+        <div class="alert alert-error">
+          {{ password_form.non_field_errors }}
+        </div>
+      {% endif %}
+      
+      <button type="submit" name="change_password" class="btn-primary">🔐 Ubah Password</button>
+      <p style="margin-top: 10px; font-size: 13px; color: #6b7280;">
+        ⚠️ Setelah mengganti password, Anda akan logout otomatis dan perlu login kembali.
+      </p>
+    </form>
+  </div>
+</div>
+
+<script>
+  // Preview image before upload
+  document.getElementById('{{ profile_form.profile_picture.id_for_label }}').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        document.getElementById('preview').src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+</script>
+
+{% endblock %}

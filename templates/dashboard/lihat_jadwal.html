@@ -192,6 +192,12 @@
       </div>
 
       <div class="actions">
+        <button id="rekam-medis-btn" class="btn" style="background:#3b82f6;border-color:#3b82f6;margin-right:10px;">
+          🩺 Rekam Medis
+        </button>
+        <button id="complete-session-btn" class="btn" style="background:#10b981;border-color:#10b981;margin-right:10px;">
+          Tandai Selesai
+        </button>
         <button id="cancel-session-btn" class="btn purple">
           Batalkan Sesi
         </button>
@@ -201,7 +207,13 @@
     <section class="card">
       <div class="table-header">
         <h3>Daftar Jadwal Konseling</h3>
-        <input type="text" placeholder="Cari jadwal..." />
+        <div style="display: flex; gap: 10px; align-items: center;">
+          <select id="sortFilter" onchange="sortSchedule()" style="padding: 8px 15px; border: 1px solid var(--border-color); border-radius: 6px;">
+            <option value="asc">Tanggal (Terlama)</option>
+            <option value="desc" selected>Tanggal (Terbaru)</option>
+          </select>
+          <input type="text" id="searchInput" placeholder="Cari jadwal..." onkeyup="filterSchedule()" style="padding: 8px 15px; border: 1px solid var(--border-color); border-radius: 6px; width: 300px;" />
+        </div>
       </div>
 
       <table>
@@ -216,128 +228,63 @@
           </tr>
         </thead>
         <tbody id="schedule-body">
-          <tr
-            id="session-1"
-            data-tanggal="2024-07-20"
-            data-waktu="10:00 AM"
-            data-konselor="Dr. Sarah Cahyani"
-            data-klien="Budi Santoso"
-            data-topik="Manajemen Stres dan Kecemasan"
-            data-durasi="60 menit"
-            data-jenis="Bullying"
-            data-status="Berlangsung"
-            data-note="Klien telah mengikuti 3 sesi sebelumnya. Memiliki riwayat kecemasan ringan dan mencari teknik relaksasi yang efektif. Penting untuk menindaklanjuti strategi coping yang didiskusikan dalam sesi terakhir."
-            data-badge-class="status-badge-yellow"
-            class="schedule-row selected"
-          >
-            <td>2024-07-20</td>
-            <td>10:00 AM</td>
-            <td>Dr. Sarah Cahyani</td>
-            <td>Budi Santoso</td>
-            <td>Manajemen Stres dan Kecemasan</td>
-            <td id="status-1">
-              <span class="status-badge status-badge-yellow">Berlangsung</span>
-            </td>
-          </tr>
-          <tr
-            id="session-2"
-            data-tanggal="2024-08-01"
-            data-waktu="10:00 AM"
-            data-konselor="Dr. Indah Permata"
-            data-klien="Dwi Prasetyo"
-            data-topik="Kecemasan Sosial"
-            data-durasi="60 menit"
-            data-jenis="Anxiety"
-            data-status="Terjadwal"
-            data-note="Klien baru, ini adalah sesi pertama. Fokus pada pengenalan teknik relaksasi dasar."
-            data-badge-class="status-badge-blue"
-            class="schedule-row"
-          >
-            <td>2024-08-01</td>
-            <td>10:00 AM</td>
-            <td>Dr. Indah Permata</td>
-            <td>Dwi Prasetyo</td>
-            <td>Kecemasan Sosial</td>
-            <td id="status-2">
-              <span class="status-badge status-badge-blue">Terjadwal</span>
-            </td>
-          </tr>
-          <tr
-            id="session-3"
-            data-tanggal="2024-08-01"
-            data-waktu="02:00 PM"
-            data-konselor="Bpk. Ahmad Santoso"
-            data-klien="Citra Dewi"
-            data-topik="Masalah Karir"
-            data-durasi="90 menit"
-            data-jenis="Career Coaching"
-            data-status="Terjadwal"
-            data-note="Diskusi mendalam mengenai transisi karir dan mencari arahan baru."
-            data-badge-class="status-badge-blue"
-            class="schedule-row"
-          >
-            <td>2024-08-01</td>
-            <td>02:00 PM</td>
-            <td>Bpk. Ahmad Santoso</td>
-            <td>Citra Dewi</td>
-            <td>Masalah Karir</td>
-            <td id="status-3">
-              <span class="status-badge status-badge-blue">Terjadwal</span>
-            </td>
-          </tr>
-          <tr
-            id="session-4"
-            data-tanggal="2024-07-30"
-            data-waktu="11:00 AM"
-            data-konselor="Dr. Indah Permata"
-            data-klien="Joko Susilo"
-            data-topik="Stres Kuliah"
-            data-durasi="60 menit"
-            data-jenis="Academic Stress"
-            data-status="Selesai"
-            data-note="Sesi penutup. Klien menunjukkan peningkatan signifikan dalam manajemen waktu dan stres. Disarankan untuk tindak lanjut 3 bulan lagi."
-            data-badge-class="status-badge-green"
-            class="schedule-row"
-          >
-            <td>2024-07-30</td>
-            <td>11:00 AM</td>
-            <td>Dr. Indah Permata</td>
-            <td>Joko Susilo</td>
-            <td>Stres Kuliah</td>
-            <td id="status-4">
-              <span class="status-badge status-badge-green">Selesai</span>
-            </td>
-          </tr>
-          <tr
-            id="session-5"
-            data-tanggal="2024-07-29"
-            data-waktu="03:00 PM"
-            data-konselor="Ibu Rina Wijaya"
-            data-klien="Maria Fransiska"
-            data-topik="Kekerasan Seksual"
-            data-durasi="60 menit"
-            data-jenis="Trauma"
-            data-status="Dibatalkan"
-            data-note="Klien membatalkan sesi 1 jam sebelum jadwal. Konselor telah mengirimkan email tindak lanjut untuk sesi berikutnya."
-            data-badge-class="status-badge-red"
-            class="schedule-row"
-          >
-            <td>2024-07-29</td>
-            <td>03:00 PM</td>
-            <td>Ibu Rina Wijaya</td>
-            <td>Maria Fransiska</td>
-            <td>Kekerasan Seksual</td>
-            <td id="status-5">
-              <span class="status-badge status-badge-red">Dibatalkan</span>
-            </td>
-          </tr>
+          {% if bookings %}
+            {% for b in bookings %}
+              <tr id="session-{{ b.id }}" class="schedule-row"
+                  data-booking-id="{{ b.id }}"
+                  data-tanggal="{{ b.tanggal }}"
+                  data-waktu="{{ b.waktu }}"
+                  data-konselor="{{ b.konselor }}"
+                  data-klien="{{ b.nama }}"
+                  data-topik="{{ b.topik|default:'' }}"
+                  data-durasi="60 menit"
+                  data-jenis="{{ b.jenis }}"
+                  data-status="{{ b.status|capfirst }}"
+                  data-note="{{ b.topik|default:'' }}"
+                  data-alasan-pembatalan="{{ b.alasan_pembatalan|default:'' }}"
+                  data-badge-class="{% if b.status == 'terjadwal' %}status-badge-blue{% elif b.status == 'selesai' %}status-badge-green{% else %}status-badge-red{% endif %}">
+                <td>{{ b.tanggal }}</td>
+                <td>{{ b.waktu }}</td>
+                <td>{{ b.konselor }}</td>
+                <td>{{ b.nama }}</td>
+                <td>{{ b.topik }}</td>
+                <td id="status-{{ b.id }}">
+                  <span class="status-badge {% if b.status == 'terjadwal' %}status-badge-blue{% elif b.status == 'selesai' %}status-badge-green{% else %}status-badge-red{% endif %}">{{ b.status|capfirst }}</span>
+                </td>
+              </tr>
+            {% endfor %}
+          {% else %}
+            <tr><td colspan="6">Belum ada jadwal.</td></tr>
+          {% endif %}
         </tbody>
       </table>
     </section>
   </div>
 </div>
 
+<!-- Modal Pembatalan -->
+<div id="cancelModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:9999;justify-content:center;align-items:center;">
+  <div style="background:#fff;padding:30px;border-radius:12px;max-width:500px;width:90%;">
+    <h3 style="margin-top:0;color:#333;">Batalkan Sesi Konseling</h3>
+    <p style="color:#666;margin-bottom:20px;">Silakan masukkan alasan pembatalan:</p>
+    <form id="cancelForm" method="POST">
+      {% csrf_token %}
+      <input type="hidden" id="cancelBookingId" name="booking_id" />
+      <textarea id="alasanPembatalan" name="alasan_pembatalan" rows="4" style="width:100%;padding:12px;border:1px solid #ddd;border-radius:8px;font-family:inherit;resize:vertical;" placeholder="Contoh: Konselor berhalangan hadir karena sakit" required></textarea>
+      <div style="display:flex;gap:10px;margin-top:20px;justify-content:flex-end;">
+        <button type="button" onclick="closeCancelModal()" style="padding:10px 20px;border:1px solid #ddd;background:#fff;border-radius:8px;cursor:pointer;">Batal</button>
+        <button type="submit" style="padding:10px 20px;border:none;background:#5d55f3;color:#fff;border-radius:8px;cursor:pointer;font-weight:500;">Konfirmasi Pembatalan</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <script>
+  function closeCancelModal() {
+    document.getElementById('cancelModal').style.display = 'none';
+    document.getElementById('alasanPembatalan').value = '';
+  }
+
   document.addEventListener("DOMContentLoaded", function () {
     const tableRows = document.querySelectorAll(".schedule-row");
     const detailGrid = document.getElementById("detail-grid");
@@ -389,10 +336,16 @@
             `;
       detailGrid.appendChild(detailStatusWrapper); // Tambahkan kembali ke grid
 
-      // 4. Update Catatan
-      detailNote.textContent = data.note;
+      // 4. Update Catatan - tampilkan alasan pembatalan jika ada
+      if (data.status === "Dibatalkan" && row.dataset.alasanPembatalan) {
+        detailNote.textContent = "Alasan Pembatalan: " + row.dataset.alasanPembatalan;
+      } else {
+        detailNote.textContent = data.note;
+      }
 
-      // 5. Atur tampilan tombol Batalkan
+      // 5. Atur tampilan tombol Batalkan dan Selesai
+      const completeButton = document.getElementById("complete-session-btn");
+      
       if (data.status === "Selesai" || data.status === "Dibatalkan") {
         cancelButton.disabled = true;
         cancelButton.textContent = `Sesi Sudah ${data.status}`;
@@ -400,6 +353,11 @@
         cancelButton.style.backgroundColor = "#ccc";
         cancelButton.style.borderColor = "#ccc";
         cancelButton.style.cursor = "not-allowed";
+        
+        completeButton.disabled = true;
+        completeButton.style.backgroundColor = "#ccc";
+        completeButton.style.borderColor = "#ccc";
+        completeButton.style.cursor = "not-allowed";
       } else {
         cancelButton.disabled = false;
         cancelButton.textContent = `Batalkan Sesi`;
@@ -407,10 +365,15 @@
         cancelButton.style.backgroundColor = "";
         cancelButton.style.borderColor = "";
         cancelButton.style.cursor = "pointer";
+        
+        completeButton.disabled = false;
+        completeButton.style.backgroundColor = "#10b981";
+        completeButton.style.borderColor = "#10b981";
+        completeButton.style.cursor = "pointer";
       }
     }
 
-    // Fungsi Pembatalan Sesi (Fungsionalitas yang Anda minta)
+    // Fungsi Pembatalan Sesi - Buka Modal
     function cancelSession() {
       if (!selectedRow) {
         alert("Pilih sesi yang ingin dibatalkan terlebih dahulu.");
@@ -425,29 +388,90 @@
         return;
       }
 
-      // Konfirmasi ke pengguna
+      // Set booking ID ke form
+      const bookingId = selectedRow.dataset.bookingId;
+      document.getElementById('cancelBookingId').value = bookingId;
+      
+      // Tampilkan modal
+      document.getElementById('cancelModal').style.display = 'flex';
+    }
+
+    // Handle form submit
+    document.getElementById('cancelForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const bookingId = document.getElementById('cancelBookingId').value;
+      const alasan = document.getElementById('alasanPembatalan').value.trim();
+      
+      if (!alasan) {
+        alert('Alasan pembatalan harus diisi.');
+        return;
+      }
+      
+      const formData = new FormData();
+      formData.append('alasan_pembatalan', alasan);
+      formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+      
+      fetch(`/dashboard/booking/${bookingId}/cancel/`, {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => {
+        if (response.redirected) {
+          window.location.href = response.url;
+        } else {
+          return response.text().then(text => {
+            throw new Error('Gagal membatalkan: ' + text);
+          });
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('❌ Terjadi kesalahan saat membatalkan booking.');
+      });
+    });
+
+    // Fungsi Tandai Selesai
+    function completeSession() {
+      if (!selectedRow) {
+        alert("Pilih sesi yang ingin ditandai selesai terlebih dahulu.");
+        return;
+      }
+
+      const currentStatus = selectedRow.dataset.status;
+      if (currentStatus === "Selesai" || currentStatus === "Dibatalkan") {
+        alert(
+          `Sesi ini sudah berstatus: ${currentStatus}.`
+        );
+        return;
+      }
+
+      // Konfirmasi
       const confirmation = confirm(
-        `Anda yakin ingin membatalkan sesi dengan klien: ${selectedRow.dataset.klien} (${selectedRow.dataset.tanggal})?`
+        `Tandai sesi dengan klien ${selectedRow.dataset.klien} (${selectedRow.dataset.tanggal}) sebagai selesai?`
       );
 
       if (confirmation) {
-        // 1. Ubah data atribut pada baris yang dipilih (Simulasi update data)
-        selectedRow.dataset.status = "Dibatalkan";
-        selectedRow.dataset.badgeClass = "status-badge-red";
-
-        // 2. Update tampilan status di kolom tabel
-        const tableStatusCell = selectedRow.querySelector("td:last-child");
-        tableStatusCell.innerHTML = `
-                    <span class="status-badge status-badge-red">Dibatalkan</span>
-                `;
-
-        // 3. Update tampilan Detail Sesi (ini juga akan menonaktifkan tombol)
-        updateDetail(selectedRow);
-
-        // 4. Beri notifikasi
-        alert(
-          `Sesi pada tanggal ${selectedRow.dataset.tanggal} berhasil dibatalkan.`
-        );
+        const bookingId = selectedRow.dataset.bookingId;
+        const formData = new FormData();
+        formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+        
+        fetch(`/dashboard/booking/${bookingId}/complete/`, {
+          method: 'POST',
+          body: formData
+        })
+        .then(response => {
+          if (response.redirected) {
+            window.location.href = response.url;
+          } else {
+            return response.text().then(text => {
+              throw new Error('Gagal menandai selesai: ' + text);
+            });
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('❌ Terjadi kesalahan saat menandai booking selesai.');
+        });
       }
     }
 
@@ -463,10 +487,110 @@
     // B. Event listener untuk tombol Batalkan Sesi
     cancelButton.addEventListener("click", cancelSession);
 
-    // C. Inisialisasi: Pastikan detail sesi pertama yang terpilih terisi saat dimuat
+    // C. Event listener untuk tombol Tandai Selesai
+    const completeButton = document.getElementById("complete-session-btn");
+    completeButton.addEventListener("click", completeSession);
+
+    // D. Event listener untuk tombol Rekam Medis
+    const rekamMedisButton = document.getElementById("rekam-medis-btn");
+    rekamMedisButton.addEventListener("click", function() {
+      if (!selectedRow) {
+        alert("Pilih sesi yang ingin dilihat rekam medisnya terlebih dahulu.");
+        return;
+      }
+      const bookingId = selectedRow.dataset.bookingId;
+      window.location.href = `/dashboard/booking/${bookingId}/rekam-medis/`;
+    });
+
+    // D. Inisialisasi: Pastikan detail sesi pertama yang terpilih terisi saat dimuat
     if (selectedRow) {
       updateDetail(selectedRow);
     }
   });
+
+  // Fungsi Sort Jadwal berdasarkan Tanggal
+  function sortSchedule() {
+    const sortValue = document.getElementById('sortFilter').value;
+    const tbody = document.getElementById('schedule-body');
+    const rows = Array.from(tbody.querySelectorAll('tr.schedule-row'));
+    
+    rows.sort((a, b) => {
+      const dateA = new Date(a.dataset.tanggal);
+      const dateB = new Date(b.dataset.tanggal);
+      
+      if (sortValue === 'asc') {
+        return dateA - dateB; // Terlama ke Terbaru
+      } else {
+        return dateB - dateA; // Terbaru ke Terlama
+      }
+    });
+    
+    // Kosongkan tbody dan tambahkan row yang sudah terurut
+    tbody.innerHTML = '';
+    rows.forEach(row => tbody.appendChild(row));
+    
+    // Re-attach event listeners setelah sort
+    document.querySelectorAll('.schedule-row').forEach(row => {
+      row.addEventListener('click', function() {
+        const detailGrid = document.getElementById("detail-grid");
+        const detailNote = document.getElementById("detail-note");
+        
+        document.querySelectorAll('.schedule-row').forEach(r => r.classList.remove('selected'));
+        this.classList.add('selected');
+        
+        const data = {
+          tanggal: this.dataset.tanggal,
+          waktu: this.dataset.waktu,
+          konselor: this.dataset.konselor,
+          klien: this.dataset.klien,
+          topik: this.dataset.topik,
+          durasi: this.dataset.durasi,
+          jenis: this.dataset.jenis,
+          status: this.dataset.status,
+          note: this.dataset.note,
+          badgeClass: this.dataset.badgeClass
+        };
+        
+        detailGrid.innerHTML = `
+          <p><strong>Tanggal:</strong> ${data.tanggal}</p>
+          <p><strong>Waktu:</strong> ${data.waktu}</p>
+          <p><strong>Konselor:</strong> ${data.konselor}</p>
+          <p><strong>Klien:</strong> ${data.klien}</p>
+          <p><strong>Topik:</strong> ${data.topik}</p>
+          <p><strong>Durasi:</strong> ${data.durasi}</p>
+          <p><strong>Jenis Konseling:</strong> ${data.jenis}</p>
+          <p id="detail-status-wrapper">
+            <strong>Status:</strong>
+            <span id="detail-status" class="status-badge ${data.badgeClass}">${data.status}</span>
+          </p>
+        `;
+        detailNote.textContent = data.note || 'Tidak ada catatan';
+      });
+    });
+  }
+  
+  // Fungsi Filter/Search Jadwal
+  function filterSchedule() {
+    const searchValue = document.getElementById('searchInput').value.toLowerCase();
+    const rows = document.querySelectorAll('.schedule-row');
+    
+    rows.forEach(row => {
+      const tanggal = row.dataset.tanggal.toLowerCase();
+      const konselor = row.dataset.konselor.toLowerCase();
+      const klien = row.dataset.klien.toLowerCase();
+      const topik = row.dataset.topik.toLowerCase();
+      const status = row.dataset.status.toLowerCase();
+      
+      if (tanggal.includes(searchValue) || 
+          konselor.includes(searchValue) || 
+          klien.includes(searchValue) || 
+          topik.includes(searchValue) ||
+          status.includes(searchValue)) {
+        row.style.display = '';
+      } else {
+        row.style.display = 'none';
+      }
+    });
+  }
 </script>
 {% endblock %}

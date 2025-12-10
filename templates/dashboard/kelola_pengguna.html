@@ -1,5 +1,6 @@
 {% extends 'base.html' %} {% load static %} {% block title %}Kelola Pengguna
 {% endblock %} {% block content %}
+{% csrf_token %}
 <style>
   :root {
     --primary: #4f46e5;
@@ -20,8 +21,7 @@
     background: #fff;
     border-radius: 12px;
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
-    max-width: 1000px;
-    margin: 30px auto;
+    margin: 30px;
   }
 
   h2 {
@@ -50,12 +50,14 @@
   table {
     width: 100%;
     border-collapse: collapse;
+    table-layout: auto;
   }
 
   th,
   td {
     padding: 12px 15px;
     text-align: left;
+    vertical-align: middle;
   }
 
   th {
@@ -63,22 +65,26 @@
     color: var(--text-light);
     text-transform: uppercase;
     font-size: 12px;
+    font-weight: 600;
   }
 
   td {
     border-bottom: 1px solid #e5e7eb;
+    height: 60px;
   }
 
   .user-cell {
     display: flex;
     align-items: center;
     gap: 10px;
+    height: 100%;
   }
 
   .user-cell img {
     width: 35px;
     height: 35px;
     border-radius: 50%;
+    flex-shrink: 0;
   }
 
   .status {
@@ -98,14 +104,65 @@
     color: var(--danger);
   }
 
-  .actions span {
+  .actions {
+    display: flex;
+    gap: 6px;
+    justify-content: flex-start;
+  }
+  
+  .icon-btn {
+    width: 34px;
+    height: 34px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
     cursor: pointer;
-    margin-right: 8px;
-    font-size: 18px;
+    border: 1px solid #e5e7eb;
+    background: #ffffff;
+    font-size: 16px;
+    transition: all 0.2s;
+  }
+  
+  .icon-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  }
+  
+  .icon-btn.edit {
+    border-color: #f59e0b;
+  }
+  
+  .icon-btn.edit:hover {
+    background: #f59e0b;
+    border-color: #f59e0b;
+  }
+  
+  .icon-btn.reset {
+    border-color: #3b82f6;
+  }
+  
+  .icon-btn.reset:hover {
+    background: #3b82f6;
+    border-color: #3b82f6;
   }
 
-  .actions span:hover {
-    color: var(--primary);
+  .icon-btn.view {
+    border-color: #10b981;
+  }
+  
+  .icon-btn.view:hover {
+    background: #10b981;
+    border-color: #10b981;
+  }
+  
+  .icon-btn.del {
+    border-color: #ef4444;
+  }
+  
+  .icon-btn.del:hover {
+    background: #ef4444;
+    border-color: #ef4444;
   }
 
   /* Modal Styling */
@@ -185,11 +242,89 @@
     background: var(--danger);
     color: white;
   }
+
+  .detail-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px 15px;
+  }
+  .detail-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .detail-label {
+    font-size: 12px;
+    color: var(--text-light);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+  .detail-value {
+    color: var(--text-dark);
+    font-weight: 600;
+    word-break: break-word;
+  }
+  .detail-full {
+    grid-column: 1 / -1;
+  }
+  .detail-divider {
+    grid-column: 1 / -1;
+    height: 1px;
+    background: #e5e7eb;
+    margin: 4px 0;
+  }
+  @media (max-width: 640px) {
+    .detail-grid {
+      grid-template-columns: 1fr;
+    }
+  }
 </style>
 
 <!-- ======= Konten Utama ======= -->
 <section class="container-user">
   <h2>Kelola Pengguna</h2>
+
+  <!-- Pending Admin Approvals -->
+  {% if pending_admins %}
+  <div style="background: #fef3c7; border: 1px solid #f59e0b; border-radius: 8px; padding: 15px; margin-bottom: 25px;">
+    <h3 style="color: #92400e; margin: 0 0 15px 0; font-size: 16px;">
+      ⏳ Admin Menunggu Persetujuan ({{ pending_admins.count }})
+    </h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Nama</th>
+          <th>Email</th>
+          <th>NIDN</th>
+          <th>Tanggal Daftar</th>
+          <th>Aksi</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for admin in pending_admins %}
+        <tr>
+          <td>{{ admin.nama_lengkap }}</td>
+          <td>{{ admin.email }}</td>
+          <td>{{ admin.nidn|default:'-' }}</td>
+          <td>{{ admin.date_joined|date:"d M Y H:i" }}</td>
+          <td class="actions">
+            <button 
+              onclick="confirmApprove({{ admin.id }}, '{{ admin.nama_lengkap }}', '{{ admin.email }}')" 
+              style="background: #16a34a; color: white; padding: 6px 12px; border: none; border-radius: 6px; cursor: pointer; margin-right: 5px;">
+              ✓ Setujui
+            </button>
+            <button 
+              onclick="confirmReject({{ admin.id }}, '{{ admin.nama_lengkap }}', '{{ admin.email }}')" 
+              style="background: #dc2626; color: white; padding: 6px 12px; border: none; border-radius: 6px; cursor: pointer;">
+              ✗ Tolak
+            </button>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% endif %}
 
   <!-- Search dan Filter -->
   <div class="search-filter">
@@ -242,43 +377,112 @@
   </div>
 </div>
 
+<!-- ======= Modal Detail ======= -->
+<div class="modal" id="detailModal">
+  <div class="modal-content" style="max-width: 520px;">
+    <h3>Detail Pengguna</h3>
+    <div class="detail-grid">
+      <div class="detail-item">
+        <span class="detail-label">Nama</span>
+        <span class="detail-value" id="detailNama">-</span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">Email</span>
+        <span class="detail-value" id="detailEmail">-</span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">Peran</span>
+        <span class="detail-value" id="detailRole">-</span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">Status Akun</span>
+        <span class="detail-value" id="detailStatus">-</span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">NIM / NIDN</span>
+        <span class="detail-value" id="detailNim">-</span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">Username</span>
+        <span class="detail-value" id="detailUsername">-</span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">Prodi</span>
+        <span class="detail-value" id="detailProdi">-</span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">Fakultas</span>
+        <span class="detail-value" id="detailFakultas">-</span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">Status Pengguna</span>
+        <span class="detail-value" id="detailStatusPengguna">-</span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">Profil Lengkap</span>
+        <span class="detail-value" id="detailProfil">-</span>
+      </div>
+      <div class="detail-divider"></div>
+      <div class="detail-item">
+        <span class="detail-label">No. WhatsApp</span>
+        <span class="detail-value" id="detailWA">-</span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">No. Telepon</span>
+        <span class="detail-value" id="detailTelp">-</span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">Kontak Kerabat</span>
+        <span class="detail-value" id="detailKerabat">-</span>
+      </div>
+      <div class="detail-item detail-full">
+        <span class="detail-label">Alamat</span>
+        <span class="detail-value" id="detailAlamat">-</span>
+      </div>
+    </div>
+    <div class="modal-buttons">
+      <button class="btn btn-cancel" onclick="closeDetail()">Tutup</button>
+    </div>
+  </div>
+</div>
+
 <!-- ======= SweetAlert2 ======= -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <!-- ======= Script Utama ======= -->
 <script>
+  // Data users dari backend
   const users = [
+    {% for u in users %}
     {
-      id: 1,
-      name: "Budi Santoso",
-      email: "budi.santoso@example.com",
-      role: "Admin",
-      is_active: true,
-      last_activity: "2 jam lalu",
-      avatar: "https://i.pravatar.cc/35?img=3",
+      id: {{ u.id }},
+      name: "{{ u.nama_lengkap|default:'Tanpa Nama'|escapejs }}",
+      email: "{{ u.email|escapejs }}",
+      role: "{{ u.get_role_display|escapejs }}",
+      is_active: {{ u.is_active|yesno:"true,false" }},
+      last_activity: "{{ u.last_login|timesince|default:'Belum pernah login' }}",
+      avatar: "https://i.pravatar.cc/35?img={{ forloop.counter }}",
+      username: "{{ u.username|default_if_none:''|escapejs }}",
+      nim: "{{ u.nim|default_if_none:''|escapejs }}",
+      nidn: "{{ u.nidn|default_if_none:''|escapejs }}",
+      prodi: "{{ u.prodi|default_if_none:''|escapejs }}",
+      fakultas: "{{ u.fakultas|default_if_none:''|escapejs }}",
+      status_pengguna: "{{ u.status_pengguna|default_if_none:''|escapejs }}",
+      no_whatsapp: "{{ u.no_whatsapp|default_if_none:''|escapejs }}",
+      nomor_telepon: "{{ u.nomor_telepon|default_if_none:''|escapejs }}",
+      nomor_telepon_kerabat: "{{ u.nomor_telepon_kerabat|default_if_none:''|escapejs }}",
+      alamat: "{{ u.alamat|default_if_none:''|escapejs }}",
+      is_profile_complete: {{ u.is_profile_complete|yesno:"true,false" }},
     },
-    {
-      id: 2,
-      name: "Citra Dewi",
-      email: "citra.dewi@example.com",
-      role: "Anggota",
-      is_active: true,
-      last_activity: "5 jam lalu",
-      avatar: "https://i.pravatar.cc/35?img=4",
-    },
-    {
-      id: 3,
-      name: "Andi Wijaya",
-      email: "andi.wijaya@example.com",
-      role: "Anggota",
-      is_active: false,
-      last_activity: "1 hari lalu",
-      avatar: "https://i.pravatar.cc/35?img=5",
-    },
+    {% endfor %}
   ];
+  
+  console.log('DEBUG: Total users loaded =', users.length);
+  console.log('Users:', users);
 
   const table = document.getElementById("userTable");
   const editModal = document.getElementById("editModal");
+  const detailModal = document.getElementById("detailModal");
 
   function renderUsers() {
     const searchValue = document
@@ -310,9 +514,10 @@
           <td><span class="status ${statusClass}">${status}</span></td>
           <td>${u.last_activity}</td>
           <td class="actions">
-            <span title="Edit" onclick="openEdit(${u.id})">✏️</span>
-            <span title="Reset Password" onclick="confirmReset(${u.id})">🔑</span>
-            <span title="Hapus" onclick="confirmDelete(${u.id})">🗑️</span>
+            <button class="icon-btn view" title="Lihat Detail" onclick="openDetail(${u.id})">👁️</button>
+            <button class="icon-btn edit" title="Edit" onclick="openEdit(${u.id})">✏️</button>
+            <button class="icon-btn reset" title="Reset Password" onclick="confirmReset(${u.id})">🔑</button>
+            <button class="icon-btn del" title="Hapus" onclick="confirmDelete(${u.id})">🗑️</button>
           </td>
         </tr>
       `;
@@ -323,6 +528,39 @@
       table.innerHTML =
         '<tr><td colspan="6" style="text-align:center; color:gray;">Tidak ada data ditemukan.</td></tr>';
     }
+  }
+
+  function openDetail(id) {
+    const user = users.find((u) => u.id === id);
+    if (!user) return;
+
+    const setText = (elementId, value) => {
+      const el = document.getElementById(elementId);
+      if (!el) return;
+      const text = (value && value.toString().trim()) ? value : '-';
+      el.textContent = text;
+    };
+
+    setText('detailNama', user.name || '-');
+    setText('detailEmail', user.email || '-');
+    setText('detailRole', user.role || '-');
+    setText('detailStatus', user.is_active ? 'Aktif' : 'Tidak Aktif');
+    setText('detailNim', user.nim || user.nidn || '-');
+    setText('detailUsername', user.username || '-');
+    setText('detailProdi', user.prodi || '-');
+    setText('detailFakultas', user.fakultas || '-');
+    setText('detailStatusPengguna', user.status_pengguna || '-');
+    setText('detailProfil', user.is_profile_complete ? 'Lengkap' : 'Belum Lengkap');
+    setText('detailWA', user.no_whatsapp || '-');
+    setText('detailTelp', user.nomor_telepon || '-');
+    setText('detailKerabat', user.nomor_telepon_kerabat || '-');
+    setText('detailAlamat', user.alamat || '-');
+
+    detailModal.style.display = 'flex';
+  }
+
+  function closeDetail() {
+    detailModal.style.display = 'none';
   }
 
   function openEdit(id) {
@@ -390,15 +628,46 @@
       cancelButtonText: "Batal",
     }).then((result) => {
       if (result.isConfirmed) {
-        const index = users.findIndex((u) => u.id === id);
-        users.splice(index, 1);
-        renderUsers();
-        Swal.fire({
-          icon: "success",
-          title: "Dihapus!",
-          text: `Pengguna ${user.name} berhasil dihapus.`,
-          timer: 1600,
-          showConfirmButton: false,
+        // Send POST request to backend
+        fetch(`/dashboard/user/${id}/delete/`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+          }
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            // Remove from local array and re-render
+            const index = users.findIndex((u) => u.id === id);
+            users.splice(index, 1);
+            renderUsers();
+            
+            Swal.fire({
+              icon: "success",
+              title: "Dihapus!",
+              text: data.message,
+              timer: 1600,
+              showConfirmButton: false,
+            });
+          } else {
+            Swal.fire({
+              icon: "error",
+              title: "Gagal!",
+              text: data.message,
+              showConfirmButton: true,
+            });
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          Swal.fire({
+            icon: "error",
+            title: "Error!",
+            text: "Terjadi kesalahan saat menghapus user.",
+            showConfirmButton: true,
+          });
         });
       }
     });
@@ -406,6 +675,42 @@
 
   function closeModal() {
     editModal.style.display = "none";
+  }
+
+  // Approve Admin
+  function confirmApprove(adminId, name, email) {
+    Swal.fire({
+      title: 'Setujui Admin?',
+      html: `Anda akan menyetujui:<br><strong>${name}</strong><br>${email}`,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#16a34a',
+      cancelButtonColor: '#6b7280',
+      confirmButtonText: 'Ya, Setujui!',
+      cancelButtonText: 'Batal'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        window.location.href = `/dashboard/admin/${adminId}/approve/`;
+      }
+    });
+  }
+
+  // Reject Admin
+  function confirmReject(adminId, name, email) {
+    Swal.fire({
+      title: 'Tolak Admin?',
+      html: `Anda akan menolak dan menghapus akun:<br><strong>${name}</strong><br>${email}`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#dc2626',
+      cancelButtonColor: '#6b7280',
+      confirmButtonText: 'Ya, Tolak!',
+      cancelButtonText: 'Batal'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        window.location.href = `/dashboard/admin/${adminId}/reject/`;
+      }
+    });
   }
 
   document.addEventListener("DOMContentLoaded", renderUsers);

@@ -237,12 +237,12 @@
         <!-- Status -->
         <div class="status-container">
             <div class="status-label">Status Saat Ini:</div>
-            {% if laporan.status == "Sedang Peninjauan" or laporan.status == "Pending" %}
-            <span class="status-badge status-pending">{{ laporan.status }}</span>
-            {% elif laporan.status == "Disetujui" %}
-            <span class="status-badge status-approved">{{ laporan.status }}</span>
+            {% if laporan.status == "ditutup" %}
+                <span class="status-badge status-approved">{{ laporan.status }}</span>
+            {% elif laporan.status == "ditolak" %}
+                <span class="status-badge status-rejected">{{ laporan.status }}</span>
             {% else %}
-            <span class="status-badge status-rejected">{{ laporan.status }}</span>
+                <span class="status-badge status-pending">{{ laporan.status }}</span>
             {% endif %}
         </div>
 
@@ -252,6 +252,14 @@
         <h2 class="section-title">Deskripsi</h2>
         <p class="description-text">{{ laporan.deskripsi }}</p>
 
+        <!-- Link Pelaporan -->
+        {% if laporan.link_pelaporan %}
+        <div style="margin-top: 30px;">
+            <h2 class="section-title">Link Pelaporan</h2>
+            <a href="{{ laporan.link_pelaporan }}" target="_blank" style="color: #7b61ff; text-decoration: underline; word-break: break-all;">{{ laporan.link_pelaporan }}</a>
+        </div>
+        {% endif %}
+
         <!-- Bukti Terunggah Section -->
         <div class="evidence-section">
             <h2 class="section-title">Bukti Terunggah</h2>
@@ -260,7 +268,11 @@
                 <!-- Image Evidence 1 -->
                 {% if laporan.bukti %}
                 <div class="evidence-item">
-                    <img src="{% static laporan.bukti %}" alt="Foto Insiden 1" class="evidence-image">
+                    {% if laporan.bukti|slice:":7" == "/media/" %}
+                        <img src="{{ laporan.bukti }}" alt="Foto Insiden 1" class="evidence-image">
+                    {% else %}
+                        <img src="{% static laporan.bukti %}" alt="Foto Insiden 1" class="evidence-image">
+                    {% endif %}
                     <div class="evidence-name">Foto_Insiden_1.jpg</div>
                 </div>
                 {% endif %}
@@ -268,7 +280,11 @@
                 <!-- Image Evidence 2 -->
                 {% if laporan.bukti %}
                 <div class="evidence-item">
-                    <img src="{% static laporan.bukti %}" alt="Foto Insiden 2" class="evidence-image">
+                    {% if laporan.bukti|slice:":7" == "/media/" %}
+                        <img src="{{ laporan.bukti }}" alt="Foto Insiden 2" class="evidence-image">
+                    {% else %}
+                        <img src="{% static laporan.bukti %}" alt="Foto Insiden 2" class="evidence-image">
+                    {% endif %}
                     <div class="evidence-name">Foto_Insiden_2.png</div>
                 </div>
                 {% endif %}
@@ -276,7 +292,11 @@
                 <!-- PDF Evidence -->
                 {% if laporan.bukti %}
                 <div class="evidence-item">
-                    <a href="{% static laporan.bukti %}" target="_blank" style="text-decoration: none; color: inherit;">
+                    {% if laporan.bukti|slice:":7" == "/media/" %}
+                        <a href="{{ laporan.bukti }}" target="_blank" style="text-decoration: none; color: inherit;">
+                    {% else %}
+                        <a href="{% static laporan.bukti %}" target="_blank" style="text-decoration: none; color: inherit;">
+                    {% endif %}
                         <div class="evidence-file">
                             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke-width="2" />

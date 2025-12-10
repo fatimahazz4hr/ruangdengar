@@ -1,0 +1,228 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Konfirmasi Akun Google | Ruang Dengar</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 500px;
+            width: 100%;
+            padding: 40px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header img {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 15px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #3a307b;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .google-account-info {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .google-icon {
+            width: 50px;
+            height: 50px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .google-icon svg {
+            width: 28px;
+            height: 28px;
+        }
+
+        .account-details {
+            flex: 1;
+        }
+
+        .account-details h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .account-details p {
+            font-size: 13px;
+            color: #666;
+        }
+
+        .info-box {
+            background: #e8f4f8;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+        }
+
+        .info-box p {
+            font-size: 13px;
+            color: #2c3e50;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        .info-box strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-cancel {
+            width: 100%;
+            padding: 14px;
+            background: white;
+            color: #666;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+            text-align: center;
+            text-decoration: none;
+            display: block;
+        }
+
+        .btn-cancel:hover {
+            background: #f8f9fa;
+            border-color: #ccc;
+        }
+
+        .error-message {
+            background: #fee;
+            border-left: 4px solid #e74c3c;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: #c0392b;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="{% static 'images/logo.png' %}" alt="Ruang Dengar Logo">
+            <h1>Selamat Datang! 👋</h1>
+            <p>Konfirmasi akun Google Anda untuk melanjutkan</p>
+        </div>
+
+        {% if form.errors %}
+            <div class="error-message">
+                {% for field, errors in form.errors.items %}
+                    {% for error in errors %}
+                        {{ error }}
+                    {% endfor %}
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <div class="google-account-info">
+            <div class="google-icon">
+                <svg viewBox="0 0 23 23" width="28" height="28">
+                    <rect fill="#f25022" width="11" height="11"/>
+                    <rect fill="#00a4ef" x="12" width="11" height="11"/>
+                    <rect fill="#7fba00" y="12" width="11" height="11"/>
+                    <rect fill="#ffb900" x="12" y="12" width="11" height="11"/>
+                </svg>
+            </div>
+            <div class="account-details">
+                <h3>{{ account.extra_data.name|default:"Akun Microsoft" }}</h3>
+                <p>{{ account.extra_data.email|default:account.extra_data.userPrincipalName }}</p>
+            </div>
+        </div>
+
+        <div class="info-box">
+            <p>
+                <strong>✅ Email Terverifikasi</strong>
+                Anda akan login menggunakan akun Microsoft Telkom University ini. Setelah konfirmasi, Anda akan diminta melengkapi profil untuk keperluan pelaporan.
+            </p>
+        </div>
+
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn-submit">
+                Lanjutkan ke Lengkapi Profil
+            </button>
+        </form>
+
+        <a href="{% url 'login' %}" class="btn-cancel">
+            Batal & Kembali ke Login
+        </a>
+    </div>
+</body>
+</html>

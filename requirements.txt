@@ -1,0 +1,26 @@
+# Django Framework
+Django>=5.2.0
+
+# PostgreSQL Database Driver
+psycopg2-binary>=2.9.0
+
+# Image Processing (untuk upload file)
+Pillow>=10.0.0
+
+# AI Content Moderation (Google Gemini - GRATIS!)
+google-generativeai>=0.3.0
+
+# Social Authentication
+django-allauth>=0.57.0
+PyJWT>=2.10.0
+cryptography>=46.0.0
+
+# Production Dependencies
+python-decouple>=3.8  # Environment variables management
+whitenoise>=6.5.0  # Static files serving
+gunicorn>=21.2.0  # WSGI HTTP Server
+redis>=5.0.0  # Cache backend (optional but recommended)
+
+# Optional: Development Tools
+# python-decouple  # untuk .env file
+# django-debug-toolbar  # untuk debugging

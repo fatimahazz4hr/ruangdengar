@@ -92,41 +92,84 @@
     background-color: #fee2e2;
     color: #991b1b;
   }
+  .urgency-badge {
+    padding: 4px 8px;
+    border-radius: 9999px;
+    font-size: 11px;
+    font-weight: 700;
+    display: inline-block;
+    margin-right: 5px;
+  }
+  .urgency-darurat {
+    background-color: #fee2e2;
+    color: #991b1b;
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+  .urgency-tinggi {
+    background-color: #fed7aa;
+    color: #9a3412;
+  }
+  .urgency-sedang {
+    background-color: #fef3c7;
+    color: #92400e;
+  }
+  .urgency-rendah {
+    background-color: #dbeafe;
+    color: #1e40af;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+  }
+  .ai-kategori {
+    font-size: 11px;
+    color: #6b7280;
+    font-style: italic;
+  }
   .action-buttons {
     display: flex;
-    gap: 8px;
+    gap: 6px;
   }
+  .action-buttons a,
   .action-buttons button {
-    border: none;
-    padding: 6px 10px;
+    width: 34px;
+    height: 34px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     border-radius: 6px;
     cursor: pointer;
-    font-size: 13px;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    transition: 0.3s;
+    border: 1px solid #e5e7eb;
+    background: #ffffff;
+    font-size: 16px;
+    transition: all 0.2s;
+    text-decoration: none;
+  }
+  .action-buttons a:hover,
+  .action-buttons button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
   }
   .btn-view {
-    background: #eef2ff;
-    color: #4f46e5;
+    border-color: #5a509b;
   }
   .btn-view:hover {
-    background: #c7d2fe;
+    background: #5a509b;
+    border-color: #5a509b;
   }
   .btn-edit {
-    background: #d1fae5;
-    color: #065f46;
+    border-color: #f59e0b;
   }
   .btn-edit:hover {
-    background: #a7f3d0;
+    background: #f59e0b;
+    border-color: #f59e0b;
   }
   .btn-delete {
-    background: #fee2e2;
-    color: #991b1b;
+    border-color: #ef4444;
   }
   .btn-delete:hover {
-    background: #fecaca;
+    background: #ef4444;
+    border-color: #ef4444;
   }
 
   /* Modal */
@@ -245,78 +288,85 @@
           <th>Pelapor</th>
           <th>Tanggal Laporan</th>
           <th>Jenis Insiden</th>
-          <th>Tanggal Kejadian</th>
+          <th>AI Analisis</th>
+          <th>Tempat Kejadian</th>
           <th>Deskripsi</th>
+          <th>Link Pelaporan</th>
           <th>Lampiran</th>
           <th>Status</th>
           <th>Aksi</th>
         </tr>
       </thead>
       <tbody id="tableBody">
+        {% for lap in laporan_list %}
         <tr
-          data-id="#L001"
-          data-pelapor="Ani Rahmawati"
-          data-tanggal-laporan="01/11/2024"
-          data-jenis="Bulying"
-          data-tanggal-kejadian="31/10/2024"
-          data-deskripsi="-."
-          data-lampiran="foto1.jpg"
-          data-status="Selesai"
+          data-pk="{{ lap.pk }}"
+          data-id="{{ lap.kode }}"
+          data-pelapor="{% if lap.is_anonim %}Anonim{% elif lap.pelapor %}{{ lap.pelapor.nama_lengkap }}{% else %}Anonim{% endif %}"
+          data-tanggal-laporan="{{ lap.created_at|date:'d/m/Y' }}"
+          data-jenis="{{ lap.jenis }}"
+          data-tempat-kejadian="{{ lap.lokasi }}"
+          data-link-pelaporan="{{ lap.link_pelaporan }}"
+          data-deskripsi="{{ lap.deskripsi|default:'-' }}"
+          data-lampiran=""
+          data-status="{{ lap.status }}"
         >
-          <td>#L001</td>
-          <td>Ani Rahmawati</td>
-          <td>01/11/2024</td>
-          <td>Bulying </td>
-          <td>31/10/2024</td>
-          <td>-.</td>
-          <td><a href="/media/foto1.jpg" download>foto1.jpg</a></td>
-          <td><span class="status-badge status-selesai">Selesai</span></td>
+          <td>{{ lap.kode }}</td>
+          <td>{% if lap.is_anonim %}Anonim{% elif lap.pelapor %}{{ lap.pelapor.nama_lengkap }}{% else %}Anonim{% endif %}</td>
+          <td>{{ lap.created_at|date:'d/m/Y' }}</td>
+          <td>{{ lap.jenis }}</td>
+          <td>
+            {% if lap.ai_analyzed %}
+              {% if lap.ai_urgency %}
+                <span class="urgency-badge urgency-{{ lap.ai_urgency }}">
+                  {% if lap.ai_urgency == 'darurat' %}🚨 DARURAT
+                  {% elif lap.ai_urgency == 'tinggi' %}⚠️ Tinggi
+                  {% elif lap.ai_urgency == 'sedang' %}📌 Sedang
+                  {% else %}✅ Rendah{% endif %}
+                </span>
+              {% endif %}
+              {% if lap.ai_kategori %}
+                <div class="ai-kategori">{{ lap.ai_kategori }}</div>
+              {% endif %}
+            {% else %}
+              <span style="color: #9ca3af; font-size: 11px;">-</span>
+            {% endif %}
+          </td>
+          <td>{{ lap.lokasi }}</td>
+          <td>{{ lap.deskripsi|truncatechars:80 }}</td>
+          <td>{% if lap.link_pelaporan %}<a href="{{ lap.link_pelaporan }}" target="_blank">Lihat</a>{% else %}-{% endif %}</td>
+          <td>
+            {% if lap.evidences.all %}
+              {% for ev in lap.evidences.all %}
+                {% if forloop.first %}
+                  <a href="{{ ev.file.url }}" download>{{ ev.file.name }}</a>
+                {% endif %}
+              {% endfor %}
+            {% else %}
+              -
+            {% endif %}
+          </td>
+          <td>
+            <span class="status-badge {% if lap.status == 'ditutup' %}status-selesai{% elif lap.status == 'ditolak' %}status-dibatalkan{% else %}status-terjadwal{% endif %}">
+              {{ lap.get_status_display_with_emoji }}
+            </span>
+            <div style="font-size: 11px; color: #6B7280; margin-top: 4px;">
+              <strong>Tahap {{ lap.get_tahap_resmi }}:</strong> {{ lap.get_tahap_label }}
+            </div>
+          </td>
           <td>
             <div class="action-buttons">
-              <button class="btn-view" onclick="openDetailModal(this)">
-                👁️ Detail
-              </button>
-              <button class="btn-edit" onclick="openEditModal(this)">
-                ✏️ Edit
-              </button>
-              <button class="btn-delete" onclick="confirmDelete(this)">
-                🗑️ Hapus
-              </button>
+              <a class="btn-view" href="{% url 'admin-detail-laporan' report_id=lap.pk %}" title="Detail">👁️</a>
+              <a class="btn-edit" href="{% url 'edit-laporan' report_id=lap.pk %}" title="Edit">✏️</a>
+              <form method="POST" action="{% url 'delete-laporan' report_id=lap.pk %}" style="display:inline">{% csrf_token %}
+                <button class="btn-delete" type="button" onclick="confirmDelete(this)" title="Hapus">🗑️</button>
+              </form>
             </div>
           </td>
         </tr>
-        <tr
-          data-id="#L002"
-          data-pelapor="Budi Santoso"
-          data-tanggal-laporan="02/11/2024"
-          data-jenis="Kekerasan Fisik"
-          data-tanggal-kejadian="02/11/2024"
-          data-deskripsi="Pemukulan."
-          data-lampiran="lampiran2.pdf"
-          data-status="Terjadwal"
-        >
-          <td>#L002</td>
-          <td>Budi Santoso</td>
-          <td>02/11/2024</td>
-          <td>Kekerasan Fisik</td>
-          <td>02/11/2024</td>
-          <td>Pemukulan.</td>
-          <td><a href="/media/lampiran2.pdf" download>lampiran2.pdf</a></td>
-          <td><span class="status-badge status-terjadwal">Terjadwal</span></td>
-          <td>
-            <div class="action-buttons">
-              <button class="btn-view" onclick="openDetailModal(this)">
-                👁️ Detail
-              </button>
-              <button class="btn-edit" onclick="openEditModal(this)">
-                ✏️ Edit
-              </button>
-              <button class="btn-delete" onclick="confirmDelete(this)">
-                🗑️ Hapus
-              </button>
-            </div>
-          </td>
-        </tr>
+        {% empty %}
+        <tr><td colspan="10" style="text-align:center;">Tidak ada laporan ditemukan.</td></tr>
+        {% endfor %}
       </tbody>
     </table>
   </div>
@@ -380,6 +430,42 @@
     }
   }
 
+  // Status label mapping
+  const statusLabelMap = {
+    'diterima': 'Laporan Diterima',
+    'verifikasi_awal': 'Verifikasi Awal',
+    'wawancara_pelapor': 'Wawancara Pelapor',
+    'wawancara_terlapor': 'Wawancara Terlapor',
+    'pengumpulan_bukti': 'Pengumpulan Bukti',
+    'rapat_pemutusan': 'Rapat Pemutusan Kasus',
+    'rekomendasi': 'Rekomendasi',
+    'pelaksanaan': 'Pelaksanaan',
+    'ditutup': 'Kasus Ditutup',
+    'ditolak': 'Ditolak',
+  };
+
+  function statusClassFor(token) {
+    if (token === 'ditutup') return 'status-selesai';
+    if (token === 'ditolak') return 'status-dibatalkan';
+    return 'status-terjadwal';
+  }
+
+  // Helper to read CSRF cookie
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+
   // Detail Modal
   function getRowData(button) {
     return button.closest("tr").dataset;
@@ -391,8 +477,9 @@
     <strong>Pelapor:</strong><span>${data.pelapor}</span>
     <strong>Tanggal Laporan:</strong><span>${data.tanggalLaporan}</span>
     <strong>Jenis Insiden:</strong><span>${data.jenis}</span>
-    <strong>Tanggal Kejadian:</strong><span>${data.tanggalKejadian}</span>
+    <strong>Tempat Kejadian:</strong><span>${data.tempatKejadian || '-'}</span>
     <strong>Deskripsi:</strong><span>${data.deskripsi}</span>
+    <strong>Link Pelaporan:</strong><span>${data.linkPelaporan ? `<a href="${data.linkPelaporan}" target="_blank">Lihat</a>` : '-'}</span>
     <strong>Lampiran:</strong><span>${getPreviewHTML(data.lampiran)}</span>
     <strong>Status:</strong><span class="status-badge ${
       data.status == "Selesai"
@@ -413,47 +500,75 @@
   function openEditModal(button) {
     const data = getRowData(button);
     const row = button.closest("tr");
+    const currentStatus = data.status || '';
     const html = `<div class="modal-grid">
     <strong>ID Laporan:</strong><span>${data.id}</span>
     <strong>Pelapor:</strong><span>${data.pelapor}</span>
     <strong>Tanggal Laporan:</strong><span>${data.tanggalLaporan}</span>
     <strong>Jenis Insiden:</strong><span>${data.jenis}</span>
-    <strong>Tanggal Kejadian:</strong><span>${data.tanggalKejadian}</span>
+    <strong>Tempat Kejadian:</strong><span>${data.tempatKejadian || ''}</span>
     <strong>Deskripsi:</strong><span>${data.deskripsi}</span>
+    <strong>Link Pelaporan:</strong><span>${data.linkPelaporan ? `<a href="${data.linkPelaporan}" target="_blank">Lihat</a>` : ''}</span>
     <strong>Lampiran:</strong><span>${getPreviewHTML(data.lampiran)}</span>
     <strong>Status:</strong>
     <select id="editStatus">
-      <option value="Selesai" ${
-        data.status == "Selesai" ? "selected" : ""
-      }>Selesai</option>
-      <option value="Terjadwal" ${
-        data.status == "Terjadwal" ? "selected" : ""
-      }>Terjadwal</option>
-      <option value="Dibatalkan" ${
-        data.status == "Dibatalkan" ? "selected" : ""
-      }>Dibatalkan</option>
+      <option value="diterima" ${currentStatus == "diterima" ? "selected" : ""}>${statusLabelMap['diterima']}</option>
+      <option value="verifikasi_awal" ${currentStatus == "verifikasi_awal" ? "selected" : ""}>${statusLabelMap['verifikasi_awal']}</option>
+      <option value="wawancara_pelapor" ${currentStatus == "wawancara_pelapor" ? "selected" : ""}>${statusLabelMap['wawancara_pelapor']}</option>
+      <option value="wawancara_terlapor" ${currentStatus == "wawancara_terlapor" ? "selected" : ""}>${statusLabelMap['wawancara_terlapor']}</option>
+      <option value="pengumpulan_bukti" ${currentStatus == "pengumpulan_bukti" ? "selected" : ""}>${statusLabelMap['pengumpulan_bukti']}</option>
+      <option value="rapat_pemutusan" ${currentStatus == "rapat_pemutusan" ? "selected" : ""}>${statusLabelMap['rapat_pemutusan']}</option>
+      <option value="rekomendasi" ${currentStatus == "rekomendasi" ? "selected" : ""}>${statusLabelMap['rekomendasi']}</option>
+      <option value="pelaksanaan" ${currentStatus == "pelaksanaan" ? "selected" : ""}>${statusLabelMap['pelaksanaan']}</option>
+      <option value="ditutup" ${currentStatus == "ditutup" ? "selected" : ""}>${statusLabelMap['ditutup']}</option>
+      <option value="ditolak" ${currentStatus == "ditolak" ? "selected" : ""}>${statusLabelMap['ditolak']}</option>
     </select>
+    <strong>Catatan (opsional):</strong><textarea id="editCatatan" placeholder="Catatan atau alasan penolakan"></textarea>
+    <strong>Rekomendasi (opsional):</strong><textarea id="editRekomendasi" placeholder="Rekomendasi tindak lanjut jika ada"></textarea>
   </div>
   <div style="text-align:right; margin-top:15px;">
-    <button onclick="saveEdit('${data.id}', row)">💾 Simpan</button>
+    <button id="modalSaveBtn">💾 Simpan</button>
   </div>`;
     document.getElementById("modalEditContent").innerHTML = html;
     document.getElementById("modalEditOverlay").style.display = "flex";
+
+    document.getElementById('modalSaveBtn').addEventListener('click', function(){
+      saveEditAjax(row.dataset.pk, row);
+    });
   }
   function closeEditModal() {
     document.getElementById("modalEditOverlay").style.display = "none";
   }
-  function saveEdit(id, row) {
+  async function saveEditAjax(pk, row) {
     const status = document.getElementById("editStatus").value;
-    row.dataset.status = status;
-    row.cells[7].innerHTML = `<span class="status-badge ${
-      status == "Selesai"
-        ? "status-selesai"
-        : status == "Terjadwal"
-        ? "status-terjadwal"
-        : "status-dibatalkan"
-    }">${status}</span>`;
-    closeEditModal();
+    const catatan = document.getElementById("editCatatan").value || '';
+    const rekomendasi = document.getElementById("editRekomendasi").value || '';
+    const url = `/dashboard/laporan/edit/${pk}/`;
+    const fd = new FormData();
+    fd.append('status', status);
+    fd.append('catatan', catatan);
+    fd.append('rekomendasi', rekomendasi);
+
+    try {
+      const resp = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: fd,
+      });
+      if (!resp.ok) throw new Error('Request failed');
+
+      // Update the row dataset and visible badge
+      row.dataset.status = status;
+      const label = statusLabelMap[status] || status;
+      const cls = statusClassFor(status);
+      row.cells[8].innerHTML = `<span class="status-badge ${cls}">${label}</span>`;
+
+      closeEditModal();
+    } catch (err) {
+      alert('Gagal menyimpan perubahan: ' + err.message);
+    }
   }
 
   // Delete
@@ -467,7 +582,14 @@
   }
   function deleteReportConfirm() {
     if (deleteTarget) {
-      deleteTarget.remove();
+      // submit the POST form inside the selected row
+      const form = deleteTarget.querySelector('form');
+      if (form) {
+        form.submit();
+      } else {
+        // fallback: just remove row
+        deleteTarget.remove();
+      }
       closeDeleteModal();
     }
   }
@@ -493,11 +615,11 @@
   function downloadReport() {
     const rows = document.querySelectorAll("#tableBody tr");
     let csv =
-      "ID Laporan,Pelapor,Tanggal Laporan,Jenis Insiden,Tanggal Kejadian,Deskripsi,Lampiran,Status\n";
+      "ID Laporan,Pelapor,Tanggal Laporan,Jenis Insiden,Tempat Kejadian,Deskripsi,Link Pelaporan,Lampiran,Status\n";
     rows.forEach((row) => {
       if (row.style.display != "none") {
         const r = row.dataset;
-        csv += `${r.id},${r.pelapor},${r.tanggalLaporan},${r.jenis},${r.tanggalKejadian},"${r.deskripsi}",${r.lampiran},${r.status}\n`;
+        csv += `${r.id},${r.pelapor},${r.tanggalLaporan},${r.jenis},${r.tempatKejadian || ''},"${r.deskripsi}",${r.linkPelaporan || ''},${r.lampiran},${r.status}\n`;
       }
     });
     const blob = new Blob([csv], { type: "text/csv" });

@@ -33,6 +33,8 @@
         box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
         transition: 0.2s ease;
         margin-bottom: 10px;
+        display: flex;
+        flex-direction: column;
     }
 
     .artikel-card:hover {
@@ -49,6 +51,9 @@
 
     .artikel-body {
         padding: 20px;
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
     }
 
     .artikel-tag {
@@ -118,130 +123,625 @@
 
 <div class="container-7xl">
 
-    <h1 style="font-size: 26px; font-weight:700; color:#333;">Edukasi & Informasi</h1>
-    <p style="color:#666; margin-top:-10px; max-width:600px;">
-        Temukan artikel, panduan, dan materi edukasi terbaik untuk mendukung perkembangan Anda.
-    </p>
+    <!-- Hero Section dengan Design Futuristik -->
+    <div style="
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 24px;
+        padding: 50px 40px;
+        margin-bottom: 50px;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 20px 60px rgba(102, 126, 234, 0.3);
+        display: flex;
+        align-items: center;
+        gap: 40px;
+    ">
+        <!-- Dark Overlay untuk kontras teks -->
+        <div style="
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.25);
+        "></div>
+        
+        <!-- Animated Background Pattern -->
+        <div style="
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(circle at 20% 50%, rgba(255,255,255,0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255,255,255,0.08) 0%, transparent 50%);
+            animation: pulse 4s ease-in-out infinite;
+        "></div>
+        
+        <!-- Decorative Elements -->
+        <div style="position: absolute; top: 20px; right: 20px; width: 80px; height: 80px; border: 2px solid rgba(255,255,255,0.15); border-radius: 50%; animation: rotate 20s linear infinite;"></div>
+        <div style="position: absolute; bottom: 30px; left: 40px; width: 50px; height: 50px; border: 2px solid rgba(255,255,255,0.15); border-radius: 50%; animation: rotate 15s linear infinite reverse;"></div>
+        
+        <!-- Content Wrapper -->
+        <div style="position: relative; z-index: 1; flex: 1;">
+            <div style="display: inline-block; background: rgba(255,255,255,0.25); padding: 8px 20px; border-radius: 20px; margin-bottom: 20px; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.3);">
+                <span style="color: white; font-size: 14px; font-weight: 700; text-shadow: 0 1px 3px rgba(0,0,0,0.2);">💜 Selamat Datang di Ruang Dengar</span>
+            </div>
+            
+            <h1 style="color: white; font-size: 40px; font-weight: 800; margin: 0 0 20px 0; line-height: 1.3; text-shadow: 0 2px 10px rgba(0,0,0,0.3);">
+                Kami di Sini untuk Mendengarkanmu
+            </h1>
+            
+            <p style="color: white; font-size: 17px; line-height: 1.8; margin-bottom: 30px; font-weight: 500; text-shadow: 0 1px 5px rgba(0,0,0,0.3); max-width: 850px;">
+                Ruang Dengar adalah tempat yang kami siapkan untuk kamu—mahasiswa Telkom University Purwokerto—ketika kamu butuh didengarkan. Di sini, kamu bisa menceritakan pengalaman yang membuatmu merasa tidak aman, tertekan, atau tidak nyaman di lingkungan kampus.
+            </p>
 
-    <div style="margin-top:20px;">
-        <input type="text" placeholder="Cari artikel..."
-            style="padding:12px 15px; width:300px; border-radius:10px; border:1px solid #ddd;">
-        <button style="padding:12px 18px; border:none; background:#3a307b; color:white; border-radius:10px;">
-            Cari
-        </button>
+            <!-- Feature Pills -->
+            <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 30px;">
+                <div style="background: rgba(255,255,255,0.25); padding: 10px 20px; border-radius: 12px; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.4);">
+                    <span style="color: white; font-size: 14px; font-weight: 700; text-shadow: 0 1px 3px rgba(0,0,0,0.2);">✨ Melapor Secara Aman</span>
+                </div>
+                <div style="background: rgba(255,255,255,0.25); padding: 10px 20px; border-radius: 12px; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.4);">
+                    <span style="color: white; font-size: 14px; font-weight: 700; text-shadow: 0 1px 3px rgba(0,0,0,0.2);">✨ Konsultasi Tanpa Tekanan</span>
+                </div>
+                <div style="background: rgba(255,255,255,0.25); padding: 10px 20px; border-radius: 12px; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.4);">
+                    <span style="color: white; font-size: 14px; font-weight: 700; text-shadow: 0 1px 3px rgba(0,0,0,0.2);">✨ Pendampingan Profesional</span>
+                </div>
+                <div style="background: rgba(255,255,255,0.25); padding: 10px 20px; border-radius: 12px; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.4);">
+                    <span style="color: white; font-size: 14px; font-weight: 700; text-shadow: 0 1px 3px rgba(0,0,0,0.2);">✨ Pantau Tindak Lanjut</span>
+                </div>
+            </div>
+
+            <div style="background: rgba(255,255,255,0.2); border-left: 4px solid white; padding: 20px 25px; border-radius: 12px; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.3); max-width: 850px;">
+                <p style="color: white; font-size: 17px; font-weight: 700; margin: 0; font-style: italic; text-shadow: 0 1px 5px rgba(0,0,0,0.3);">
+                    "Dengarkan setiap suara, lindungi setiap cerita."
+                </p>
+                <p style="color: white; font-size: 15px; margin: 10px 0 0 0; font-weight: 500; text-shadow: 0 1px 3px rgba(0,0,0,0.2);">
+                    Ruang Dengar hadir agar kamu tidak merasa sendiri. Privasi kamu aman, identitasmu dilindungi.
+                </p>
+            </div>
+        </div>
+
+        <!-- Illustration with Logo Overlay -->
+        <div style="position: relative; z-index: 1; flex-shrink: 0;">
+            <img src="https://images.unsplash.com/photo-1573497620053-ea5300f94f21?w=500&q=80" 
+                alt="Support illustration" 
+                style="width: 380px; height: 380px; object-fit: cover; border-radius: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.3); border: 4px solid rgba(255,255,255,0.2);">
+            
+            <!-- Logo Watermark -->
+            <div style="position: absolute; top: 20px; left: 20px; background: rgba(255,255,255,0.95); padding: 12px 18px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); display: flex; align-items: center; gap: 10px;">
+                <img src="{% static 'images/logo.png' %}" alt="Ruang Dengar Logo" style="width: 32px; height: 32px;">
+                <span style="font-size: 16px; font-weight: 700; color: #3a307b;">Ruang Dengar</span>
+            </div>
+        </div>
     </div>
+
+    <style>
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        @keyframes rotate {
+            from: { transform: rotate(0deg); }
+            to: { transform: rotate(360deg); }
+        }
+    </style>
+
+    <!-- Info Cards -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; margin-bottom: 50px;">
+        <!-- Card 1: Apa itu Ruang Dengar -->
+        <div style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); border-radius: 16px; padding: 30px; color: white; box-shadow: 0 10px 30px rgba(239, 68, 68, 0.3); position: relative; overflow: hidden;">
+            <div style="position: absolute; top: -20px; right: -20px; width: 100px; height: 100px; background: rgba(255,255,255,0.1); border-radius: 50%;"></div>
+            <div style="position: relative; z-index: 1;">
+                <div style="font-size: 36px; margin-bottom: 15px;">💜</div>
+                <h3 style="font-size: 20px; font-weight: 700; margin: 0 0 12px 0; text-shadow: 0 2px 8px rgba(0,0,0,0.3);">Apa itu Ruang Dengar?</h3>
+                <p style="font-size: 14px; line-height: 1.7; margin: 0; font-weight: 500; text-shadow: 0 1px 5px rgba(0,0,0,0.2);">
+                    Tempat yang kami siapkan untuk kamu ketika butuh didengarkan. Ceritakan pengalamanmu tentang perundungan, kekerasan seksual, atau perilaku yang mengganggu rasa amanmu.
+                </p>
+            </div>
+        </div>
+
+        <!-- Card 2: Kenapa Ada -->
+        <div style="background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%); border-radius: 16px; padding: 30px; color: white; box-shadow: 0 10px 30px rgba(59, 130, 246, 0.3); position: relative; overflow: hidden;">
+            <div style="position: absolute; bottom: -20px; left: -20px; width: 100px; height: 100px; background: rgba(255,255,255,0.1); border-radius: 50%;"></div>
+            <div style="position: relative; z-index: 1;">
+                <div style="font-size: 36px; margin-bottom: 15px;">💬</div>
+                <h3 style="font-size: 20px; font-weight: 700; margin: 0 0 12px 0; text-shadow: 0 2px 8px rgba(0,0,0,0.3);">Kenapa Ruang Dengar Ada?</h3>
+                <p style="font-size: 14px; line-height: 1.7; margin: 0; font-weight: 500; text-shadow: 0 1px 5px rgba(0,0,0,0.2);">
+                    Kami percaya setiap mahasiswa berhak merasakan kampus yang aman. Ada hal yang sulit diceritakan langsung—di sinilah Ruang Dengar menjadi jembatannya.
+                </p>
+            </div>
+        </div>
+
+        <!-- Card 3: Apa yang Bisa Dilakukan -->
+        <div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); border-radius: 16px; padding: 30px; color: white; box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3); position: relative; overflow: hidden;">
+            <div style="position: absolute; top: -20px; right: -20px; width: 100px; height: 100px; background: rgba(255,255,255,0.1); border-radius: 50%;"></div>
+            <div style="position: relative; z-index: 1;">
+                <div style="font-size: 36px; margin-bottom: 15px;">🌱</div>
+                <h3 style="font-size: 20px; font-weight: 700; margin: 0 0 12px 0; text-shadow: 0 2px 8px rgba(0,0,0,0.3);">Yang Bisa Kamu Lakukan</h3>
+                <p style="font-size: 14px; line-height: 1.7; margin: 0; font-weight: 500; text-shadow: 0 1px 5px rgba(0,0,0,0.2);">
+                    Membuat laporan (anonim/identitas asli), melihat perkembangan, membaca artikel edukatif, dan terhubung dengan tim PPKPT bila membutuhkan bantuan langsung.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <h1 style="font-size: 32px; font-weight:800; color:#333; margin-bottom: 10px;">Edukasi & Informasi</h1>
+    <p style="color:#666; margin-bottom: 30px; font-size: 16px; max-width:700px;">
+        Temukan artikel, panduan, dan materi edukasi terbaik untuk mendukung perkembangan dan keamananmu di kampus.
+    </p>
 
     <!-- GRID RESPONSIVE -->
     <div class="artikel-grid">
 
-        <!-- CARD 1 -->
-        <div class="artikel-card">
-            <img src="{% static 'images/artikel1.jpg' %}" class="artikel-image">
+        {% if konten_list %}
+            {% for konten in konten_list %}
+            <div class="artikel-card">
+                <!-- Header dengan Background Warna dan Judul -->
+                <div class="artikel-image" style="
+                    {% if konten.kategori == 'kesadaran' %}
+                        background: linear-gradient(135deg, #e8d5f2 0%, #f5e6f0 100%);
+                    {% elif konten.kategori == 'pencegahan' %}
+                        background: linear-gradient(135deg, #dbeafe 0%, #e0f2fe 100%);
+                    {% elif konten.kategori == 'dukungan' %}
+                        background: linear-gradient(135deg, #d1fae5 0%, #dff9ef 100%);
+                    {% elif konten.kategori == 'informasi' %}
+                        background: linear-gradient(135deg, #fce7f3 0%, #fef3c7 100%);
+                    {% else %}
+                        background: linear-gradient(135deg, #e0e7ff 0%, #ede9fe 100%);
+                    {% endif %}
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    padding: 30px;
+                    position: relative;
+                    overflow: hidden;
+                    box-sizing: border-box;
+                ">
+                    <!-- Pattern Background -->
+                    <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.05; background-image: radial-gradient(circle, rgba(0,0,0,0.1) 1px, transparent 1px); background-size: 20px 20px;"></div>
+                    
+                    <!-- Judul -->
+                    <h3 style="
+                        position: relative;
+                        z-index: 1; 
+                        {% if konten.kategori == 'kesadaran' %}
+                            color: #86198f;
+                        {% elif konten.kategori == 'pencegahan' %}
+                            color: #075985;
+                        {% elif konten.kategori == 'dukungan' %}
+                            color: #065f46;
+                        {% elif konten.kategori == 'informasi' %}
+                            color: #be123c;
+                        {% else %}
+                            color: #4338ca;
+                        {% endif %}
+                        font-size: 17px; 
+                        font-weight: 700; 
+                        text-align: center; 
+                        margin: 0; 
+                        line-height: 1.5;
+                        word-wrap: break-word;
+                        width: 100%;
+                        max-width: 100%;
+                    ">
+                        {{ konten.judul }}
+                    </h3>
+                </div>
 
-            <div class="artikel-body">
-                <p class="artikel-tag">Kesadaran</p>
-                <h3 style="font-size: 18px; font-weight: 700; color:#333;">
-                    Mengenali Kekerasan Seksual dan Dampaknya
-                </h3>
+                <div class="artikel-body">
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                        <p class="artikel-tag" style="margin: 0;">{{ konten.get_kategori_display }}</p>
+                        {% if konten.media_url %}
+                            {% if 'youtube.com' in konten.media_url or 'youtu.be' in konten.media_url %}
+                                <span style="background: #ff0000; color: white; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; display: inline-flex; align-items: center; gap: 4px;">
+                                    📹 Video
+                                </span>
+                            {% elif '.pdf' in konten.media_url %}
+                                <span style="background: #dc2626; color: white; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; display: inline-flex; align-items: center; gap: 4px;">
+                                    📄 PDF
+                                </span>
+                            {% elif 'drive.google.com' in konten.media_url %}
+                                <span style="background: #4285f4; color: white; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; display: inline-flex; align-items: center; gap: 4px;">
+                                    ☁️ Drive
+                                </span>
+                            {% else %}
+                                <span style="background: #6366f1; color: white; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; display: inline-flex; align-items: center; gap: 4px;">
+                                    🔗 Link
+                                </span>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                    
+                    <h3 style="font-size: 18px; font-weight: 700; color:#333;">
+                        {{ konten.judul }}
+                    </h3>
 
-                <p style="color:#666; font-size:14px; margin-top:8px;">
-                    Memahami berbagai bentuk kekerasan seksual, tanda-tanda, dan dampak psikologis serta sosial pada
-                    korban.
-                </p>
+                    <p style="color:#666; font-size:14px; margin-top:8px; margin-bottom: 12px; line-height: 1.6;">
+                        {{ konten.deskripsi }}
+                    </p>
 
-                <p style="font-size: 12px; color:#888; margin-top:10px;">14 Juni 2024</p>
+                    <!-- Media Preview Thumbnail dengan Quick View -->
+                    {% if konten.media_url %}
+                    <div style="margin: 12px 0; padding: 12px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 8px; position: relative; overflow: hidden;">
+                        <!-- Overlay Pattern -->
+                        <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px); background-size: 20px 20px;"></div>
+                        
+                        <div style="position: relative; z-index: 1;">
+                            {% if 'youtube.com/watch?v=' in konten.media_url or 'youtu.be/' in konten.media_url %}
+                                <!-- YouTube Thumbnail dengan Play Button -->
+                                <a href="{{ konten.media_url }}" target="_blank" style="text-decoration: none;">
+                                <div style="position: relative; cursor: pointer;">
+                                    <img src="#" id="ytThumb{{ konten.id }}" 
+                                        style="width: 100%; border-radius: 6px; display: block;" 
+                                        alt="YouTube Preview">
+                                    <script>
+                                        (function() {
+                                            const url = '{{ konten.media_url }}';
+                                            let videoId = '';
+                                            if (url.includes('youtube.com/watch?v=')) {
+                                                videoId = url.split('v=')[1].split('&')[0];
+                                            } else if (url.includes('youtu.be/')) {
+                                                videoId = url.split('youtu.be/')[1].split('?')[0];
+                                            }
+                                            if (videoId) {
+                                                document.getElementById('ytThumb{{ konten.id }}').src = 'https://img.youtube.com/vi/' + videoId + '/mqdefault.jpg';
+                                            }
+                                        })();
+                                    </script>
+                                    <!-- Play Button Overlay -->
+                                    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 60px; height: 42px; background: rgba(255,0,0,0.9); border-radius: 8px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 8px rgba(0,0,0,0.3);">
+                                        <div style="width: 0; height: 0; border-left: 18px solid white; border-top: 11px solid transparent; border-bottom: 11px solid transparent; margin-left: 4px;"></div>
+                                    </div>
+                                </div>
+                                </a>
+                                <a href="{{ konten.media_url }}" target="_blank" style="text-decoration: none;">
+                                    <button style="width: 100%; margin-top: 8px; padding: 8px; background: white; color: #dc2626; border: none; border-radius: 6px; font-weight: 600; font-size: 13px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                                        ▶️ Tonton di YouTube
+                                    </button>
+                                </a>
+                            {% elif '.pdf' in konten.media_url %}
+                                <div style="text-align: center; padding: 20px; background: rgba(255,255,255,0.15); border-radius: 6px;">
+                                    <div style="font-size: 48px; margin-bottom: 8px;">📄</div>
+                                    <p style="margin: 0; font-size: 13px; color: white; font-weight: 600;">Dokumen PDF</p>
+                                </div>
+                                <button onclick="openQuickMedia{{ konten.id }}(); event.preventDefault();" style="width: 100%; margin-top: 8px; padding: 8px; background: white; color: #dc2626; border: none; border-radius: 6px; font-weight: 600; font-size: 13px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                                    📄 Lihat PDF
+                                </button>
+                            {% elif 'drive.google.com' in konten.media_url %}
+                                <div style="text-align: center; padding: 20px; background: rgba(255,255,255,0.15); border-radius: 6px;">
+                                    <div style="font-size: 48px; margin-bottom: 8px;">☁️</div>
+                                    <p style="margin: 0; font-size: 13px; color: white; font-weight: 600;">Google Drive</p>
+                                </div>
+                                <a href="{{ konten.media_url }}" target="_blank" style="text-decoration: none;">
+                                    <button style="width: 100%; margin-top: 8px; padding: 8px; background: white; color: #4285f4; border: none; border-radius: 6px; font-weight: 600; font-size: 13px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                                        ☁️ Buka Drive
+                                    </button>
+                                </a>
+                            {% else %}
+                                <div style="text-align: center; padding: 20px; background: rgba(255,255,255,0.15); border-radius: 6px;">
+                                    <div style="font-size: 48px; margin-bottom: 8px;">🔗</div>
+                                    <p style="margin: 0; font-size: 13px; color: white; font-weight: 600;">Link Eksternal</p>
+                                </div>
+                                <a href="{{ konten.media_url }}" target="_blank" style="text-decoration: none;">
+                                    <button style="width: 100%; margin-top: 8px; padding: 8px; background: white; color: #6366f1; border: none; border-radius: 6px; font-weight: 600; font-size: 13px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                                        🔗 Buka Link
+                                    </button>
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <script>
+                    function openQuickMedia{{ konten.id }}() {
+                        {% if '.pdf' in konten.media_url %}
+                            // Buka PDF di modal
+                            const modal = document.getElementById('pdfModal{{ konten.id }}');
+                            if (!modal) {
+                                const newModal = document.createElement('div');
+                                newModal.id = 'pdfModal{{ konten.id }}';
+                                newModal.style.cssText = 'display: flex; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 9999; align-items: center; justify-content: center; padding: 20px;';
+                                newModal.innerHTML = `
+                                    <button onclick="this.parentElement.remove(); document.body.style.overflow='auto';" style="position: absolute; top: 20px; right: 30px; background: transparent; border: none; color: white; font-size: 40px; cursor: pointer; z-index: 10000;">×</button>
+                                    <div style="max-width: 1200px; width: 100%; background: white; border-radius: 12px; overflow: hidden; max-height: 90vh;">
+                                        <iframe src="{{ konten.media_url }}" width="100%" height="600" style="border: none;"></iframe>
+                                    </div>
+                                `;
+                                document.body.appendChild(newModal);
+                                document.body.style.overflow = 'hidden';
+                                newModal.addEventListener('click', function(e) {
+                                    if (e.target === this) {
+                                        this.remove();
+                                        document.body.style.overflow = 'auto';
+                                    }
+                                });
+                            }
+                        {% endif %}
+                    }
+                    </script>
+                    {% endif %}
 
-                <a href="{% url 'artikel-detail' id=1 %}">
-                    <button class="artikel-button">
-                        Baca Selengkapnya
-                    </button>
-                </a>
+                    <div style="margin-top: auto;">
+                        <p style="font-size: 12px; color:#888; margin: 10px 0;">{{ konten.created_at|date:"d M Y" }}</p>
+
+                        <a href="{% url 'artikel-detail' id=konten.id %}">
+                            <button class="artikel-button">
+                                Baca Selengkapnya
+                            </button>
+                        </a>
+                    </div>
+                </div>
             </div>
-        </div>
-
-        <!-- CARD 2 -->
-        <div class="artikel-card">
-            <img src="{% static 'images/artikel2.jpg' %}" class="artikel-image">
-
-            <div class="artikel-body">
-                <p class="artikel-tag">Pencegahan</p>
-
-                <h3 style="font-size: 18px; font-weight: 700; color:#333;">
-                    Strategi Pencegahan Kekerasan Seksual di Lingkungan Kampus
-                </h3>
-
-                <p style="color:#666; font-size:14px; margin-top:8px;">
-                    Panduan menciptakan lingkungan aman dan mendukung di institusi pendidikan tinggi dengan langkah
-                    proaktif.
-                </p>
-
-                <p style="font-size: 12px; color:#888; margin-top:10px;">12 Juni 2024</p>
-
-                <a href="{% url 'artikel-detail' id=2 %}">
-                    <button class="artikel-button">
-                        Baca Selengkapnya
-                    </button>
-                </a>
+            {% endfor %}
+        {% else %}
+            <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #999;">
+                <p style="font-size: 18px;">Belum ada konten tersedia.</p>
+                <p style="font-size: 14px; margin-top: 10px;">Admin sedang menyiapkan konten edukasi untuk Anda.</p>
             </div>
-        </div>
-
-        <!-- CARD 3 -->
-        <div class="artikel-card">
-            <img src="{% static 'images/artikel3.jpg' %}" class="artikel-image">
-
-            <div class="artikel-body">
-                <p class="artikel-tag">Dukungan</p>
-
-                <h3 style="font-size: 18px; font-weight: 700; color:#333;">
-                    Mendukung Korban Kekerasan Seksual: Apa yang Harus Dilakukan?
-                </h3>
-
-                <p style="color:#666; font-size:14px; margin-top:8px;">
-                    Informasi untuk memberikan dukungan empati kepada korban kekerasan seksual tanpa menghakimi.
-                </p>
-
-                <p style="font-size: 12px; color:#888; margin-top:10px;">10 Juni 2024</p>
-
-                <a href="{% url 'artikel-detail' id=3 %}">
-                    <button class="artikel-button">
-                        Baca Selengkapnya
-                    </button>
-                </a>
-            </div>
-        </div>
+        {% endif %}
 
     </div>
 
-    <h1 style="font-size: 26px; font-weight:700; color:#333;">Rekomendasi</h1>
-    <!-- ARTIKEL REKOMENDASI -->
-    <div class="container-7xl">
+    <!-- Section Tentang PPKPT -->
+    <div style="margin: 60px 0;">
+        <div style="
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            border-radius: 24px;
+            padding: 50px 40px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(30, 58, 138, 0.3);
+        ">
+            <!-- Dark Overlay -->
+            <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.2);"></div>
+            
+            <!-- Pattern -->
+            <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: radial-gradient(circle, rgba(255,255,255,0.05) 1px, transparent 1px); background-size: 30px 30px;"></div>
+            
+            <div style="position: relative; z-index: 1;">
+                <div style="text-align: center; margin-bottom: 40px;">
+                    <div style="display: inline-block; background: rgba(255,255,255,0.2); padding: 10px 25px; border-radius: 20px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.3);">
+                        <span style="font-size: 15px; font-weight: 700; text-shadow: 0 1px 3px rgba(0,0,0,0.2);">🛡️ Tentang PPKPT</span>
+                    </div>
+                    <h2 style="font-size: 36px; font-weight: 800; margin: 0 0 15px 0; text-shadow: 0 2px 10px rgba(0,0,0,0.3);">
+                        PPKPT Telkom University
+                    </h2>
+                    <p style="font-size: 18px; font-weight: 600; margin: 0; opacity: 0.95; text-shadow: 0 1px 5px rgba(0,0,0,0.2);">
+                        Pencegahan dan Penanganan Kekerasan di Perguruan Tinggi
+                    </p>
+                </div>
 
-        <div class="rekomendasi-grid">
+                <div style="max-width: 900px; margin: 0 auto;">
+                    <p style="font-size: 16px; line-height: 1.8; margin-bottom: 25px; text-align: center; font-weight: 500; text-shadow: 0 1px 3px rgba(0,0,0,0.2);">
+                        Lingkungan kampus seharusnya menjadi ruang yang aman, nyaman, dan mendukung perkembangan seluruh sivitas akademika. Tim PPKPT hadir sebagai langkah konkret dalam mencegah serta menangani berbagai bentuk kekerasan di lingkungan Telkom University.
+                    </p>
 
-            <!-- CARD 1 -->
-            <div class="rekomendasi-card">
-                <img src="{% static 'images/reko1.jpg' %}" class="rekomendasi-image">
-                <p class="rekomendasi-title">Hak-hak Korban Kekerasan Seksual: Sebuah Panduan</p>
+                    <!-- Dasar Hukum -->
+                    <div style="background: rgba(255,255,255,0.15); border-radius: 16px; padding: 25px; margin-bottom: 30px; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2);">
+                        <h3 style="font-size: 20px; font-weight: 700; margin: 0 0 12px 0; text-shadow: 0 1px 3px rgba(0,0,0,0.2);">📜 Dasar Hukum</h3>
+                        <p style="font-size: 15px; line-height: 1.7; margin: 0; font-weight: 500; text-shadow: 0 1px 3px rgba(0,0,0,0.2);">
+                            Berdasarkan <strong>Permendikbudristek No. 55 Tahun 2024</strong>, Satuan Tugas PPKPT bekerja untuk melindungi warga kampus, pemimpin perguruan tinggi, dan mitra perguruan tinggi dari berbagai bentuk kekerasan.
+                        </p>
+                    </div>
+
+                    <!-- Jenis Kekerasan -->
+                    <div style="margin-bottom: 30px;">
+                        <h3 style="font-size: 22px; font-weight: 700; margin: 0 0 20px 0; text-align: center; text-shadow: 0 2px 5px rgba(0,0,0,0.3);">⚠️ Jenis Kekerasan yang Harus Diwaspadai</h3>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
+                            <div style="background: rgba(255,255,255,0.2); border-radius: 12px; padding: 18px; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.3);">
+                                <span style="font-size: 15px; font-weight: 700; text-shadow: 0 1px 3px rgba(0,0,0,0.2);">👊 Kekerasan Fisik</span>
+                            </div>
+                            <div style="background: rgba(255,255,255,0.2); border-radius: 12px; padding: 18px; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.3);">
+                                <span style="font-size: 15px; font-weight: 700; text-shadow: 0 1px 3px rgba(0,0,0,0.2);">🧠 Kekerasan Psikis</span>
+                            </div>
+                            <div style="background: rgba(255,255,255,0.2); border-radius: 12px; padding: 18px; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.3);">
+                                <span style="font-size: 15px; font-weight: 700; text-shadow: 0 1px 3px rgba(0,0,0,0.2);">😢 Perundungan (Bullying)</span>
+                            </div>
+                            <div style="background: rgba(255,255,255,0.2); border-radius: 12px; padding: 18px; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.3);">
+                                <span style="font-size: 15px; font-weight: 700; text-shadow: 0 1px 3px rgba(0,0,0,0.2);">⚠️ Kekerasan Seksual</span>
+                            </div>
+                            <div style="background: rgba(255,255,255,0.2); border-radius: 12px; padding: 18px; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.3);">
+                                <span style="font-size: 15px; font-weight: 700; text-shadow: 0 1px 3px rgba(0,0,0,0.2);">🚫 Diskriminasi & Intoleransi</span>
+                            </div>
+                            <div style="background: rgba(255,255,255,0.2); border-radius: 12px; padding: 18px; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.3);">
+                                <span style="font-size: 15px; font-weight: 700; text-shadow: 0 1px 3px rgba(0,0,0,0.2);">📋 Kebijakan yang Merugikan</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Proses Penanganan -->
+                    <div style="background: rgba(255,255,255,0.15); border-radius: 16px; padding: 30px; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2);">
+                        <h3 style="font-size: 22px; font-weight: 700; margin: 0 0 15px 0; text-align: center; text-shadow: 0 2px 5px rgba(0,0,0,0.3);">🔄 Proses Penanganan oleh PPKPT</h3>
+                        <p style="font-size: 15px; line-height: 1.7; margin-bottom: 25px; text-align: center; font-weight: 500; text-shadow: 0 1px 3px rgba(0,0,0,0.2);">
+                            Jika kamu atau orang di sekitarmu mengalami bentuk kekerasan, jangan ragu untuk melapor. PPKPT akan menangani laporan secara profesional, rahasia, dan berpihak pada korban.
+                        </p>
+
+                        <!-- Timeline Horizontal -->
+                        <div style="display: flex; justify-content: space-between; align-items: start; gap: 10px; flex-wrap: wrap;">
+                            <div style="flex: 1; min-width: 150px; text-align: center;">
+                                <div style="background: rgba(255,255,255,0.3); width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; font-size: 28px; border: 3px solid white;">📝</div>
+                                <div style="font-size: 16px; font-weight: 700; margin-bottom: 5px; text-shadow: 0 1px 3px rgba(0,0,0,0.2);">Pelaporan</div>
+                                <div style="font-size: 13px; opacity: 0.9; text-shadow: 0 1px 3px rgba(0,0,0,0.2);">Pelaporan oleh korban atau saksi</div>
+                            </div>
+                            <div style="align-self: center; font-size: 24px; opacity: 0.5;">→</div>
+                            <div style="flex: 1; min-width: 150px; text-align: center;">
+                                <div style="background: rgba(255,255,255,0.3); width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; font-size: 28px; border: 3px solid white;">🔄</div>
+                                <div style="font-size: 16px; font-weight: 700; margin-bottom: 5px; text-shadow: 0 1px 3px rgba(0,0,0,0.2);">Tindak Lanjut Awal</div>
+                                <div style="font-size: 13px; opacity: 0.9; text-shadow: 0 1px 3px rgba(0,0,0,0.2);">Tindak lanjut oleh tim</div>
+                            </div>
+                            <div style="align-self: center; font-size: 24px; opacity: 0.5;">→</div>
+                            <div style="flex: 1; min-width: 150px; text-align: center;">
+                                <div style="background: rgba(255,255,255,0.3); width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; font-size: 28px; border: 3px solid white;">🔍</div>
+                                <div style="font-size: 16px; font-weight: 700; margin-bottom: 5px; text-shadow: 0 1px 3px rgba(0,0,0,0.2);">Pemeriksaan</div>
+                                <div style="font-size: 13px; opacity: 0.9; text-shadow: 0 1px 3px rgba(0,0,0,0.2);">Pemeriksaan & Klarifikasi</div>
+                            </div>
+                            <div style="align-self: center; font-size: 24px; opacity: 0.5;">→</div>
+                            <div style="flex: 1; min-width: 150px; text-align: center;">
+                                <div style="background: rgba(255,255,255,0.3); width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; font-size: 28px; border: 3px solid white;">⚖️</div>
+                                <div style="font-size: 16px; font-weight: 700; margin-bottom: 5px; text-shadow: 0 1px 3px rgba(0,0,0,0.2);">Penanganan</div>
+                                <div style="font-size: 13px; opacity: 0.9; text-shadow: 0 1px 3px rgba(0,0,0,0.2);">Rekomendasi Penanganan</div>
+                            </div>
+                            <div style="align-self: center; font-size: 24px; opacity: 0.5;">→</div>
+                            <div style="flex: 1; min-width: 150px; text-align: center;">
+                                <div style="background: rgba(255,255,255,0.3); width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; font-size: 28px; border: 3px solid white;">✅</div>
+                                <div style="font-size: 16px; font-weight: 700; margin-bottom: 5px; text-shadow: 0 1px 3px rgba(0,0,0,0.2);">Tindak Lanjut</div>
+                                <div style="font-size: 13px; opacity: 0.9; text-shadow: 0 1px 3px rgba(0,0,0,0.2);">Hingga Selesai</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section Mari Bersama Ciptakan Zona Aman -->
+    <div style="margin: 60px 0;">
+        <div style="text-align: center; margin-bottom: 40px;">
+            <h2 style="font-size: 36px; font-weight: 800; color: #333; margin: 0 0 10px 0;">🤝 Mari Bersama Ciptakan Zona Aman</h2>
+            <p style="font-size: 17px; color: #666; max-width: 800px; margin: 0 auto;">
+                PPKPT mengajak seluruh mahasiswa dan sivitas akademika untuk turut serta menciptakan lingkungan kampus yang aman dan nyaman bagi semua.
+            </p>
+        </div>
+
+        <!-- Grid 4 Aksi -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; margin-bottom: 50px;">
+            <!-- Card 1: Tunjukkan Empati -->
+            <div style="background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); border-radius: 20px; padding: 35px; color: white; box-shadow: 0 10px 30px rgba(251, 191, 36, 0.3); position: relative; overflow: hidden;">
+                <div style="position: absolute; top: -30px; right: -30px; width: 120px; height: 120px; background: rgba(255,255,255,0.1); border-radius: 50%;"></div>
+                <div style="position: relative; z-index: 1;">
+                    <div style="font-size: 48px; margin-bottom: 20px;">💛</div>
+                    <h3 style="font-size: 22px; font-weight: 800; margin: 0 0 15px 0; text-shadow: 0 2px 5px rgba(0,0,0,0.2);">Tunjukkan Empati</h3>
+                    <ul style="list-style: none; padding: 0; margin: 0; font-size: 15px; line-height: 1.8; font-weight: 500; text-shadow: 0 1px 3px rgba(0,0,0,0.2);">
+                        <li style="margin-bottom: 10px; display: flex; align-items: start; gap: 10px;">
+                            <span style="font-size: 18px;">•</span>
+                            <span>Jadilah teman yang peduli. Jika ada yang curhat tentang kekerasan, dengarkan tanpa menghakimi.</span>
+                        </li>
+                        <li style="display: flex; align-items: start; gap: 10px;">
+                            <span style="font-size: 18px;">•</span>
+                            <span>Dukung teman yang jadi korban untuk melaporkan.</span>
+                        </li>
+                    </ul>
+                </div>
             </div>
 
-            <!-- CARD 2 -->
-            <div class="rekomendasi-card">
-                <img src="{% static 'images/reko2.jpg' %}" class="rekomendasi-image">
-                <p class="rekomendasi-title">Prosedur Pelaporan Kekerasan Seksual yang Aman</p>
+            <!-- Card 2: Kenali dan Pahami -->
+            <div style="background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%); border-radius: 20px; padding: 35px; color: white; box-shadow: 0 10px 30px rgba(139, 92, 246, 0.3); position: relative; overflow: hidden;">
+                <div style="position: absolute; bottom: -30px; left: -30px; width: 120px; height: 120px; background: rgba(255,255,255,0.1); border-radius: 50%;"></div>
+                <div style="position: relative; z-index: 1;">
+                    <div style="font-size: 48px; margin-bottom: 20px;">📚</div>
+                    <h3 style="font-size: 22px; font-weight: 800; margin: 0 0 15px 0; text-shadow: 0 2px 5px rgba(0,0,0,0.2);">Kenali dan Pahami</h3>
+                    <ul style="list-style: none; padding: 0; margin: 0; font-size: 15px; line-height: 1.8; font-weight: 500; text-shadow: 0 1px 3px rgba(0,0,0,0.2);">
+                        <li style="margin-bottom: 10px; display: flex; align-items: start; gap: 10px;">
+                            <span style="font-size: 18px;">•</span>
+                            <span>Pelajari apa saja yang disebut dengan kekerasan (fisik, seksual, psikologis, bullying, diskriminasi).</span>
+                        </li>
+                        <li style="display: flex; align-items: start; gap: 10px;">
+                            <span style="font-size: 18px;">•</span>
+                            <span>Ketahui hak-hakmu sebagai mahasiswa dan jalur pengaduan kampus.</span>
+                        </li>
+                    </ul>
+                </div>
             </div>
 
-            <!-- CARD 3 -->
-            <div class="rekomendasi-card">
-                <img src="{% static 'images/reko3.jpg' %}" class="rekomendasi-image">
-                <p class="rekomendasi-title">Mengelola Trauma Pasca Kekerasan Seksual</p>
+            <!-- Card 3: Bertindak Berani -->
+            <div style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); border-radius: 20px; padding: 35px; color: white; box-shadow: 0 10px 30px rgba(239, 68, 68, 0.3); position: relative; overflow: hidden;">
+                <div style="position: absolute; top: -30px; right: -30px; width: 120px; height: 120px; background: rgba(255,255,255,0.1); border-radius: 50%;"></div>
+                <div style="position: relative; z-index: 1;">
+                    <div style="font-size: 48px; margin-bottom: 20px;">💪</div>
+                    <h3 style="font-size: 22px; font-weight: 800; margin: 0 0 15px 0; text-shadow: 0 2px 5px rgba(0,0,0,0.2);">Bertindak Berani</h3>
+                    <ul style="list-style: none; padding: 0; margin: 0; font-size: 15px; line-height: 1.8; font-weight: 500; text-shadow: 0 1px 3px rgba(0,0,0,0.2);">
+                        <li style="margin-bottom: 10px; display: flex; align-items: start; gap: 10px;">
+                            <span style="font-size: 18px;">•</span>
+                            <span>Jangan takut untuk melapor! Kekerasan harus dihentikan bukan disembunyikan.</span>
+                        </li>
+                        <li style="display: flex; align-items: start; gap: 10px;">
+                            <span style="font-size: 18px;">•</span>
+                            <span>Laporkan kepada satgas PPKPT di kampus.</span>
+                        </li>
+                    </ul>
+                </div>
             </div>
 
-            <!-- CARD 4 -->
-            <div class="rekomendasi-card">
-                <img src="{% static 'images/reko4.jpg' %}" class="rekomendasi-image">
-                <p class="rekomendasi-title">Membongkar Mitos Seputar Kekerasan Seksual</p>
+            <!-- Card 4: Ciptakan Zona Nyaman -->
+            <div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); border-radius: 20px; padding: 35px; color: white; box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3); position: relative; overflow: hidden;">
+                <div style="position: absolute; bottom: -30px; left: -30px; width: 120px; height: 120px; background: rgba(255,255,255,0.1); border-radius: 50%;"></div>
+                <div style="position: relative; z-index: 1;">
+                    <div style="font-size: 48px; margin-bottom: 20px;">🌿</div>
+                    <h3 style="font-size: 22px; font-weight: 800; margin: 0 0 15px 0; text-shadow: 0 2px 5px rgba(0,0,0,0.2);">Ciptakan Zona Nyaman</h3>
+                    <ul style="list-style: none; padding: 0; margin: 0; font-size: 15px; line-height: 1.8; font-weight: 500; text-shadow: 0 1px 3px rgba(0,0,0,0.2);">
+                        <li style="margin-bottom: 10px; display: flex; align-items: start; gap: 10px;">
+                            <span style="font-size: 18px;">•</span>
+                            <span>Buat kelompok diskusi anti-kekerasan di lingkaran pertemananmu.</span>
+                        </li>
+                        <li style="display: flex; align-items: start; gap: 10px;">
+                            <span style="font-size: 18px;">•</span>
+                            <span>Ajukan ide-ide positif ke kampus untuk meningkatkan keamanan.</span>
+                        </li>
+                    </ul>
+                </div>
             </div>
+        </div>
 
+        <!-- Video YouTube Section -->
+        <div style="background: linear-gradient(135deg, #ec4899 0%, #be185d 100%); border-radius: 24px; padding: 50px 40px; position: relative; overflow: hidden; box-shadow: 0 20px 60px rgba(236, 72, 153, 0.3);">
+            <!-- Dark Overlay -->
+            <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.2);"></div>
+            
+            <!-- Pattern -->
+            <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: radial-gradient(circle, rgba(255,255,255,0.05) 1px, transparent 1px); background-size: 30px 30px;"></div>
+            
+            <div style="position: relative; z-index: 1; max-width: 1000px; margin: 0 auto;">
+                <div style="text-align: center; margin-bottom: 30px;">
+                    <div style="display: inline-block; background: rgba(255,255,255,0.2); padding: 10px 25px; border-radius: 20px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.3);">
+                        <span style="color: white; font-size: 15px; font-weight: 700; text-shadow: 0 1px 3px rgba(0,0,0,0.2);">📹 Video Edukasi</span>
+                    </div>
+                    <h3 style="font-size: 32px; font-weight: 800; color: white; margin: 0 0 10px 0; text-shadow: 0 2px 10px rgba(0,0,0,0.3);">Pelajari Lebih Lanjut Tentang PPKPT</h3>
+                    <p style="font-size: 16px; color: white; margin: 0; font-weight: 500; text-shadow: 0 1px 5px rgba(0,0,0,0.2);">Tonton video ini untuk memahami lebih dalam tentang pencegahan dan penanganan kekerasan di kampus.</p>
+                </div>
+
+                <!-- YouTube Embed -->
+                <div style="position: relative; border-radius: 16px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.4);">
+                    <a href="https://youtu.be/HJX38VEPzrM" target="_blank" style="text-decoration: none; display: block; position: relative;">
+                        <img src="https://img.youtube.com/vi/HJX38VEPzrM/maxresdefault.jpg" 
+                            style="width: 100%; display: block; border-radius: 16px;" 
+                            alt="Video PPKPT">
+                        
+                        <!-- Play Button Overlay -->
+                        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 80px; height: 80px; background: rgba(255,0,0,0.95); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 24px rgba(0,0,0,0.4); transition: all 0.3s;">
+                            <div style="width: 0; height: 0; border-left: 28px solid white; border-top: 18px solid transparent; border-bottom: 18px solid transparent; margin-left: 6px;"></div>
+                        </div>
+
+                        <!-- Hover Overlay -->
+                        <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 50%); opacity: 0; transition: opacity 0.3s; border-radius: 16px;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0'">
+                            <div style="position: absolute; bottom: 20px; left: 20px; right: 20px;">
+                                <p style="color: white; font-size: 18px; font-weight: 700; margin: 0; text-shadow: 0 2px 8px rgba(0,0,0,0.5);">🎬 Klik untuk menonton video lengkap</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- CTA Button -->
+                <div style="text-align: center; margin-top: 25px;">
+                    <a href="https://youtu.be/HJX38VEPzrM" target="_blank" style="text-decoration: none;">
+                        <button style="
+                            background: white;
+                            color: #be185d;
+                            padding: 15px 40px;
+                            border: none;
+                            border-radius: 12px;
+                            font-size: 16px;
+                            font-weight: 700;
+                            cursor: pointer;
+                            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+                            transition: all 0.3s;
+                        " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 12px 32px rgba(0,0,0,0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 8px 24px rgba(0,0,0,0.2)'">
+                            ▶️ Tonton di YouTube
+                        </button>
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
 

@@ -1,0 +1,209 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if action == 'add' %}Tambah{% else %}Edit{% endif %} Rekam Medis - {{ klien_nama }}{% endblock %}
+
+{% block content %}
+<div style="padding: 30px;">
+    <!-- Header -->
+    <div style="background: linear-gradient(135deg, #6a5acd 0%, #5a509b 100%); padding: 25px 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(106, 90, 205, 0.2); margin-bottom: 30px;">
+        <h1 style="color: white; margin: 0 0 8px 0; font-size: 28px; font-weight: 600;">
+            {% if action == 'add' %}
+                ➕ Tambah Rekam Medis - Sesi {{ next_sesi }}
+            {% else %}
+                ✏️ Edit Rekam Medis - Sesi {{ rekam_medis.sesi_ke }}
+            {% endif %}
+        </h1>
+        <p style="color: rgba(255,255,255,0.9); margin: 0; font-size: 15px;">Dokumentasi lengkap sesi konseling untuk {{ klien_nama }}</p>
+    </div>
+
+    <!-- Messages -->
+    {% if messages %}
+        {% for message in messages %}
+            <div style="background: {% if message.tags == 'success' %}#d1fae5{% elif message.tags == 'error' %}#fee2e2{% else %}#dbeafe{% endif %}; border-left: 4px solid {% if message.tags == 'success' %}#059669{% elif message.tags == 'error' %}#dc2626{% else %}#3b82f6{% endif %}; padding: 15px 20px; border-radius: 8px; margin-bottom: 20px;">
+                <p style="margin: 0; color: {% if message.tags == 'success' %}#065f46{% elif message.tags == 'error' %}#991b1b{% else %}#1e40af{% endif %}; font-weight: 500;">{{ message }}</p>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- Form -->
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <!-- Info Klien -->
+        <div style="background: white; border-radius: 12px; padding: 25px; margin-bottom: 25px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+            <h3 style="color: #6a5acd; margin: 0 0 20px 0; font-size: 20px; font-weight: 600; border-bottom: 2px solid #e5e7eb; padding-bottom: 12px;">📋 Informasi Klien</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
+                <div>
+                    <p style="margin: 0 0 5px 0; color: #6b7280; font-size: 13px; font-weight: 600;">Nama Klien</p>
+                    <p style="margin: 0; color: #1f2937; font-size: 16px; font-weight: 500;">{{ klien_nama }}</p>
+                </div>
+                <div>
+                    <p style="margin: 0 0 5px 0; color: #6b7280; font-size: 13px; font-weight: 600;">Tanggal Konseling</p>
+                    <p style="margin: 0; color: #1f2937; font-size: 16px; font-weight: 500;">{{ booking.tanggal }} - {{ booking.waktu }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 1: Assessment Klien -->
+        <div style="background: white; border-radius: 12px; padding: 25px; margin-bottom: 25px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+            <h3 style="color: #6a5acd; margin: 0 0 20px 0; font-size: 20px; font-weight: 600; border-bottom: 2px solid #e5e7eb; padding-bottom: 12px;">🩺 Assessment Klien</h3>
+            
+            <div style="margin-bottom: 20px;">
+                <label for="diagnosis_awal" style="display: block; margin-bottom: 8px; color: #374151; font-weight: 500; font-size: 14px;">Diagnosis Awal (opsional)</label>
+                <input type="text" id="diagnosis_awal" name="diagnosis_awal" 
+                       value="{% if rekam_medis %}{{ rekam_medis.diagnosis_awal }}{% endif %}"
+                       placeholder="Contoh: Gangguan Kecemasan, Depresi Ringan, dll"
+                       style="width: 100%; padding: 12px 15px; border: 1.5px solid #d1d5db; border-radius: 8px; font-size: 14px; transition: 0.2s; font-family: 'Poppins', sans-serif;">
+                <small style="display: block; margin-top: 5px; color: #6b7280; font-size: 12px;">Diagnosis awal atau dugaan kondisi klien.</small>
+            </div>
+
+            <div style="margin-bottom: 20px;">
+                <label for="mood_klien" style="display: block; margin-bottom: 8px; color: #374151; font-weight: 500; font-size: 14px;">Mood Klien (1-10)</label>
+                <input type="range" id="mood_klien" name="mood_klien" 
+                       min="1" max="10" value="{% if rekam_medis %}{{ rekam_medis.mood_klien }}{% else %}5{% endif %}"
+                       oninput="document.getElementById('mood_value').textContent = this.value"
+                       style="width: 100%; height: 8px; border-radius: 5px; background: linear-gradient(to right, #ef4444, #f59e0b, #10b981); outline: none; -webkit-appearance: none; appearance: none;">
+                <p style="margin: 10px 0 0 0; color: #374151; font-size: 16px; font-weight: 600;">
+                    Mood saat ini: <span id="mood_value" style="color: #6a5acd;">{% if rekam_medis %}{{ rekam_medis.mood_klien }}{% else %}5{% endif %}</span>/10
+                </p>
+                <small style="display: block; margin-top: 5px; color: #6b7280; font-size: 12px;">1 = Sangat Buruk, 10 = Sangat Baik</small>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                <div>
+                    <label for="risiko_bunuh_diri" style="display: block; margin-bottom: 8px; color: #374151; font-weight: 500; font-size: 14px;">Risiko Bunuh Diri</label>
+                    <select id="risiko_bunuh_diri" name="risiko_bunuh_diri" style="width: 100%; padding: 12px 15px; border: 1.5px solid #d1d5db; border-radius: 8px; font-size: 14px; background: white; font-family: 'Poppins', sans-serif;">
+                        <option value="tidak_ada" {% if rekam_medis and rekam_medis.risiko_bunuh_diri == 'tidak_ada' %}selected{% endif %}>Tidak Ada</option>
+                        <option value="rendah" {% if rekam_medis and rekam_medis.risiko_bunuh_diri == 'rendah' %}selected{% endif %}>Rendah</option>
+                        <option value="sedang" {% if rekam_medis and rekam_medis.risiko_bunuh_diri == 'sedang' %}selected{% endif %}>Sedang</option>
+                        <option value="tinggi" {% if rekam_medis and rekam_medis.risiko_bunuh_diri == 'tinggi' %}selected{% endif %}>Tinggi</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="risiko_self_harm" style="display: block; margin-bottom: 8px; color: #374151; font-weight: 500; font-size: 14px;">Risiko Self-Harm</label>
+                    <select id="risiko_self_harm" name="risiko_self_harm" style="width: 100%; padding: 12px 15px; border: 1.5px solid #d1d5db; border-radius: 8px; font-size: 14px; background: white; font-family: 'Poppins', sans-serif;">
+                        <option value="tidak_ada" {% if rekam_medis and rekam_medis.risiko_self_harm == 'tidak_ada' %}selected{% endif %}>Tidak Ada</option>
+                        <option value="rendah" {% if rekam_medis and rekam_medis.risiko_self_harm == 'rendah' %}selected{% endif %}>Rendah</option>
+                        <option value="sedang" {% if rekam_medis and rekam_medis.risiko_self_harm == 'sedang' %}selected{% endif %}>Sedang</option>
+                        <option value="tinggi" {% if rekam_medis and rekam_medis.risiko_self_harm == 'tinggi' %}selected{% endif %}>Tinggi</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 2: Catatan Sesi -->
+        <div style="background: white; border-radius: 12px; padding: 25px; margin-bottom: 25px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+            <h3 style="color: #6a5acd; margin: 0 0 20px 0; font-size: 20px; font-weight: 600; border-bottom: 2px solid #e5e7eb; padding-bottom: 12px;">📝 Catatan Sesi</h3>
+            
+            <div style="margin-bottom: 20px;">
+                <label for="catatan_konselor" style="display: block; margin-bottom: 8px; color: #374151; font-weight: 500; font-size: 14px;">
+                    Catatan Konselor (WAJIB) <span style="color: #dc2626;">*</span>
+                </label>
+                <textarea id="catatan_konselor" name="catatan_konselor" rows="6" required
+                          placeholder="Catatan lengkap tentang sesi konseling (apa yang dibahas, respon klien, dll)"
+                          style="width: 100%; padding: 12px 15px; border: 1.5px solid #d1d5db; border-radius: 8px; font-size: 14px; font-family: 'Poppins', sans-serif; resize: vertical;">{% if rekam_medis %}{{ rekam_medis.catatan_konselor }}{% endif %}</textarea>
+                <div style="background: #fee2e2; border-left: 3px solid #dc2626; padding: 10px 15px; border-radius: 5px; margin-top: 8px;">
+                    <small style="color: #991b1b; font-weight: 500; font-size: 12px;">⚠️ CONFIDENTIAL - Hanya bisa dilihat konselor & admin, TIDAK bisa dilihat klien.</small>
+                </div>
+            </div>
+
+            <div style="margin-bottom: 20px;">
+                <label for="intervensi_diberikan" style="display: block; margin-bottom: 8px; color: #374151; font-weight: 500; font-size: 14px;">Intervensi Diberikan</label>
+                <textarea id="intervensi_diberikan" name="intervensi_diberikan" rows="3"
+                          placeholder="Teknik/intervensi yang digunakan (CBT, mindfulness, relaksasi, dll)"
+                          style="width: 100%; padding: 12px 15px; border: 1.5px solid #d1d5db; border-radius: 8px; font-size: 14px; font-family: 'Poppins', sans-serif; resize: vertical;">{% if rekam_medis %}{{ rekam_medis.intervensi_diberikan }}{% endif %}</textarea>
+            </div>
+
+            <div style="margin-bottom: 20px;">
+                <label for="progress_notes" style="display: block; margin-bottom: 8px; color: #374151; font-weight: 500; font-size: 14px;">Catatan Progress</label>
+                <textarea id="progress_notes" name="progress_notes" rows="3"
+                          placeholder="Perkembangan klien dibanding sesi sebelumnya"
+                          style="width: 100%; padding: 12px 15px; border: 1.5px solid #d1d5db; border-radius: 8px; font-size: 14px; font-family: 'Poppins', sans-serif; resize: vertical;">{% if rekam_medis %}{{ rekam_medis.progress_notes }}{% endif %}</textarea>
+            </div>
+        </div>
+
+        <!-- Section 3: Rencana Tindak Lanjut -->
+        <div style="background: white; border-radius: 12px; padding: 25px; margin-bottom: 25px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+            <h3 style="color: #6a5acd; margin: 0 0 20px 0; font-size: 20px; font-weight: 600; border-bottom: 2px solid #e5e7eb; padding-bottom: 12px;">📅 Rencana Tindak Lanjut</h3>
+            
+            <div style="margin-bottom: 20px;">
+                <label for="rencana_tindak_lanjut" style="display: block; margin-bottom: 8px; color: #374151; font-weight: 500; font-size: 14px;">Rencana Tindak Lanjut</label>
+                <textarea id="rencana_tindak_lanjut" name="rencana_tindak_lanjut" rows="3"
+                          placeholder="Rencana untuk sesi berikutnya atau rujukan ke profesional lain"
+                          style="width: 100%; padding: 12px 15px; border: 1.5px solid #d1d5db; border-radius: 8px; font-size: 14px; font-family: 'Poppins', sans-serif; resize: vertical;">{% if rekam_medis %}{{ rekam_medis.rencana_tindak_lanjut }}{% endif %}</textarea>
+            </div>
+
+            <div style="margin-bottom: 20px;">
+                <label for="sesi_selanjutnya" style="display: block; margin-bottom: 8px; color: #374151; font-weight: 500; font-size: 14px;">Tanggal Sesi Selanjutnya (opsional)</label>
+                <input type="date" id="sesi_selanjutnya" name="sesi_selanjutnya"
+                       value="{% if rekam_medis and rekam_medis.sesi_selanjutnya %}{{ rekam_medis.sesi_selanjutnya|date:'Y-m-d' }}{% endif %}"
+                       style="width: 100%; padding: 12px 15px; border: 1.5px solid #d1d5db; border-radius: 8px; font-size: 14px; font-family: 'Poppins', sans-serif;">
+            </div>
+
+            <div style="margin-bottom: 20px;">
+                <label for="file_lampiran" style="display: block; margin-bottom: 8px; color: #374151; font-weight: 500; font-size: 14px;">File Lampiran (opsional)</label>
+                <input type="file" id="file_lampiran" name="file_lampiran" accept=".pdf,.doc,.docx,.jpg,.png"
+                       style="width: 100%; padding: 12px 15px; border: 1.5px solid #d1d5db; border-radius: 8px; font-size: 14px; background: white; font-family: 'Poppins', sans-serif;">
+                <small style="display: block; margin-top: 5px; color: #6b7280; font-size: 12px;">Upload assessment form, test result, dll (max 5MB).</small>
+                {% if rekam_medis and rekam_medis.file_lampiran %}
+                    <div style="background: #dbeafe; padding: 12px 15px; border-radius: 8px; margin-top: 10px; display: flex; align-items: center; gap: 10px;">
+                        <span style="font-size: 20px;">📎</span>
+                        <div>
+                            <p style="margin: 0; color: #1e40af; font-size: 12px; font-weight: 600;">File saat ini:</p>
+                            <a href="{{ rekam_medis.file_lampiran.url }}" target="_blank" style="color: #3b82f6; font-weight: 500; font-size: 14px;">{{ rekam_medis.file_lampiran.name }}</a>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Submit Buttons -->
+        <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+            <button type="submit" style="background: linear-gradient(135deg, #6a5acd 0%, #5a509b 100%); color: white; padding: 14px 30px; border: none; border-radius: 10px; font-size: 16px; font-weight: 600; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 10px rgba(106, 90, 205, 0.3);">
+                💾 Simpan Rekam Medis
+            </button>
+            <a href="{% url 'rekam-medis-list' booking.id %}" style="background: #6b7280; color: white; padding: 14px 30px; border-radius: 10px; font-size: 16px; font-weight: 600; text-decoration: none; display: inline-block; transition: 0.2s;">
+                ❌ Batal
+            </a>
+        </div>
+    </form>
+</div>
+
+<style>
+input[type="text"]:focus, input[type="date"]:focus, textarea:focus, select:focus {
+    outline: none;
+    border-color: #6a5acd;
+    box-shadow: 0 0 0 3px rgba(106, 90, 205, 0.1);
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #6a5acd;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+input[type="range"]::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #6a5acd;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+button[type="submit"]:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(106, 90, 205, 0.4);
+}
+
+a[href*="rekam-medis-list"]:hover {
+    background: #4b5563;
+}
+</style>
+{% endblock %}

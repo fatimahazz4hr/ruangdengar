@@ -1,257 +1,499 @@
-{% extends "base_user.html" %}
-{% load static %}
-
-{% block title %}Lacak Status Laporan | Ruang Dengar{% endblock %}
-
+{% extends 'base_user.html' %}
 {% block content %}
 
 <style>
-    .status-container {
-        max-width: 900px;
-        margin: 0 auto;
-        padding: 40px 20px;
-    }
-
-    .status-header {
-        margin-bottom: 40px;
-    }
-
-    .status-title {
-        font-size: 28px;
-        font-weight: 700;
-        color: #1a1a1a;
-        margin-bottom: 8px;
-    }
-
-    .laporan-id {
-        font-size: 14px;
-        color: #666;
-        font-weight: 500;
-    }
-
-    .progress-section {
-        background: #fff;
-        padding: 40px;
-        border-radius: 12px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-        margin-bottom: 25px;
-    }
-
-    .progress-title {
-        font-size: 18px;
-        font-weight: 700;
-        color: #1a1a1a;
+    /* Tahapan Resmi PPKPT (Level 1) */
+    .tahap-container {
         margin-bottom: 35px;
     }
 
-    .progress-tracker {
+    .tahap-header {
+        background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);
+        color: white;
+        padding: 15px 20px;
+        border-radius: 8px;
+        font-weight: bold;
+        font-size: 18px;
         display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        position: relative;
-        margin-bottom: 50px;
-    }
-
-    .progress-line {
-        position: absolute;
-        top: 25px;
-        left: 12.5%;
-        right: 12.5%;
-        height: 3px;
-        background: #e0e0e0;
-        z-index: 0;
-    }
-
-    .progress-line-fill {
-        position: absolute;
-        top: 0;
-        left: 0;
-        height: 100%;
-        background: #7b61ff;
-        transition: width 0.5s ease;
-    }
-
-    .progress-step {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
         align-items: center;
-        position: relative;
-        z-index: 1;
+        gap: 12px;
+        box-shadow: 0 2px 8px rgba(79, 70, 229, 0.2);
+        margin-bottom: 15px;
     }
 
-    .step-icon-wrapper {
-        width: 50px;
-        height: 50px;
+    .tahap-header.inactive {
+        background: linear-gradient(135deg, #9CA3AF 0%, #6B7280 100%);
+        opacity: 0.6;
+    }
+
+    .tahap-number {
+        background: rgba(255, 255, 255, 0.3);
+        width: 32px;
+        height: 32px;
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-bottom: 12px;
-        transition: all 0.3s;
-    }
-
-    .step-icon-wrapper.active {
-        background: #7b61ff;
-        box-shadow: 0 4px 12px rgba(123, 97, 255, 0.3);
-    }
-
-    .step-icon-wrapper.inactive {
-        background: #f0f0f0;
-    }
-
-    .step-icon {
-        width: 24px;
-        height: 24px;
-    }
-
-    .step-icon.active {
-        color: #fff;
-    }
-
-    .step-icon.inactive {
-        color: #aaa;
-    }
-
-    .step-label {
-        font-size: 13px;
-        font-weight: 600;
-        color: #333;
-        text-align: center;
-        max-width: 100px;
-    }
-
-    .step-label.inactive {
-        color: #999;
-    }
-
-    .status-info-box {
-        background: #f5f3ff;
-        border-left: 4px solid #7b61ff;
-        padding: 20px 25px;
-        border-radius: 8px;
-    }
-
-    .status-info-label {
-        font-size: 14px;
-        font-weight: 600;
-        color: #333;
-        margin-bottom: 5px;
-    }
-
-    .status-info-value {
         font-size: 16px;
-        font-weight: 700;
-        color: #7b61ff;
+        font-weight: bold;
+    }
+
+    /* Sub-Status Detail (Level 2) */
+    .sub-status-list {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 0 25px;
+        border-left: 3px solid #4F46E5;
+    }
+
+    .sub-status-item {
+        margin-bottom: 25px;
+        position: relative;
+        padding-left: 30px;
+    }
+
+    .sub-status-item::before {
+        content: '';
+        width: 16px;
+        height: 16px;
+        background: #D1D5DB;
+        border: 3px solid white;
+        border-radius: 50%;
+        position: absolute;
+        left: -11px;
+        top: 2px;
+        box-shadow: 0 0 0 2px #D1D5DB;
+    }
+
+    .sub-status-item.active::before {
+        background: #4F46E5;
+        box-shadow: 0 0 0 2px #4F46E5, 0 0 12px rgba(79, 70, 229, 0.4);
+    }
+
+    .sub-status-item.completed::before {
+        background: #10B981;
+        box-shadow: 0 0 0 2px #10B981;
+    }
+
+    .sub-status-title {
+        font-weight: 600;
+        font-size: 15px;
+        color: #1F2937;
         margin-bottom: 4px;
     }
 
-    .status-info-date {
-        font-size: 13px;
-        color: #666;
+    .sub-status-item.inactive .sub-status-title {
+        color: #9CA3AF;
     }
 
-    @media (max-width: 768px) {
-        .progress-tracker {
-            flex-direction: column;
-            align-items: flex-start;
-        }
+    .sub-status-time {
+        display: block;
+        color: #6B7280;
+        font-size: 13px;
+        margin-top: 4px;
+    }
 
-        .progress-line {
-            left: 25px;
-            top: 25px;
-            bottom: 0;
-            width: 3px;
-            height: auto;
-            right: auto;
-        }
+    .sub-status-item.inactive .sub-status-time {
+        color: #D1D5DB;
+    }
 
-        .progress-step {
-            flex-direction: row;
-            width: 100%;
-            margin-bottom: 30px;
-        }
+    .note-box {
+        background: #F9FAFB;
+        border: 1px solid #E5E7EB;
+        padding: 12px 14px;
+        border-radius: 6px;
+        margin-top: 10px;
+        font-size: 14px;
+        color: #374151;
+        line-height: 1.5;
+    }
 
-        .step-icon-wrapper {
-            margin-right: 15px;
-            margin-bottom: 0;
-        }
+    .note-box::before {
+        content: "📝 ";
+        margin-right: 6px;
+    }
 
-        .step-label {
-            text-align: left;
-        }
+    /* Info Box untuk Status Khusus */
+    .info-badge {
+        display: inline-block;
+        background: #EEF2FF;
+        color: #4F46E5;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 600;
+        margin-top: 6px;
+    }
+
+    .info-badge.anonim {
+        background: #FEF3C7;
+        color: #D97706;
+    }
+
+    /* Riwayat Progress */
+    .history-box {
+        background: white;
+        border: 2px solid #E5E7EB;
+        padding: 20px;
+        border-radius: 10px;
+        margin-top: 40px;
+    }
+
+    .history-box h5 {
+        color: #1F2937;
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #E5E7EB;
+    }
+
+    .history-item {
+        margin-bottom: 16px;
+        border-left: 4px solid #4F46E5;
+        padding: 12px 0 12px 16px;
+        background: #F9FAFB;
+        border-radius: 0 6px 6px 0;
+    }
+
+    .history-item strong {
+        color: #1F2937;
+        font-size: 15px;
+        display: block;
+        margin-bottom: 6px;
+    }
+
+    .history-item p {
+        color: #4B5563;
+        font-size: 14px;
+        margin: 0 0 6px 0;
+        line-height: 1.5;
+    }
+
+    .history-item small {
+        color: #6B7280;
+        font-size: 13px;
+    }
+
+    /* Header Status */
+    .status-header {
+        background: white;
+        border: 2px solid #E5E7EB;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 30px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .status-header h3 {
+        color: #1F2937;
+        font-size: 22px;
+        margin-bottom: 12px;
+        font-weight: 700;
+    }
+
+    .status-header p {
+        margin: 6px 0;
+        color: #4B5563;
+        font-size: 15px;
+    }
+
+    .status-header strong {
+        color: #1F2937;
+        font-weight: 600;
     }
 </style>
 
-<div class="status-container">
+<div class="container mt-4">
 
-    <!-- Header -->
+    <!-- Header Status Laporan -->
     <div class="status-header">
-        <h1 class="status-title">Status Laporan Anda</h1>
-        <p class="laporan-id">ID Laporan: <strong>{{ laporan.kode }}</strong></p>
+        <h3>📊 Status Laporan</h3>
+        <p><strong>ID Laporan:</strong> {{ laporan.kode }}</p>
+        <p><strong>Dibuat:</strong> {{ laporan.tanggal_dibuat }}</p>
+        {% if laporan.is_anonim %}
+        <span class="info-badge anonim">🔒 Laporan Anonim</span>
+        {% endif %}
     </div>
 
-    <!-- Progress Section -->
-    <div class="progress-section">
-        <h2 class="progress-title">Progres Laporan</h2>
-
-        <div class="progress-tracker">
-            <!-- Progress Line -->
-            <div class="progress-line">
-                <div class="progress-line-fill" style="width: 50%;"></div>
-            </div>
-
-            <!-- Step 1: Laporan Diterima -->
-            <div class="progress-step">
-                <div class="step-icon-wrapper active">
-                    <svg class="step-icon active" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                </div>
-                <span class="step-label">Laporan Diterima</span>
-            </div>
-
-            <!-- Step 2: Dalam Proses -->
-            <div class="progress-step">
-                <div class="step-icon-wrapper active">
-                    <svg class="step-icon active" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                </div>
-                <span class="step-label">Dalam Proses</span>
-            </div>
-
-            <!-- Step 3: Verifikasi Tim -->
-            <div class="progress-step">
-                <div class="step-icon-wrapper inactive">
-                    <svg class="step-icon inactive" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
-                    </svg>
-                </div>
-                <span class="step-label inactive">Verifikasi Tim</span>
-            </div>
-
-            <!-- Step 4: Selesai -->
-            <div class="progress-step">
-                <div class="step-icon-wrapper inactive">
-                    <svg class="step-icon inactive" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                </div>
-                <span class="step-label inactive">Selesai</span>
-            </div>
+    <!-- ==================== TAHAP 1: PELAPORAN ==================== -->
+    <div class="tahap-container">
+        <div class="tahap-header {% if laporan.tahap_resmi < 1 %}inactive{% endif %}">
+            <div class="tahap-number">1</div>
+            <div>Pelaporan</div>
         </div>
+        
+        <ul class="sub-status-list">
+            <!-- 1.1 Laporan Diterima -->
+            <li class="sub-status-item {% if laporan.status == 'diterima' or laporan.tahap_resmi >= 1 %}active{% endif %} {% if laporan.tahap_resmi > 1 %}completed{% endif %}">
+                <div class="sub-status-title">🔵 Laporan Diterima</div>
+                <small class="sub-status-time">
+                    {% if laporan.tanggal_dibuat %}
+                        {{ laporan.tanggal_dibuat }}
+                    {% else %}
+                        Tercatat oleh sistem
+                    {% endif %}
+                </small>
+            </li>
 
-        <!-- Status Info Box -->
-        <div class="status-info-box">
-            <div class="status-info-label">Status Terkini:</div>
-            <div class="status-info-value">{{ laporan.status }}</div>
-            <div class="status-info-date">Terakhir diperbarui: {{ laporan.updated_at|date:"d F Y, H:i" }} WIB</div>
+            <!-- 1.2 Verifikasi Awal -->
+            <li class="sub-status-item {% if laporan.status == 'verifikasi_awal' %}active{% elif laporan.tahap_resmi > 1 %}completed{% else %}inactive{% endif %}">
+                <div class="sub-status-title">⏳ Verifikasi Awal</div>
+                <small class="sub-status-time">
+                    {% if laporan.tanggal_verifikasi %}
+                        {{ laporan.tanggal_verifikasi }}
+                    {% else %}
+                        Menunggu verifikasi oleh tim
+                    {% endif %}
+                </small>
+                {% if laporan.catatan_verifikasi %}
+                <div class="note-box">{{ laporan.catatan_verifikasi }}</div>
+                {% endif %}
+            </li>
+        </ul>
+    </div>
+
+    <!-- ==================== TAHAP 2: TINDAK LANJUT AWAL ==================== -->
+    <div class="tahap-container">
+        <div class="tahap-header {% if laporan.tahap_resmi < 2 %}inactive{% endif %}">
+            <div class="tahap-number">2</div>
+            <div>Tindak Lanjut Awal</div>
         </div>
+        
+        <ul class="sub-status-list">
+            <!-- 2.1 Wawancara Pelapor -->
+            <li class="sub-status-item {% if laporan.status == 'wawancara_pelapor' %}active{% elif laporan.tahap_resmi > 2 %}completed{% else %}inactive{% endif %}">
+                <div class="sub-status-title">🗣️ Wawancara Pelapor</div>
+                <small class="sub-status-time">
+                    {% if laporan.tanggal_wawancara_pelapor %}
+                        {{ laporan.tanggal_wawancara_pelapor }}
+                    {% elif laporan.is_anonim %}
+                        <span class="info-badge anonim">Pelapor anonim — opsional atau lewat chat</span>
+                    {% else %}
+                        Menunggu konfirmasi kontak pelapor
+                    {% endif %}
+                </small>
+                {% if laporan.catatan_wawancara_pelapor %}
+                <div class="note-box">{{ laporan.catatan_wawancara_pelapor }}</div>
+                {% endif %}
+            </li>
+
+            <!-- 2.2 Pengumpulan Bukti Tambahan -->
+            <li class="sub-status-item {% if laporan.status == 'pengumpulan_bukti' %}active{% elif laporan.tahap_resmi > 2 %}completed{% else %}inactive{% endif %}">
+                <div class="sub-status-title">📁 Pengumpulan Bukti Tambahan</div>
+                <small class="sub-status-time">
+                    {% if laporan.tanggal_pengumpulan_bukti %}
+                        {{ laporan.tanggal_pengumpulan_bukti }}
+                    {% else %}
+                        Sedang berlangsung
+                    {% endif %}
+                </small>
+                {% if laporan.catatan_pengumpulan %}
+                <div class="note-box">{{ laporan.catatan_pengumpulan }}</div>
+                {% endif %}
+            </li>
+        </ul>
+    </div>
+
+    <!-- ==================== TAHAP 3: PEMERIKSAAN ==================== -->
+    <div class="tahap-container">
+        <div class="tahap-header {% if laporan.tahap_resmi < 3 %}inactive{% endif %}">
+            <div class="tahap-number">3</div>
+            <div>Pemeriksaan</div>
+        </div>
+        
+        <ul class="sub-status-list">
+            <!-- 3.1 Wawancara Terlapor -->
+            <li class="sub-status-item {% if laporan.status == 'wawancara_terlapor' %}active{% elif laporan.tahap_resmi > 3 %}completed{% else %}inactive{% endif %}">
+                <div class="sub-status-title">⏳ Wawancara Terlapor</div>
+                <small class="sub-status-time">
+                    {% if laporan.tanggal_wawancara_terlapor %}
+                        {{ laporan.tanggal_wawancara_terlapor }}
+                    {% else %}
+                        Menunggu jadwal wawancara terlapor
+                    {% endif %}
+                </small>
+                {% if laporan.catatan_wawancara_terlapor %}
+                <div class="note-box">{{ laporan.catatan_wawancara_terlapor }}</div>
+                {% endif %}
+            </li>
+
+            <!-- 3.2 Pemeriksaan Kronologi & Analisis Bukti -->
+            <li class="sub-status-item {% if laporan.status == 'analisis_kronologi' %}active{% elif laporan.tahap_resmi > 3 %}completed{% else %}inactive{% endif %}">
+                <div class="sub-status-title">🔍 Pemeriksaan Kronologi & Analisis Bukti</div>
+                <small class="sub-status-time">
+                    {% if laporan.tanggal_analisis %}
+                        {{ laporan.tanggal_analisis }}
+                    {% else %}
+                        Belum dimulai
+                    {% endif %}
+                </small>
+                {% if laporan.catatan_analisis %}
+                <div class="note-box">{{ laporan.catatan_analisis }}</div>
+                {% endif %}
+            </li>
+
+            <!-- 3.3 Rapat Pemutusan Kasus -->
+            <li class="sub-status-item {% if laporan.status == 'rapat_pemutusan' %}active{% elif laporan.tahap_resmi > 3 %}completed{% else %}inactive{% endif %}">
+                <div class="sub-status-title">🧩 Rapat Pemutusan Kasus</div>
+                <small class="sub-status-time">
+                    {% if laporan.tanggal_rapat_pemutusan %}
+                        {{ laporan.tanggal_rapat_pemutusan }}
+                    {% else %}
+                        Belum dilaksanakan
+                    {% endif %}
+                </small>
+                {% if laporan.catatan_rapat_pemutusan %}
+                <div class="note-box">{{ laporan.catatan_rapat_pemutusan }}</div>
+                {% endif %}
+            </li>
+        </ul>
+    </div>
+
+    <!-- ==================== TAHAP 4: PENANGANAN ==================== -->
+    <div class="tahap-container">
+        <div class="tahap-header {% if laporan.tahap_resmi < 4 %}inactive{% endif %}">
+            <div class="tahap-number">4</div>
+            <div>Penanganan</div>
+        </div>
+        
+        <ul class="sub-status-list">
+            <!-- 4.1 Rekomendasi Tindak Lanjut -->
+            <li class="sub-status-item {% if laporan.status == 'rekomendasi' %}active{% elif laporan.tahap_resmi > 4 %}completed{% else %}inactive{% endif %}">
+                <div class="sub-status-title">📌 Rekomendasi Tindak Lanjut</div>
+                <small class="sub-status-time">
+                    {% if laporan.tanggal_rekomendasi %}
+                        {{ laporan.tanggal_rekomendasi }}
+                    {% else %}
+                        Dalam proses penyusunan
+                    {% endif %}
+                </small>
+                {% if laporan.catatan_rekomendasi %}
+                <div class="note-box">{{ laporan.catatan_rekomendasi }}</div>
+                {% endif %}
+            </li>
+        </ul>
+    </div>
+
+    <!-- ==================== TAHAP 5: TINDAK LANJUT ==================== -->
+    <div class="tahap-container">
+        <div class="tahap-header {% if laporan.tahap_resmi < 5 %}inactive{% endif %}">
+            <div class="tahap-number">5</div>
+            <div>Tindak Lanjut</div>
+        </div>
+        
+        <ul class="sub-status-list">
+            <!-- 5.1 Pelaksanaan Tindak Lanjut -->
+            <li class="sub-status-item {% if laporan.status == 'pelaksanaan' %}active{% elif laporan.status == 'ditutup' %}completed{% else %}inactive{% endif %}">
+                <div class="sub-status-title">🚀 Pelaksanaan Tindak Lanjut</div>
+                <small class="sub-status-time">
+                    {% if laporan.tanggal_pelaksanaan %}
+                        {{ laporan.tanggal_pelaksanaan }}
+                    {% else %}
+                        Belum dilakukan
+                    {% endif %}
+                </small>
+                {% if laporan.catatan_pelaksanaan %}
+                <div class="note-box">{{ laporan.catatan_pelaksanaan }}</div>
+                {% endif %}
+            </li>
+
+            <!-- 5.2 Kasus Ditutup -->
+            <li class="sub-status-item {% if laporan.status == 'ditutup' %}active completed{% else %}inactive{% endif %}">
+                <div class="sub-status-title">✔ Kasus Ditutup</div>
+                <small class="sub-status-time">
+                    {% if laporan.tanggal_selesai %}
+                        {{ laporan.tanggal_selesai }}
+                    {% else %}
+                        Belum ditutup
+                    {% endif %}
+                </small>
+                {% if laporan.catatan_penutupan %}
+                <div class="note-box">{{ laporan.catatan_penutupan }}</div>
+                {% endif %}
+            </li>
+        </ul>
+    </div>
+
+
+    <!-- RIWAYAT PROGRESS -->
+    <div class="history-box">
+        <h5>Riwayat Progress</h5>
+
+        {% if riwayat and riwayat|length > 0 %}
+            {% for r in riwayat %}
+            <div class="history-item">
+                <strong>{{ r.judul }}</strong>  
+                <p>{{ r.deskripsi }}</p>
+                <small>{{ r.tanggal }}</small>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p>Belum ada riwayat progres.</p>
+        {% endif %}
+    </div>
+
+    <!-- BALASAN PELAPOR -->
+    {% if pelapor_responses and pelapor_responses|length > 0 %}
+    <div class="history-box" style="background: #f0f9ff; border-left: 4px solid #0284c7;">
+        <h5 style="color: #0284c7;">💬 Balasan Anda ke Admin</h5>
+        {% for resp in pelapor_responses %}
+        <div class="history-item" style="background: white; border: 1px solid #bae6fd;">
+            <p>{{ resp.pesan }}</p>
+            <small style="color: #0284c7;">{{ resp.tanggal|date:"Y-m-d H:i" }}</small>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- UPLOAD BUKTI TAMBAHAN -->
+    <div class="history-box" style="background: #fef3c7; border-left: 4px solid #f59e0b;">
+        <h5 style="color: #f59e0b;">📎 Upload Bukti Tambahan</h5>
+        <p style="font-size: 13px; color: #92400e; margin-bottom: 15px;">
+            Jika admin meminta dokumen atau bukti tambahan, Anda dapat menguploadnya di sini.
+        </p>
+        <form method="POST" enctype="multipart/form-data" style="background: white; padding: 15px; border-radius: 8px; border: 1px solid #fcd34d;">
+            {% csrf_token %}
+            <input type="hidden" name="laporan_id" value="{{ laporan.id }}">
+            <input type="hidden" name="action" value="upload_bukti">
+            
+            <div style="margin-bottom: 12px;">
+                <label style="display: block; font-weight: 600; margin-bottom: 5px; font-size: 13px;">Pilih File:</label>
+                <input type="file" name="bukti_tambahan" multiple accept="image/*,application/pdf" style="font-size: 13px;">
+                <small style="display: block; color: #78716c; margin-top: 4px;">Format: PNG, JPG, PDF (Max 5MB per file)</small>
+            </div>
+            
+            <div style="margin-bottom: 12px;">
+                <label style="display: block; font-weight: 600; margin-bottom: 5px; font-size: 13px;">Keterangan (Opsional):</label>
+                <input type="text" name="keterangan" placeholder="Contoh: Bukti tambahan foto kejadian" style="width: 100%; padding: 8px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 13px;">
+            </div>
+            
+            <button type="submit" style="background: #f59e0b; color: white; padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 13px;">
+                Upload Bukti
+            </button>
+        </form>
+    </div>
+
+    <!-- KIRIM BALASAN KE ADMIN -->
+    <div class="history-box" style="background: #f0fdf4; border-left: 4px solid #10b981;">
+        <h5 style="color: #10b981;">💬 Kirim Balasan ke Admin</h5>
+        <p style="font-size: 13px; color: #065f46; margin-bottom: 15px;">
+            Jika Anda ingin memberikan informasi tambahan atau menanggapi permintaan admin, kirim pesan di sini.
+        </p>
+        <form method="POST" style="background: white; padding: 15px; border-radius: 8px; border: 1px solid #86efac;">
+            {% csrf_token %}
+            <input type="hidden" name="laporan_id" value="{{ laporan.id }}">
+            <input type="hidden" name="action" value="kirim_balasan">
+            
+            <div style="margin-bottom: 12px;">
+                <label style="display: block; font-weight: 600; margin-bottom: 5px; font-size: 13px;">Pesan Anda:</label>
+                <textarea name="pesan" rows="4" placeholder="Tulis pesan atau informasi tambahan untuk admin..." style="width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 13px; font-family: inherit;" required></textarea>
+            </div>
+            
+            <button type="submit" style="background: #10b981; color: white; padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 13px;">
+                Kirim Balasan
+            </button>
+        </form>
     </div>
 
 </div>

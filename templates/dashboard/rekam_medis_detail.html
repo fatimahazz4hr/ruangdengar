@@ -1,0 +1,169 @@
+{% extends 'base.html' %}
+
+{% block title %}Detail Rekam Medis Sesi {{ rekam_medis.sesi_ke }} - {{ klien_nama }}{% endblock %}
+
+{% block content %}
+<div style="padding: 30px;">
+    <!-- Header -->
+    <div style="background: linear-gradient(135deg, #6a5acd 0%, #5a509b 100%); padding: 25px 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(106, 90, 205, 0.2); margin-bottom: 30px;">
+        <h1 style="color: white; margin: 0 0 8px 0; font-size: 28px; font-weight: 600;">🩺 Rekam Medis - Sesi {{ rekam_medis.sesi_ke }}</h1>
+        <p style="color: rgba(255,255,255,0.9); margin: 0; font-size: 15px;">Detail lengkap sesi konseling untuk {{ klien_nama }}</p>
+    </div>
+
+    <!-- Messages -->
+    {% if messages %}
+        {% for message in messages %}
+            <div style="background: {% if message.tags == 'success' %}#d1fae5{% elif message.tags == 'error' %}#fee2e2{% else %}#dbeafe{% endif %}; border-left: 4px solid {% if message.tags == 'success' %}#059669{% elif message.tags == 'error' %}#dc2626{% else %}#3b82f6{% endif %}; padding: 15px 20px; border-radius: 8px; margin-bottom: 20px;">
+                <p style="margin: 0; color: {% if message.tags == 'success' %}#065f46{% elif message.tags == 'error' %}#991b1b{% else %}#1e40af{% endif %}; font-weight: 500;">{{ message }}</p>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- Action Buttons -->
+    <div style="display: flex; gap: 15px; margin-bottom: 30px; flex-wrap: wrap;">
+        <a href="{% url 'rekam-medis-edit' rekam_medis.id %}" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; padding: 12px 24px; border-radius: 10px; font-weight: 600; text-decoration: none; transition: 0.2s; box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);">
+            ✏️ Edit
+        </a>
+        <a href="{% url 'rekam-medis-list' booking.id %}" style="background: #6b7280; color: white; padding: 12px 24px; border-radius: 10px; font-weight: 600; text-decoration: none; transition: 0.2s;">
+            ← Kembali ke List
+        </a>
+    </div>
+
+    <!-- Info Klien & Sesi -->
+    <div style="background: white; border-radius: 12px; padding: 25px; margin-bottom: 25px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+        <h3 style="color: #6a5acd; margin: 0 0 20px 0; font-size: 20px; font-weight: 600; border-bottom: 2px solid #e5e7eb; padding-bottom: 12px;">📋 Informasi Sesi</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+            <div>
+                <p style="margin: 0 0 5px 0; color: #6b7280; font-size: 13px; font-weight: 600;">Nama Klien</p>
+                <p style="margin: 0; color: #1f2937; font-size: 16px; font-weight: 500;">{{ klien_nama }}</p>
+            </div>
+            <div>
+                <p style="margin: 0 0 5px 0; color: #6b7280; font-size: 13px; font-weight: 600;">Sesi Ke</p>
+                <p style="margin: 0; color: #1f2937; font-size: 16px; font-weight: 500;">{{ rekam_medis.sesi_ke }}</p>
+            </div>
+            <div>
+                <p style="margin: 0 0 5px 0; color: #6b7280; font-size: 13px; font-weight: 600;">Tanggal Sesi</p>
+                <p style="margin: 0; color: #1f2937; font-size: 16px; font-weight: 500;">{{ rekam_medis.tanggal_sesi|date:"d M Y, H:i" }}</p>
+            </div>
+            <div>
+                <p style="margin: 0 0 5px 0; color: #6b7280; font-size: 13px; font-weight: 600;">Konselor</p>
+                <p style="margin: 0; color: #1f2937; font-size: 16px; font-weight: 500;">{{ rekam_medis.created_by.nama_lengkap|default:"Admin" }}</p>
+            </div>
+            <div>
+                <p style="margin: 0 0 5px 0; color: #6b7280; font-size: 13px; font-weight: 600;">Terakhir Diupdate</p>
+                <p style="margin: 0; color: #1f2937; font-size: 16px; font-weight: 500;">{{ rekam_medis.updated_at|date:"d M Y, H:i" }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Assessment Klien -->
+    <div style="background: white; border-radius: 12px; padding: 25px; margin-bottom: 25px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+        <h3 style="color: #6a5acd; margin: 0 0 20px 0; font-size: 20px; font-weight: 600; border-bottom: 2px solid #e5e7eb; padding-bottom: 12px;">🩺 Assessment Klien</h3>
+        
+        {% if rekam_medis.diagnosis_awal %}
+            <div style="background: #f3f4f6; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                <p style="margin: 0 0 5px 0; color: #6b7280; font-size: 13px; font-weight: 600;">Diagnosis Awal</p>
+                <p style="margin: 0; color: #1f2937; font-size: 16px; font-weight: 500;">{{ rekam_medis.diagnosis_awal }}</p>
+            </div>
+        {% endif %}
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 20px;">
+            <div style="background: #dbeafe; padding: 18px; border-radius: 10px; text-align: center;">
+                <p style="margin: 0 0 10px 0; color: #3b82f6; font-size: 13px; font-weight: 600; text-transform: uppercase;">Mood Klien</p>
+                <p style="margin: 0; font-size: 32px; font-weight: 700; color: {% if rekam_medis.mood_klien >= 7 %}#059669{% elif rekam_medis.mood_klien >= 4 %}#d97706{% else %}#dc2626{% endif %};">
+                    {{ rekam_medis.mood_klien }}/10
+                </p>
+            </div>
+            <div style="background: {% if rekam_medis.risiko_bunuh_diri == 'tinggi' %}#fee2e2{% elif rekam_medis.risiko_bunuh_diri == 'sedang' %}#fef3c7{% else %}#d1fae5{% endif %}; padding: 18px; border-radius: 10px; text-align: center;">
+                <p style="margin: 0 0 10px 0; color: {% if rekam_medis.risiko_bunuh_diri == 'tinggi' %}#dc2626{% elif rekam_medis.risiko_bunuh_diri == 'sedang' %}#d97706{% else %}#059669{% endif %}; font-size: 13px; font-weight: 600; text-transform: uppercase;">Risiko Bunuh Diri</p>
+                <p style="margin: 0; font-size: 22px; font-weight: 700; color: {% if rekam_medis.risiko_bunuh_diri == 'tinggi' %}#991b1b{% elif rekam_medis.risiko_bunuh_diri == 'sedang' %}#92400e{% else %}#065f46{% endif %};">
+                    {{ rekam_medis.get_risiko_bunuh_diri_display }}
+                </p>
+            </div>
+            <div style="background: {% if rekam_medis.risiko_self_harm == 'tinggi' %}#fee2e2{% elif rekam_medis.risiko_self_harm == 'sedang' %}#fef3c7{% else %}#d1fae5{% endif %}; padding: 18px; border-radius: 10px; text-align: center;">
+                <p style="margin: 0 0 10px 0; color: {% if rekam_medis.risiko_self_harm == 'tinggi' %}#dc2626{% elif rekam_medis.risiko_self_harm == 'sedang' %}#d97706{% else %}#059669{% endif %}; font-size: 13px; font-weight: 600; text-transform: uppercase;">Risiko Self-Harm</p>
+                <p style="margin: 0; font-size: 22px; font-weight: 700; color: {% if rekam_medis.risiko_self_harm == 'tinggi' %}#991b1b{% elif rekam_medis.risiko_self_harm == 'sedang' %}#92400e{% else %}#065f46{% endif %};">
+                    {{ rekam_medis.get_risiko_self_harm_display }}
+                </p>
+            </div>
+        </div>
+
+        <!-- Peringatan Risiko Tinggi -->
+        {% if rekam_medis.risiko_bunuh_diri == 'tinggi' or rekam_medis.risiko_self_harm == 'tinggi' %}
+            <div style="background: #fee2e2; border-left: 4px solid #dc2626; padding: 18px 20px; border-radius: 10px; display: flex; align-items: center; gap: 15px;">
+                <span style="font-size: 32px;">⚠️</span>
+                <div>
+                    <p style="margin: 0 0 5px 0; color: #991b1b; font-size: 16px; font-weight: 700;">PERHATIAN</p>
+                    <p style="margin: 0; color: #dc2626; font-size: 14px; font-weight: 500;">Klien memiliki risiko tinggi. Pertimbangkan rujukan darurat atau follow-up intensif.</p>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Catatan Sesi -->
+    <div style="background: white; border-radius: 12px; padding: 25px; margin-bottom: 25px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+        <h3 style="color: #6a5acd; margin: 0 0 20px 0; font-size: 20px; font-weight: 600; border-bottom: 2px solid #e5e7eb; padding-bottom: 12px;">📝 Catatan Sesi</h3>
+        
+        <div style="margin-bottom: 25px;">
+            <h4 style="color: #374151; font-size: 16px; font-weight: 600; margin: 0 0 12px 0;">Catatan Konselor</h4>
+            <div style="background: #f9fafb; padding: 20px; border-radius: 10px; border-left: 4px solid #6a5acd;">
+                <p style="margin: 0; color: #1f2937; line-height: 1.8; white-space: pre-wrap;">{{ rekam_medis.catatan_konselor }}</p>
+            </div>
+            <div style="background: #fee2e2; padding: 10px 15px; border-radius: 5px; margin-top: 10px; display: inline-block;">
+                <small style="color: #991b1b; font-weight: 600; font-size: 12px;">⚠️ CONFIDENTIAL - Tidak bisa dilihat klien</small>
+            </div>
+        </div>
+
+        {% if rekam_medis.intervensi_diberikan %}
+            <div style="margin-bottom: 25px;">
+                <h4 style="color: #374151; font-size: 16px; font-weight: 600; margin: 0 0 12px 0;">Intervensi Diberikan</h4>
+                <div style="background: #f9fafb; padding: 20px; border-radius: 10px; border-left: 4px solid #10b981;">
+                    <p style="margin: 0; color: #1f2937; line-height: 1.8; white-space: pre-wrap;">{{ rekam_medis.intervensi_diberikan }}</p>
+                </div>
+            </div>
+        {% endif %}
+
+        {% if rekam_medis.progress_notes %}
+            <div style="margin-bottom: 25px;">
+                <h4 style="color: #374151; font-size: 16px; font-weight: 600; margin: 0 0 12px 0;">Catatan Progress</h4>
+                <div style="background: #f9fafb; padding: 20px; border-radius: 10px; border-left: 4px solid #3b82f6;">
+                    <p style="margin: 0; color: #1f2937; line-height: 1.8; white-space: pre-wrap;">{{ rekam_medis.progress_notes }}</p>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Rencana Tindak Lanjut -->
+    <div style="background: white; border-radius: 12px; padding: 25px; margin-bottom: 25px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+        <h3 style="color: #6a5acd; margin: 0 0 20px 0; font-size: 20px; font-weight: 600; border-bottom: 2px solid #e5e7eb; padding-bottom: 12px;">📅 Rencana Tindak Lanjut</h3>
+        
+        {% if rekam_medis.rencana_tindak_lanjut %}
+            <div style="margin-bottom: 20px;">
+                <h4 style="color: #374151; font-size: 16px; font-weight: 600; margin: 0 0 12px 0;">Rencana</h4>
+                <div style="background: #f9fafb; padding: 20px; border-radius: 10px; border-left: 4px solid #f59e0b;">
+                    <p style="margin: 0; color: #1f2937; line-height: 1.8; white-space: pre-wrap;">{{ rekam_medis.rencana_tindak_lanjut }}</p>
+                </div>
+            </div>
+        {% endif %}
+
+        {% if rekam_medis.sesi_selanjutnya %}
+            <div style="background: #fef3c7; padding: 15px 20px; border-radius: 10px; margin-bottom: 20px; display: flex; align-items: center; gap: 15px;">
+                <span style="font-size: 28px;">📅</span>
+                <div>
+                    <p style="margin: 0 0 5px 0; color: #92400e; font-size: 13px; font-weight: 600;">Tanggal Sesi Selanjutnya</p>
+                    <p style="margin: 0; color: #78350f; font-size: 18px; font-weight: 700;">{{ rekam_medis.sesi_selanjutnya|date:"d M Y" }}</p>
+                </div>
+            </div>
+        {% endif %}
+
+        {% if rekam_medis.file_lampiran %}
+            <div>
+                <h4 style="color: #374151; font-size: 16px; font-weight: 600; margin: 0 0 12px 0;">File Lampiran</h4>
+                <a href="{{ rekam_medis.file_lampiran.url }}" target="_blank" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; padding: 12px 24px; border-radius: 10px; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 10px; transition: 0.2s; box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);">
+                    📎 Download File
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

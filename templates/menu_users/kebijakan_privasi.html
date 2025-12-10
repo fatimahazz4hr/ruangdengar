@@ -1,0 +1,240 @@
+{% extends 'base_user.html' %}
+{% load static %}
+
+{% block title %}Kebijakan Privasi & Kerahasiaan | Ruang Dengar{% endblock %}
+
+{% block content %}
+<style>
+  .privacy-container {
+    max-width: 900px;
+    margin: 30px auto;
+    padding: 40px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  }
+  
+  .privacy-header {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+  
+  .privacy-header h1 {
+    color: #5a509b;
+    font-size: 28px;
+    margin-bottom: 10px;
+  }
+  
+  .privacy-header p {
+    color: #6b7280;
+    font-size: 16px;
+  }
+  
+  .privacy-section {
+    margin-bottom: 35px;
+  }
+  
+  .privacy-section h2 {
+    color: #1f2937;
+    font-size: 20px;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .privacy-section h2 span {
+    font-size: 24px;
+  }
+  
+  .privacy-section p {
+    color: #4b5563;
+    line-height: 1.8;
+    margin-bottom: 12px;
+  }
+  
+  .privacy-section ul {
+    color: #4b5563;
+    line-height: 1.8;
+    margin-left: 20px;
+  }
+  
+  .privacy-section ul li {
+    margin-bottom: 8px;
+  }
+  
+  .highlight-box {
+    background: #f0fdf4;
+    border-left: 4px solid #10b981;
+    padding: 20px;
+    border-radius: 8px;
+    margin: 25px 0;
+  }
+  
+  .highlight-box h3 {
+    color: #065f46;
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+  
+  .highlight-box p {
+    color: #047857;
+    margin-bottom: 0;
+  }
+  
+  .warning-box {
+    background: #fef3c7;
+    border-left: 4px solid #f59e0b;
+    padding: 20px;
+    border-radius: 8px;
+    margin: 25px 0;
+  }
+  
+  .warning-box h3 {
+    color: #92400e;
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+  
+  .warning-box p {
+    color: #78350f;
+    margin-bottom: 0;
+  }
+  
+  .contact-section {
+    background: #f9fafb;
+    padding: 25px;
+    border-radius: 8px;
+    margin-top: 40px;
+    text-align: center;
+  }
+  
+  .contact-section h3 {
+    color: #1f2937;
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+  
+  .contact-section p {
+    color: #6b7280;
+    margin-bottom: 0;
+  }
+</style>
+
+<div class="privacy-container">
+  <div class="privacy-header">
+    <h1>🔒 Kebijakan Privasi & Kerahasiaan</h1>
+    <p>Ruang Dengar berkomitmen menjaga kerahasiaan dan keamanan data Anda</p>
+  </div>
+
+  <div class="privacy-section">
+    <h2><span>🛡️</span> Kerahasiaan Terjamin</h2>
+    <p>
+      Semua informasi yang Anda kirimkan — termasuk cerita, bukti, dan detail pribadi — <strong>hanya dapat diakses oleh Admin Ruang Dengar yang berwenang</strong>.
+    </p>
+    <ul>
+      <li>Tidak ada pihak lain yang dapat melihat laporan Anda</li>
+      <li>Data disimpan dengan aman di sistem internal</li>
+      <li>Admin mematuhi standar kerahasiaan internal yang ketat</li>
+    </ul>
+  </div>
+
+  <div class="privacy-section">
+    <h2><span>👤</span> Pelaporan Boleh Anonim</h2>
+    <p>
+      Anda bebas berbagi cerita <strong>tanpa menyertakan identitas</strong>. Saat memilih opsi anonim:
+    </p>
+    <ul>
+      <li>Nama dan data pribadi Anda tidak akan terlihat oleh admin</li>
+      <li>Admin tidak akan mencoba melacak identitas atau informasi pribadi Anda</li>
+      <li>Laporan tetap dapat diproses tanpa mengungkap identitas Anda</li>
+    </ul>
+  </div>
+
+  <div class="highlight-box">
+    <h3>✅ Perbedaan Laporan Anonim vs. Non-Anonim</h3>
+    <p>
+      <strong>Laporan Anonim:</strong> Data pribadi (nama, nomor telepon, alamat) tersembunyi dari admin. Hanya konten laporan yang terlihat.<br><br>
+      <strong>Laporan Non-Anonim:</strong> Admin dapat melihat identitas Anda untuk memberikan bantuan lebih lanjut jika diperlukan.
+    </p>
+  </div>
+
+  <div class="privacy-section">
+    <h2><span>🔐</span> Keamanan Data</h2>
+    <p>
+      Ruang Dengar menerapkan langkah-langkah keamanan untuk melindungi data Anda:
+    </p>
+    <ul>
+      <li>Data disimpan secara aman di sistem dengan enkripsi</li>
+      <li>Akses dibatasi hanya untuk admin yang berwenang</li>
+      <li>Tidak dibagikan kepada pihak lain tanpa persetujuan dari Anda</li>
+      <li>Backup data dilakukan secara berkala untuk mencegah kehilangan data</li>
+    </ul>
+  </div>
+
+  <div class="privacy-section">
+    <h2><span>🤝</span> Dukungan & Tindak Lanjut</h2>
+    <p>
+      Jika Anda membutuhkan bantuan lanjutan seperti:
+    </p>
+    <ul>
+      <li>Konsultasi psikolog atau konselor</li>
+      <li>Bantuan hukum</li>
+      <li>Pengaduan resmi ke pihak kampus</li>
+      <li>Rujukan ke layanan profesional</li>
+    </ul>
+    <p>
+      Admin akan membantu menghubungkan Anda ke layanan yang tepat — <strong>hanya jika Anda setuju</strong>.
+    </p>
+  </div>
+
+  <div class="warning-box">
+    <h3>⚠️ Transparansi Sistem</h3>
+    <p>
+      Saat ini Ruang Dengar belum memiliki role khusus seperti Satgas PPKPT, Konselor, atau Tim Investigasi. 
+      Pengolahan laporan dilakukan oleh admin yang telah ditunjuk dan mematuhi standar kerahasiaan internal.
+    </p>
+  </div>
+
+  <div class="privacy-section">
+    <h2><span>📋</span> Data yang Kami Kumpulkan</h2>
+    <p>
+      Ruang Dengar hanya mengumpulkan data yang diperlukan untuk memproses laporan Anda:
+    </p>
+    <ul>
+      <li><strong>Data Akun:</strong> Email kampus, nama lengkap, username</li>
+      <li><strong>Data Laporan:</strong> Jenis kekerasan, lokasi, deskripsi kejadian, bukti (opsional)</li>
+      <li><strong>Data Pribadi (Opsional):</strong> Nomor telepon, alamat, nomor kontak kerabat</li>
+    </ul>
+    <p>
+      <em>Catatan: Data pribadi hanya Anda yang dapat melihat di profil. Admin tidak dapat mengaksesnya kecuali Anda melaporkan secara non-anonim.</em>
+    </p>
+  </div>
+
+  <div class="privacy-section">
+    <h2><span>🗑️</span> Hak Anda</h2>
+    <p>
+      Anda memiliki hak untuk:
+    </p>
+    <ul>
+      <li>Mengakses dan melihat data pribadi Anda</li>
+      <li>Memperbarui informasi profil kapan saja</li>
+      <li>Melihat riwayat dan status laporan yang Anda kirim</li>
+      <li>Menghubungi admin untuk pertanyaan terkait data Anda</li>
+    </ul>
+  </div>
+
+  <div class="contact-section">
+    <h3>📞 Butuh Bantuan atau Pertanyaan?</h3>
+    <p>
+      Jika Anda memiliki pertanyaan tentang kebijakan privasi ini atau keamanan data Anda,<br>
+      silakan <a href="{% url 'bantuan' %}" style="color: #5a509b; text-decoration: underline; font-weight: 600;">hubungi kami melalui halaman Bantuan</a> atau sistem notifikasi.
+    </p>
+  </div>
+
+  <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #e5e7eb; text-align: center; color: #9ca3af; font-size: 14px;">
+    <p>Terakhir diperbarui: Desember 2025</p>
+  </div>
+</div>
+
+{% endblock %}
