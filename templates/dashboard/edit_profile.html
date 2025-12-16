@@ -69,17 +69,58 @@
   .form-group input[type="text"],
   .form-group input[type="file"],
   .form-group input[type="password"],
+  .form-group input[type="email"],
+  .form-group input[type="number"],
   .form-group textarea {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #d1d5db;
-    border-radius: 8px;
-    font-size: 14px;
-    font-family: inherit;
+      width: 100%;
+      padding: 12px;
+      min-height: 46px;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: inherit;
+      box-sizing: border-box;
+    }
+
+    .form-group select {
+      width: 100%;
+      padding: 12px;
+      min-height: 46px;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: inherit;
+      background: #fff;
+      box-sizing: border-box;
   }
   
   .form-group input[type="file"] {
     padding: 10px;
+  }
+  
+  .password-toggle-wrapper {
+    position: relative;
+  }
+
+  .password-toggle-wrapper input {
+    padding-right: 45px;
+  }
+
+  .toggle-password-btn {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    color: #666;
+    padding: 5px;
+  }
+
+  .toggle-password-btn:hover {
+    color: #5a509b;
   }
   
   .form-group small {
@@ -103,6 +144,12 @@
   
   .btn-primary:hover {
     background-color: #4338ca;
+  }
+
+  input[disabled], select[disabled], textarea[disabled] {
+    background: #f3f4f6;
+    color: #6b7280;
+    cursor: not-allowed;
   }
   
   .alert {
@@ -134,6 +181,13 @@
     color: #dc2626;
     font-size: 13px;
   }
+  .readonly-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+    margin-top: 10px;
+  }
+  
 </style>
 
 <div class="profile-container">
@@ -145,14 +199,20 @@
     {% endfor %}
   {% endif %}
 
+  {% if profile_form.non_field_errors %}
+    <div class="alert alert-error">
+      {{ profile_form.non_field_errors }}
+    </div>
+  {% endif %}
+
   <!-- Profile Information Card -->
   <div class="profile-card">
-    <h2>📝 Edit Profile</h2>
+    <h2>📝 Informasi Akun</h2>
     
     <form method="POST" enctype="multipart/form-data">
       {% csrf_token %}
       
-      <div class="profile-avatar-section">
+      <div class="profile-avatar-section" style="gap: 16px; align-items: flex-start;">
         <div class="profile-avatar-preview">
           {% if user.profile_picture %}
             <img src="{{ user.profile_picture.url }}" alt="Profile Picture" id="preview">
@@ -161,10 +221,10 @@
           {% endif %}
         </div>
         
-        <div class="profile-avatar-info">
-          <h3>{{ user.nama_lengkap }}</h3>
-          <p>{{ user.email }}</p>
-          <div class="form-group">
+        <div class="profile-avatar-info" style="flex:1;">
+          <h3 style="margin-bottom:6px;">{{ user.nama_lengkap }}</h3>
+          <p style="margin-top:0; color:#6b7280;">{{ user.email }}</p>
+          <div class="form-group" style="margin-bottom:0; max-width:360px;">
             {{ profile_form.profile_picture }}
             <small>{{ profile_form.profile_picture.help_text }}</small>
             {{ profile_form.profile_picture.errors }}
@@ -177,7 +237,78 @@
         {{ profile_form.nama_lengkap }}
         {{ profile_form.nama_lengkap.errors }}
       </div>
+
+      <div class="form-group">
+        <label for="{{ profile_form.email.id_for_label }}">{{ profile_form.email.label }}</label>
+        {{ profile_form.email }}
+        {{ profile_form.email.errors }}
+      </div>
+
+      <div class="form-group">
+        <label for="{{ profile_form.fakultas.id_for_label }}">{{ profile_form.fakultas.label }}</label>
+        {{ profile_form.fakultas }}
+        {{ profile_form.fakultas.errors }}
+      </div>
+
+      <div class="form-group">
+        <label for="{{ profile_form.prodi.id_for_label }}">{{ profile_form.prodi.label }}</label>
+        {{ profile_form.prodi }}
+        {{ profile_form.prodi.errors }}
+      </div>
+
+      <div class="form-group">
+        <label for="{{ profile_form.status_pengguna.id_for_label }}">{{ profile_form.status_pengguna.label }}</label>
+        {{ profile_form.status_pengguna }}
+        {{ profile_form.status_pengguna.errors }}
+      </div>
+
+      <div class="form-group">
+        <label for="{{ profile_form.usia.id_for_label }}">{{ profile_form.usia.label }}</label>
+        {{ profile_form.usia }}
+        {{ profile_form.usia.errors }}
+      </div>
+
+      <div class="form-group">
+        <label for="{{ profile_form.no_whatsapp.id_for_label }}">{{ profile_form.no_whatsapp.label }}</label>
+        {{ profile_form.no_whatsapp }}
+        <small>{{ profile_form.no_whatsapp.help_text }}</small>
+        {{ profile_form.no_whatsapp.errors }}
+      </div>
+
+      <div class="form-group">
+        <label for="{{ profile_form.email_pribadi.id_for_label }}">{{ profile_form.email_pribadi.label }}</label>
+        {{ profile_form.email_pribadi }}
+        {{ profile_form.email_pribadi.errors }}
+      </div>
       
+      <!-- Data Pribadi Section -->
+      <div style="margin-top: 30px; padding-top: 20px; border-top: 2px solid #e5e7eb;">
+        <h3 style="color: #5a509b; font-size: 16px; margin-bottom: 15px;">
+          🔒 Data Pribadi (Privat - Hanya Anda yang dapat melihat)
+        </h3>
+        <p style="font-size: 13px; color: #6b7280; margin-bottom: 20px;">
+          ℹ️ Saat melaporkan <strong>sebagai anonim</strong>, seluruh data profil Anda (termasuk identitas dan kontak) disembunyikan dari admin.
+        </p>
+        
+        <div class="form-group">
+          <label for="{{ profile_form.nomor_telepon.id_for_label }}">{{ profile_form.nomor_telepon.label }}</label>
+          {{ profile_form.nomor_telepon }}
+          {{ profile_form.nomor_telepon.errors }}
+        </div>
+        
+        <div class="form-group">
+          <label for="{{ profile_form.alamat.id_for_label }}">{{ profile_form.alamat.label }}</label>
+          {{ profile_form.alamat }}
+          {{ profile_form.alamat.errors }}
+        </div>
+        
+        <div class="form-group">
+          <label for="{{ profile_form.nomor_telepon_kerabat.id_for_label }}">{{ profile_form.nomor_telepon_kerabat.label }}</label>
+          {{ profile_form.nomor_telepon_kerabat }}
+          <small>{{ profile_form.nomor_telepon_kerabat.help_text }}</small>
+          {{ profile_form.nomor_telepon_kerabat.errors }}
+        </div>
+      </div>
       <button type="submit" name="update_profile" class="btn-primary">💾 Simpan Perubahan</button>
     </form>
   </div>
@@ -191,19 +322,28 @@
       
       <div class="form-group">
         <label for="{{ password_form.old_password.id_for_label }}">{{ password_form.old_password.label }}</label>
-        {{ password_form.old_password }}
+        <div class="password-toggle-wrapper">
+          {{ password_form.old_password }}
+          <button type="button" class="toggle-password-btn" data-target="{{ password_form.old_password.id_for_label }}">👁️</button>
+        </div>
         {{ password_form.old_password.errors }}
       </div>
       
       <div class="form-group">
         <label for="{{ password_form.new_password1.id_for_label }}">{{ password_form.new_password1.label }}</label>
-        {{ password_form.new_password1 }}
+        <div class="password-toggle-wrapper">
+          {{ password_form.new_password1 }}
+          <button type="button" class="toggle-password-btn" data-target="{{ password_form.new_password1.id_for_label }}">👁️</button>
+        </div>
         {{ password_form.new_password1.errors }}
       </div>
       
       <div class="form-group">
         <label for="{{ password_form.new_password2.id_for_label }}">{{ password_form.new_password2.label }}</label>
-        {{ password_form.new_password2 }}
+        <div class="password-toggle-wrapper">
+          {{ password_form.new_password2 }}
+          <button type="button" class="toggle-password-btn" data-target="{{ password_form.new_password2.id_for_label }}">👁️</button>
+        </div>
         {{ password_form.new_password2.errors }}
       </div>
       
@@ -215,7 +355,7 @@
       
       <button type="submit" name="change_password" class="btn-primary">🔐 Ubah Password</button>
       <p style="margin-top: 10px; font-size: 13px; color: #6b7280;">
-        ⚠️ Setelah mengganti password, Anda akan logout otomatis dan perlu login kembali.
+        ✅ Password baru langsung aktif, Anda tetap login.
       </p>
     </form>
   </div>
@@ -232,6 +372,22 @@
       };
       reader.readAsDataURL(file);
     }
+  });
+
+  // Toggle password visibility
+  document.querySelectorAll('.toggle-password-btn').forEach(function(button) {
+    button.addEventListener('click', function(e) {
+      e.preventDefault();
+      const targetId = this.getAttribute('data-target');
+      const input = document.getElementById(targetId);
+      if (input.type === 'password') {
+        input.type = 'text';
+        this.textContent = '🙈';
+      } else {
+        input.type = 'password';
+        this.textContent = '👁️';
+      }
+    });
   });
 </script>
 

@@ -107,7 +107,7 @@
 <div style="margin-top:25px;">
     {% if laporan_list %}
       {% for lap in laporan_list %}
-        <div class="report-card">
+        <div class="report-card" data-laporan-id="{{ lap.kode }}" data-laporan-status="{{ lap.status }}" data-laporan-deskripsi="{{ lap.deskripsi|default:'' }}">
             <div class="report-left">
                 <div class="report-id">{{ lap.kode }}</div>
 
@@ -145,5 +145,28 @@
     {% endif %}
 
 </div>
+
+<script>
+  // Search functionality for riwayat laporan
+  const searchInput = document.querySelector('.search-bar');
+  if (searchInput) {
+    searchInput.addEventListener('keyup', function() {
+      const searchValue = this.value.toLowerCase();
+      const reportCards = document.querySelectorAll('.report-card');
+      
+      reportCards.forEach(card => {
+        const laporanId = card.getAttribute('data-laporan-id').toLowerCase();
+        const laporanStatus = card.getAttribute('data-laporan-status').toLowerCase();
+        const laporanDeskripsi = card.getAttribute('data-laporan-deskripsi').toLowerCase();
+        
+        if (laporanId.includes(searchValue) || laporanStatus.includes(searchValue) || laporanDeskripsi.includes(searchValue)) {
+          card.style.display = '';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    });
+  }
+</script>
 
 {% endblock %}

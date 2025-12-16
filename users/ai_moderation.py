@@ -31,29 +31,37 @@ def get_model():
 # Keyword-based classification
 KATEGORI_KEYWORDS = {
     'Kekerasan Seksual': [
-        'perkosa', 'cabul', 'alat kelamin', 'memaksa', 'dipaksa berhubungan',
-        'sentuh', 'raba', 'pegang', 'diremas', 'dicium paksa', 'sexual assault',
-        'rape', 'molest', 'harass sexually'
+        'perkosa', 'cabul', 'alat kelamin', 'memaksa berhubungan',
+        'sentuh pribadi', 'raba pribadi', 'pegang pribadi', 'diremas pribadi', 
+        'dicium paksa', 'sexual assault', 'rape', 'molest', 'harass sexually'
     ],
-    'Pelecehan Fisik': [
-        'pukul', 'tampar', 'tendang', 'dorong', 'cekik', 'tonjok', 'jambak',
-        'lempar', 'injak', 'gigit', 'assault', 'physical abuse', 'kekerasan fisik'
+    'Kekerasan Fisik dan Psikis': [
+        'pukul', 'tampar', 'tendang', 'dorong', 'cekik', 'dicekik', 'tonjok', 'jambak',
+        'lempar', 'injak', 'gigit', 'assault', 'physical abuse', 'kekerasan fisik',
+        'dipukul', 'ditampar', 'ditendang', 'didorong', 'ditonjok', 'dijambak',
+        'dilempar', 'diinjak', 'digigit', 'ditarik', 'dilecehkan', 'leceh', 'lecehkan'
     ],
     'Pelecehan Verbal': [
         'ancam', 'intimidasi', 'maksa', 'memaki', 'menghina', 'kata kasar',
-        'verbal abuse', 'threat', 'blackmail', 'mengancam', 'teror'
+        'verbal abuse', 'threat', 'blackmail', 'mengancam', 'teror', 'diancam',
+        'diintimidasi', 'dimaki', 'dihinakan'
     ],
     'Pelecehan Psikologis': [
         'manipulasi', 'gaslighting', 'kontrol', 'isolasi', 'mengekang',
-        'merendahkan', 'emotional abuse', 'mental torture'
+        'merendahkan', 'emotional abuse', 'mental torture', 'trauma', 'depresi',
+        'cemas', 'takut', 'ketakutan'
+    ],
+    'Perundungan (Bullying)': [
+        'bullying', 'bully', 'dibully', 'usir', 'kucilkan', 'kucilan', 'gosip',
+        'fitnah', 'ejek', 'hina', 'mengolok', 'sindiran', 'olok'
     ],
     'Cyberbullying': [
         'chat', 'dm', 'wa', 'foto', 'video', 'sosmed', 'online', 'instagram',
-        'facebook', 'twitter', 'tiktok', 'cyberbully', 'revenge porn'
+        'facebook', 'twitter', 'tiktok', 'cyberbully', 'revenge porn', 'screenshot'
     ],
     'Stalking': [
         'mengikuti', 'menguntit', 'stalking', 'terus menerus', 'memata-matai',
-        'slalu ada', 'pantau terus'
+        'slalu ada', 'pantau terus', 'diikuti', 'diuntit'
     ]
 }
 
@@ -80,13 +88,19 @@ def classify_kategori(teks):
 
 def determine_urgency(toxicity_scores, teks):
     """
-    Tentukan tingkat urgensi berdasarkan toxicity scores dan keywords darurat
+    Tentukan tingkat urgensi berdasarkan toxicity scores dan keywords
     """
-    # Keywords yang menunjukkan situasi darurat
+    # Keywords untuk urgency DARURAT (situasi kritis)
     darurat_keywords = [
         'bunuh diri', 'suicide', 'mati', 'ingin mati', 'mengakhiri hidup',
         'hamil', 'pregnant', 'tidak bisa keluar', 'disekap', 'dikurung',
         'masih berlangsung', 'sedang terjadi', 'tolong', 'help'
+    ]
+    
+    # Keywords untuk urgency TINGGI (kekerasan serius)
+    tinggi_keywords = [
+        'cekik', 'dicekik', 'pukul', 'dipukul', 'luka', 'darah', 'patah',
+        'dirawat', 'rumah sakit', 'darurat medis', 'jatuh'
     ]
     
     teks_lower = teks.lower()
@@ -94,6 +108,10 @@ def determine_urgency(toxicity_scores, teks):
     # Check darurat keywords
     if any(keyword in teks_lower for keyword in darurat_keywords):
         return 'darurat'
+    
+    # Check tinggi keywords
+    if any(keyword in teks_lower for keyword in tinggi_keywords):
+        return 'tinggi'
     
     # Check toxicity scores
     if toxicity_scores.get('severe_toxicity', 0) > 0.7 or toxicity_scores.get('threat', 0) > 0.6:
@@ -174,10 +192,19 @@ Contoh output:
                 result['urgency'] = determine_urgency({}, full_text)
                 result['toxicity_score'] = 0.5
         else:
-            # Fallback jika tidak ada API key
+            # Fallback jika tidak ada API key: skor heuristik berdasarkan keyword
             logger.info("Gemini API not configured, using keyword-based fallback")
-            result['urgency'] = determine_urgency({}, full_text)
-            result['toxicity_score'] = 0.5
+            # Hitung skor toksisitas sederhana
+            teks_lower = full_text.lower()
+            # Kelompok kata berat
+            severe_terms = ['cekik', 'dicekik', 'perkosa', 'rape', 'suicide', 'bunuh diri', 'ancam', 'diancam']
+            medium_terms = ['pukul', 'tampar', 'tendang', 'dorong', 'jambak', 'harass', 'intimidasi', 'gaslighting', 'leceh', 'dilecehkan']
+            severe_hits = sum(1 for k in severe_terms if k in teks_lower)
+            medium_hits = sum(1 for k in medium_terms if k in teks_lower)
+            base = 0.3
+            score = min(1.0, base + severe_hits * 0.25 + medium_hits * 0.1)
+            result['toxicity_score'] = round(score, 2)
+            result['urgency'] = determine_urgency({'toxicity': score}, full_text)
         
         logger.info(f"AI Moderation completed: kategori={result['kategori']}, urgency={result['urgency']}, toxicity={result['toxicity_score']:.2f}")
         

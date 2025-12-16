@@ -106,9 +106,36 @@
         color: #777;
         line-height: 1.5;
       }
+
+      .home-link {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        color: white;
+        font-weight: 600;
+        font-size: 15px;
+        z-index: 100;
+        padding: 12px 18px;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+        background: linear-gradient(135deg, #483d8b 0%, #5a4f9d 100%);
+        border: none;
+        box-shadow: 0 4px 15px rgba(72, 61, 139, 0.3);
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .home-link:hover {
+        background: linear-gradient(135deg, #3a2f6f 0%, #483d8b 100%);
+        transform: translateX(-3px);
+        box-shadow: 0 6px 20px rgba(72, 61, 139, 0.4);
+      }
     </style>
   </head>
   <body>
+    <a href="{% url 'landing' %}" class="home-link">← Beranda</a>
     <div class="container">
       <div class="form-container">
         <div class="role-selection-header">

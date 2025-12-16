@@ -8,6 +8,7 @@ from .views import (
     AdminRegisterView,
     CustomLoginView,
     home_view,
+    landing_view,
     dashboard_admin_view,
     dashboard_user_view,
     kelola_laporan_view,
@@ -18,8 +19,11 @@ from .views import (
 )
 
 urlpatterns = [
+    # Landing page umum
+    path('', landing_view, name='landing'),
+
     # Halaman login utama
-    path('', CustomLoginView.as_view(), name='login'),
+    path('login/', CustomLoginView.as_view(), name='login'),
 
     # Logout
     path('logout/', auth_views.LogoutView.as_view(next_page='login'), name='logout'),

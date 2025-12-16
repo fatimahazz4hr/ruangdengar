@@ -193,6 +193,29 @@
         font-weight: 600;
         color: #555;
         border-bottom: 2px solid #e0e0e0;
+        cursor: pointer;
+        user-select: none;
+        position: relative;
+    }
+
+    .schedule-table th.sortable:hover {
+        background: #f0f0f0;
+    }
+
+    .schedule-table th.sortable::after {
+        content: ' ⇅';
+        font-size: 12px;
+        color: #999;
+    }
+
+    .schedule-table th.sort-asc::after {
+        content: ' ↑';
+        color: #5a509b;
+    }
+
+    .schedule-table th.sort-desc::after {
+        content: ' ↓';
+        color: #5a509b;
     }
 
     .schedule-table td {
@@ -377,11 +400,11 @@
     <div class="schedule-section">
         <h2 class="schedule-title">Jadwal Konseling Anda</h2>
 
-        <table class="schedule-table">
+        <table class="schedule-table" id="scheduleTable">
             <thead>
                 <tr>
-                    <th>Tanggal</th>
-                    <th>Waktu</th>
+                    <th class="sortable" data-column="tanggal">Tanggal</th>
+                    <th class="sortable" data-column="waktu">Waktu</th>
                     <th>Psikolog</th>
                     <th>Topik</th>
                     <th>Lokasi</th>
@@ -437,5 +460,59 @@
     </div>
 
 </div>
+
+<script>
+  // Table sorting functionality
+  let sortState = {};
+
+  document.querySelectorAll('.schedule-table th.sortable').forEach(header => {
+    header.addEventListener('click', function() {
+      const column = this.getAttribute('data-column');
+      const table = document.getElementById('scheduleTable');
+      const tbody = table.querySelector('tbody');
+      const rows = Array.from(tbody.querySelectorAll('tr'));
+
+      // Remove sort indicators from other headers
+      document.querySelectorAll('.schedule-table th.sortable').forEach(h => {
+        h.classList.remove('sort-asc', 'sort-desc');
+      });
+
+      // Determine sort direction
+      if (sortState[column] === 'asc') {
+        sortState[column] = 'desc';
+        this.classList.add('sort-desc');
+      } else {
+        sortState[column] = 'asc';
+        this.classList.add('sort-asc');
+      }
+
+      // Sort rows
+      rows.sort((a, b) => {
+        let aValue = a.querySelector(`td:nth-child(${column === 'tanggal' ? 1 : 2})`).textContent.trim();
+        let bValue = b.querySelector(`td:nth-child(${column === 'tanggal' ? 1 : 2})`).textContent.trim();
+
+        // Parse date and time for proper sorting
+        if (column === 'tanggal') {
+          // Format: DD/MM/YYYY or YYYY-MM-DD
+          aValue = aValue.split('/').reverse().join('-');
+          bValue = bValue.split('/').reverse().join('-');
+        } else if (column === 'waktu') {
+          // Format: HH:MM
+          aValue = aValue.replace(':', '');
+          bValue = bValue.replace(':', '');
+        }
+
+        if (sortState[column] === 'asc') {
+          return aValue > bValue ? 1 : -1;
+        } else {
+          return aValue < bValue ? 1 : -1;
+        }
+      });
+
+      // Re-append sorted rows
+      rows.forEach(row => tbody.appendChild(row));
+    });
+  });
+</script>
 
 {% endblock %}

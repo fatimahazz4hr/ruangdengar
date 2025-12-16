@@ -152,24 +152,30 @@
   }
   .btn-view {
     border-color: #5a509b;
+    color: #5a509b;
   }
   .btn-view:hover {
     background: #5a509b;
     border-color: #5a509b;
+    color: #fff;
   }
   .btn-edit {
     border-color: #f59e0b;
+    color: #f59e0b;
   }
   .btn-edit:hover {
     background: #f59e0b;
     border-color: #f59e0b;
+    color: #fff;
   }
   .btn-delete {
     border-color: #ef4444;
+    color: #ef4444;
   }
   .btn-delete:hover {
     background: #ef4444;
     border-color: #ef4444;
+    color: #fff;
   }
 
   /* Modal */
@@ -265,18 +271,23 @@
   <div class="filter-bar">
     <select id="filterJenis">
       <option value="">Filter Jenis Insiden</option>
-      <option value="Kekerasan Seksual">Kekerasan Seksual</option>
-      <option value="Bulying">Bulying</option>
-      <option value="Kekerasan Digital">Kekerasan Digital</option>
       <option value="Kekerasan Fisik">Kekerasan Fisik</option>
+      <option value="Kekerasan Psikis">Kekerasan Psikis</option>
+      <option value="Kekerasan Fisik dan Psikis">Kekerasan Fisik dan Psikis</option>
+      <option value="Perundungan (Bullying)">Perundungan (Bullying)</option>
+      <option value="Kekerasan Seksual">Kekerasan Seksual</option>
+      <option value="Diskriminasi dan Intoleransi">Diskriminasi dan Intoleransi</option>
+      <option value="Kebijakan yang Mengandung Kekerasan">Kebijakan yang Mengandung Kekerasan</option>
+      <option value="Lainnya">Lainnya</option>
     </select>
-    <select id="filterStatus">
-      <option value="">Filter Status</option>
-      <option value="Selesai">Selesai</option>
-      <option value="Terjadwal">Terjadwal</option>
-      <option value="Dibatalkan">Dibatalkan</option>
+    <select id="filterUrgency">
+      <option value="">Filter Urgensi</option>
+      <option value="darurat">Darurat</option>
+      <option value="tinggi">Tinggi</option>
+      <option value="sedang">Sedang</option>
+      <option value="rendah">Rendah</option>
     </select>
-    <input type="search" id="filterSearch" placeholder="Cari Pelapor..." />
+    <input type="search" id="filterSearch" placeholder="Cari ID Laporan, Pelapor, atau Deskripsi..." />
     <button onclick="applyFilter()">Terapkan Filter</button>
   </div>
 
@@ -315,21 +326,20 @@
           <td>{% if lap.is_anonim %}Anonim{% elif lap.pelapor %}{{ lap.pelapor.nama_lengkap }}{% else %}Anonim{% endif %}</td>
           <td>{{ lap.created_at|date:'d/m/Y' }}</td>
           <td>{{ lap.jenis }}</td>
-          <td>
-            {% if lap.ai_analyzed %}
-              {% if lap.ai_urgency %}
-                <span class="urgency-badge urgency-{{ lap.ai_urgency }}">
-                  {% if lap.ai_urgency == 'darurat' %}🚨 DARURAT
-                  {% elif lap.ai_urgency == 'tinggi' %}⚠️ Tinggi
-                  {% elif lap.ai_urgency == 'sedang' %}📌 Sedang
-                  {% else %}✅ Rendah{% endif %}
-                </span>
-              {% endif %}
-              {% if lap.ai_kategori %}
-                <div class="ai-kategori">{{ lap.ai_kategori }}</div>
-              {% endif %}
-            {% else %}
-              <span style="color: #9ca3af; font-size: 11px;">-</span>
+          <td data-urgency="{{ lap.ai_urgency|default:'' }}">
+            {% if lap.ai_urgency %}
+              <span class="urgency-badge urgency-{{ lap.ai_urgency }}">
+                {% if lap.ai_urgency == 'darurat' %}🚨 DARURAT
+                {% elif lap.ai_urgency == 'tinggi' %}⚠️ Tinggi
+                {% elif lap.ai_urgency == 'sedang' %}📌 Sedang
+                {% else %}✅ Rendah{% endif %}
+              </span>
+            {% endif %}
+            {% if lap.ai_kategori %}
+              <div class="ai-kategori">{{ lap.ai_kategori }}</div>
+            {% endif %}
+            {% if lap.ai_toxicity_score is not None %}
+              <div style="font-size:11px;color:#6b7280;">Toxicity: {{ lap.ai_toxicity_score|floatformat:2 }}</div>
             {% endif %}
           </td>
           <td>{{ lap.lokasi }}</td>
@@ -597,19 +607,28 @@
   // Filter
   function applyFilter() {
     const jenis = document.getElementById("filterJenis").value.toLowerCase();
-    const status = document.getElementById("filterStatus").value.toLowerCase();
+    const status = '';
+    const urgency = document.getElementById("filterUrgency").value.toLowerCase();
     const search = document.getElementById("filterSearch").value.toLowerCase();
     document.querySelectorAll("#tableBody tr").forEach((row) => {
       const r = row.dataset;
+      const aiCell = row.querySelector('td[data-urgency]');
+      const rowUrgency = aiCell ? (aiCell.getAttribute('data-urgency') || '').toLowerCase() : '';
       if (
         (!jenis || r.jenis.toLowerCase() == jenis) &&
-        (!status || r.status.toLowerCase() == status) &&
-        (!search || r.pelapor.toLowerCase().includes(search))
+        true &&
+        (!urgency || rowUrgency == urgency) &&
+        (!search || r.pelapor.toLowerCase().includes(search) || r.id.toLowerCase().includes(search) || r.deskripsi.toLowerCase().includes(search))
       ) {
         row.style.display = "";
       } else row.style.display = "none";
     });
   }
+
+  // Real-time search on input
+  document.getElementById("filterSearch").addEventListener("keyup", applyFilter);
+  document.getElementById("filterJenis").addEventListener("change", applyFilter);
+  document.getElementById("filterUrgency").addEventListener("change", applyFilter);
 
   // Download CSV
   function downloadReport() {

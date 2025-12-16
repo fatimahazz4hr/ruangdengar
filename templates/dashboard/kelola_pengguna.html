@@ -349,7 +349,7 @@
         <th>Peran</th>
         <th>Status</th>
         <th>Aktivitas Terakhir</th>
-        <th>Tindakan</th>
+        <th>Aksi</th>
       </tr>
     </thead>
     <tbody id="userTable"></tbody>
@@ -381,6 +381,9 @@
 <div class="modal" id="detailModal">
   <div class="modal-content" style="max-width: 520px;">
     <h3>Detail Pengguna</h3>
+    <div style="text-align: center; margin-bottom: 20px;">
+      <img id="detailAvatar" src="" alt="Foto Profil" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid #eee;">
+    </div>
     <div class="detail-grid">
       <div class="detail-item">
         <span class="detail-label">Nama</span>
@@ -389,6 +392,10 @@
       <div class="detail-item">
         <span class="detail-label">Email</span>
         <span class="detail-value" id="detailEmail">-</span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">Email Pribadi</span>
+        <span class="detail-value" id="detailEmailPribadi">-</span>
       </div>
       <div class="detail-item">
         <span class="detail-label">Peran</span>
@@ -461,7 +468,7 @@
       role: "{{ u.get_role_display|escapejs }}",
       is_active: {{ u.is_active|yesno:"true,false" }},
       last_activity: "{{ u.last_login|timesince|default:'Belum pernah login' }}",
-      avatar: "https://i.pravatar.cc/35?img={{ forloop.counter }}",
+      avatar: "{% if u.profile_picture %}{{ u.profile_picture.url }}{% else %}https://i.pravatar.cc/35?img={{ forloop.counter }}{% endif %}",
       username: "{{ u.username|default_if_none:''|escapejs }}",
       nim: "{{ u.nim|default_if_none:''|escapejs }}",
       nidn: "{{ u.nidn|default_if_none:''|escapejs }}",
@@ -469,6 +476,7 @@
       fakultas: "{{ u.fakultas|default_if_none:''|escapejs }}",
       status_pengguna: "{{ u.status_pengguna|default_if_none:''|escapejs }}",
       no_whatsapp: "{{ u.no_whatsapp|default_if_none:''|escapejs }}",
+      email_pribadi: "{{ u.email_pribadi|default_if_none:''|escapejs }}",
       nomor_telepon: "{{ u.nomor_telepon|default_if_none:''|escapejs }}",
       nomor_telepon_kerabat: "{{ u.nomor_telepon_kerabat|default_if_none:''|escapejs }}",
       alamat: "{{ u.alamat|default_if_none:''|escapejs }}",
@@ -541,8 +549,15 @@
       el.textContent = text;
     };
 
+    // Set avatar
+    const avatarEl = document.getElementById('detailAvatar');
+    if (avatarEl) {
+      avatarEl.src = user.avatar;
+    }
+
     setText('detailNama', user.name || '-');
     setText('detailEmail', user.email || '-');
+    setText('detailEmailPribadi', user.email_pribadi || '-');
     setText('detailRole', user.role || '-');
     setText('detailStatus', user.is_active ? 'Aktif' : 'Tidak Aktif');
     setText('detailNim', user.nim || user.nidn || '-');

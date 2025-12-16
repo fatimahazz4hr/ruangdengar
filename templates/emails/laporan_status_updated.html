@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Status Laporan Diperbarui</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+        .email-container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #ffffff;
+            padding: 30px 20px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .content {
+            padding: 30px 20px;
+            color: #333333;
+        }
+        .status-box {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .status-arrow {
+            font-size: 24px;
+            color: #667eea;
+            margin: 10px 0;
+        }
+        .status {
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: bold;
+            background-color: #e9ecef;
+            color: #495057;
+        }
+        .status-new {
+            background-color: #28a745;
+            color: #ffffff;
+        }
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+        .footer {
+            background-color: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+            color: #6c757d;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="header">
+            <h1>🔄 Status Laporan Diperbarui</h1>
+        </div>
+        
+        <div class="content">
+            <p>Halo {{ pelapor_nama }},</p>
+            <p>Status laporan Anda <strong>{{ kode_laporan }}</strong> telah diperbarui.</p>
+            
+            <div class="status-box">
+                <div class="status">{{ old_status }}</div>
+                <div class="status-arrow">↓</div>
+                <div class="status status-new">{{ new_status }}</div>
+            </div>
+            
+            <p>Tim PPKPT sedang memproses laporan Anda sesuai dengan tahapan penanganan yang berlaku. Anda dapat melihat detail progress di halaman laporan.</p>
+            
+            <center>
+                <a href="{{ laporan_url }}" class="btn">Lihat Detail Laporan</a>
+            </center>
+            
+            <p style="margin-top: 30px; color: #6c757d; font-size: 14px;">
+                <strong>Catatan:</strong> Jika Anda memiliki informasi tambahan atau pertanyaan, silakan hubungi tim PPKPT melalui dashboard Anda.
+            </p>
+        </div>
+        
+        <div class="footer">
+            <p>Ruang Dengar - Platform Pelaporan Kekerasan</p>
+            <p>Email ini dikirim pada {{ updated_at|date:"d M Y, H:i" }} WIB</p>
+        </div>
+    </div>
+</body>
+</html>

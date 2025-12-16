@@ -6,6 +6,7 @@ from django.contrib import messages
 from django.urls import reverse_lazy
 from django.views import generic
 from django.contrib.auth import views as auth_views
+from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt
@@ -14,9 +15,23 @@ from django.utils import timezone
 from datetime import datetime, timedelta
 from .forms import CustomUserCreationForm, AdminUserCreationForm, CustomAuthenticationForm
 from .ai_moderation import moderate_laporan
+from .email_utils import (
+    send_laporan_created_notification,
+    send_laporan_status_updated_notification,
+    send_urgent_laporan_alert,
+    send_booking_created_notification,
+    send_high_risk_alert,
+    get_admin_emails,
+    get_management_emails
+)
 import logging
 
 logger = logging.getLogger(__name__)
+
+
+# 🏠 Landing Page (public)
+def landing_view(request):
+    return render(request, 'landing.html', {})
 
 
 # 🧩 Lengkapi Profil (untuk Google OAuth)
@@ -414,7 +429,9 @@ def edit_booking_view(request, booking_id):
     old_tanggal = booking.tanggal
     old_waktu = booking.waktu
     old_konselor = booking.konselor
+    old_lokasi = booking.lokasi_konseling
     schedule_changed = False
+    lokasi_changed = False
     
     # Update booking fields
     tanggal = request.POST.get('tanggal')
@@ -456,22 +473,34 @@ def edit_booking_view(request, booking_id):
         # Update lokasi dan catatan admin
         lokasi = request.POST.get('lokasi_konseling', 'REK-407').strip()
         catatan = request.POST.get('catatan_admin', '').strip()
-        if lokasi:
+        if lokasi and lokasi != old_lokasi:
+            lokasi_changed = True
             booking.lokasi_konseling = lokasi
         if catatan is not None:  # Allow empty string to clear notes
             booking.catatan_admin = catatan
         
         booking.save()
         
-        # 🔔 Notifikasi ke User - Jadwal Berubah
-        if schedule_changed and booking.user:
-            Notification.objects.create(
-                user=booking.user,
-                title='📅 Jadwal Konseling Diperbarui',
-                message=f'Jadwal konseling Anda untuk "{booking.topik}" telah diperbarui. Tanggal: {booking.tanggal.strftime("%d/%m/%Y")}, Waktu: {booking.waktu.strftime("%H:%M")}, Konselor: {booking.konselor}.',
-                type='jadwal_berubah',
-                booking=booking
-            )
+        # 🔔 Notifikasi ke User - Jadwal atau Lokasi Berubah
+        if (schedule_changed or lokasi_changed) and booking.user:
+            if lokasi_changed and not schedule_changed:
+                # Hanya lokasi yang berubah
+                Notification.objects.create(
+                    user=booking.user,
+                    title='📍 Lokasi Konseling Diperbarui',
+                    message=f'Lokasi konseling Anda untuk "{booking.topik}" telah diubah menjadi {booking.lokasi_konseling}. Tanggal: {booking.tanggal.strftime("%d/%m/%Y")}, Waktu: {booking.waktu.strftime("%H:%M")}.',
+                    type='jadwal_berubah',
+                    booking=booking
+                )
+            else:
+                # Jadwal berubah (mungkin dengan lokasi juga)
+                Notification.objects.create(
+                    user=booking.user,
+                    title='📅 Jadwal Konseling Diperbarui',
+                    message=f'Jadwal konseling Anda untuk "{booking.topik}" telah diperbarui. Tanggal: {booking.tanggal.strftime("%d/%m/%Y")}, Waktu: {booking.waktu.strftime("%H:%M")}, Konselor: {booking.konselor}, Lokasi: {booking.lokasi_konseling}.',
+                    type='jadwal_berubah',
+                    booking=booking
+                )
         
         messages.success(request, '✅ Perubahan berhasil disimpan!')
     except Exception as e:
@@ -734,6 +763,13 @@ def rekam_medis_add_view(request, booking_id):
                 rekam_medis.file_lampiran = request.FILES['file_lampiran']
                 rekam_medis.save()
             
+            # 📧 High Risk Alert Email ke Management (jika risk tinggi)
+            if rekam_medis.risiko_bunuh_diri == 'tinggi' or rekam_medis.risiko_self_harm == 'tinggi':
+                management_emails = get_management_emails()
+                if management_emails:
+                    send_high_risk_alert(rekam_medis, management_emails)
+                    logger.warning(f"🚨 HIGH RISK ALERT: Rekam medis ID={rekam_medis.id} untuk booking ID={booking_id} memiliki risiko tinggi. Alert sent to management.")
+            
             messages.success(request, f'Rekam medis sesi {sesi_ke} berhasil ditambahkan.')
             return redirect('rekam-medis-list', booking_id=booking_id)
         except Exception as e:
@@ -851,7 +887,7 @@ def kelola_laporan_view(request):
         messages.error(request, 'Anda tidak memiliki akses ke halaman ini.')
         return redirect('dashboard_user')
     
-    # Sort dengan urgency darurat pertama
+    # Sort: laporan terbaru di atas, lalu urutkan urgency sebagai pengurutan sekunder
     from django.db.models import Case, When, IntegerField
     urgency_order = Case(
         When(ai_urgency='darurat', then=0),
@@ -862,7 +898,11 @@ def kelola_laporan_view(request):
         output_field=IntegerField(),
     )
     # Optimasi query dengan select_related dan prefetch_related
-    laporan_list = Laporan.objects.select_related('pelapor').prefetch_related('progress', 'evidences').order_by(urgency_order, '-created_at')
+    laporan_list = (
+        Laporan.objects.select_related('pelapor')
+        .prefetch_related('progress', 'evidences')
+        .order_by('-created_at', urgency_order)
+    )
     
     return render(request, 'dashboard/kelola_laporan.html', {
         'nama_user': request.user.nama_lengkap,
@@ -1036,6 +1076,14 @@ def edit_laporan_view(request, report_id):
                 type='status_laporan',
                 laporan=laporan
             )
+            
+            # 📧 Email Notification ke Pelapor
+            send_laporan_status_updated_notification(
+                laporan=laporan,
+                old_status=old_status,
+                new_status=new_status,
+                catatan=catatan
+            )
         elif laporan.pelapor and not laporan.is_anonim:
             # Notifikasi progress/catatan baru tanpa perubahan status
             Notification.objects.create(
@@ -1131,11 +1179,22 @@ def admin_laporan_detail_view(request, report_id):
         lokasi=db_laporan.lokasi,
         deskripsi=db_laporan.deskripsi,
         link_pelaporan=db_laporan.link_pelaporan,
+        # Terlapor data
+        nama_terlapor=db_laporan.nama_terlapor,
+        nim_nip_terlapor=db_laporan.nim_nip_terlapor,
+        asal_instansi_terlapor=db_laporan.asal_instansi_terlapor,
+        fakultas_terlapor=db_laporan.fakultas_terlapor,
+        prodi_terlapor=db_laporan.prodi_terlapor,
+        no_wa_terlapor=db_laporan.no_wa_terlapor,
+        hubungan_terlapor_korban=db_laporan.hubungan_terlapor_korban,
+        ciri_ciri_pelaku=db_laporan.ciri_ciri_pelaku,
         bukti_list=bukti_list,  # Semua bukti (backward compatibility)
         bukti_awal=bukti_awal,  # Bukti saat submit
         bukti_tambahan=bukti_tambahan,  # Bukti upload kemudian
         is_anonim=db_laporan.is_anonim,
         pelapor_name=pelapor_name,
+        apakah_korban_langsung=db_laporan.apakah_korban_langsung,
+        hubungan_pelapor_korban=db_laporan.hubungan_pelapor_korban,
         # AI Moderation fields
         ai_analyzed=db_laporan.ai_analyzed,
         ai_kategori=db_laporan.ai_kategori,
@@ -1498,6 +1557,11 @@ def buat_laporan_view(request):
                 laporan=laporan
             )
         
+        # � Email Notification ke Admin
+        admin_emails = get_admin_emails()
+        if admin_emails:
+            send_laporan_created_notification(laporan, admin_emails)
+        
         # 🔔 Notifikasi Darurat ke Admin (jika urgency tinggi)
         if laporan.ai_urgency == 'darurat':
             for admin in admin_users:
@@ -1508,6 +1572,10 @@ def buat_laporan_view(request):
                     type='laporan_darurat',
                     laporan=laporan
                 )
+            # 📧 Email Alert Urgent ke Management
+            management_emails = get_management_emails()
+            if management_emails:
+                send_urgent_laporan_alert(laporan, management_emails)
 
         # Success message dan redirect
         if is_anonim:
@@ -1587,6 +1655,14 @@ def detail_laporan_view(request, report_id):
         'deskripsi': db_laporan.deskripsi,
         'link_pelaporan': db_laporan.link_pelaporan,
         'bukti': bukti_url,
+        # Pelapor context
+        'apakah_korban_langsung': getattr(db_laporan, 'apakah_korban_langsung', False),
+        'hubungan_pelapor_korban': getattr(db_laporan, 'hubungan_pelapor_korban', ''),
+        # Terlapor fields
+        'nama_terlapor': getattr(db_laporan, 'nama_terlapor', ''),
+        'nim_nip_terlapor': getattr(db_laporan, 'nim_nip_terlapor', ''),
+        'asal_instansi_terlapor': getattr(db_laporan, 'asal_instansi_terlapor', ''),
+        'ciri_ciri_pelaku': getattr(db_laporan, 'ciri_ciri_pelaku', ''),
     }
 
     return render(request, "menu_users/laporan_detail.html", {
@@ -1666,6 +1742,9 @@ def booking_konseling_view(request):
                     type='booking_baru',
                     booking=booking
                 )
+            
+            # 📧 Email Notification ke Counselor & Pelapor
+            send_booking_created_notification(booking)
             
             print(f"DEBUG User Booking created: ID={booking.id}, user_id={booking.user.id}, nama={booking.nama}")
             messages.success(request, 'Booking berhasil dibuat.')
@@ -1939,17 +2018,24 @@ def edit_profile_view(request):
             profile_form = EditProfileForm(request.POST, request.FILES, instance=request.user)
             if profile_form.is_valid():
                 profile_form.save()
+                request.user.refresh_from_db()
                 messages.success(request, 'Profile berhasil diperbarui!')
                 return redirect('edit-profile')
+            else:
+                logger.warning('Edit profile errors for %s: %s', request.user.email, profile_form.errors)
+                messages.error(request, 'Profil gagal diperbarui. Mohon periksa kembali input Anda.')
         
         elif 'change_password' in request.POST:
             password_form = ChangePasswordForm(user=request.user, data=request.POST)
             if password_form.is_valid():
                 new_password = password_form.cleaned_data['new_password1']
                 request.user.set_password(new_password)
-                request.user.save()
-                messages.success(request, 'Password berhasil diubah! Silakan login kembali.')
-                return redirect('login')
+                request.user.save(update_fields=['password'])
+                update_session_auth_hash(request, request.user)
+                messages.success(request, 'Password berhasil diubah!')
+                return redirect('edit-profile')
+            else:
+                messages.error(request, 'Gagal mengubah password. Mohon periksa kembali input Anda.')
     
     # Determine template based on role
     if request.user.role == CustomUser.Role.ADMIN:

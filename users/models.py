@@ -69,6 +69,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     status_pengguna = models.CharField('Status', max_length=50, choices=StatusPengguna.choices, blank=True, null=True)
     usia = models.PositiveIntegerField('Usia', blank=True, null=True)
     no_whatsapp = models.CharField('Nomor WhatsApp', max_length=20, blank=True, null=True)
+    email_pribadi = models.EmailField('Email Pribadi', blank=True, null=True)
     is_profile_complete = models.BooleanField(default=False, help_text='Apakah profil sudah lengkap (untuk Google OAuth)')
     profile_picture = models.ImageField(upload_to='profiles/', blank=True, null=True, help_text='Foto profil pengguna')
     
@@ -207,14 +208,14 @@ class Laporan(models.Model):
     kronologi_singkat = models.TextField('Kronologi Singkat', help_text='Ringkasan singkat kejadian', blank=True, default='')
     deskripsi = models.TextField('Deskripsi Lengkap', help_text='Ceritakan kronologi lengkap kejadian')
     lokasi = models.CharField('Tempat Kejadian', max_length=255, default='')
-    link_pelaporan = models.URLField('Link Kronologi Lengkap', blank=True, help_text='Link Google Drive/OneDrive untuk kronologi lengkap')
+    link_pelaporan = models.URLField('Link Kronologi Lengkap', max_length=1000, blank=True, help_text='Link Google Drive/OneDrive untuk kronologi lengkap')
     
     # Status & Rekomendasi
     status = models.CharField(max_length=32, choices=STATUS_CHOICES, default='diterima')
     rekomendasi = models.TextField(blank=True)
     
     # AI Content Moderation Fields
-    ai_kategori = models.CharField(max_length=50, blank=True, null=True, help_text="Kategori otomatis dari AI")
+    ai_kategori = models.CharField(max_length=100, blank=True, null=True, help_text="Kategori otomatis dari AI")
     ai_urgency = models.CharField(max_length=20, blank=True, null=True, choices=[
         ('darurat', 'Darurat'),
         ('tinggi', 'Tinggi'),

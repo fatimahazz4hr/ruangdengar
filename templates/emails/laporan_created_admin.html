@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laporan Baru</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+        .email-container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #ffffff;
+            padding: 30px 20px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .content {
+            padding: 30px 20px;
+            color: #333333;
+        }
+        .info-box {
+            background-color: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .info-row {
+            margin: 10px 0;
+        }
+        .label {
+            font-weight: bold;
+            color: #555555;
+        }
+        .value {
+            color: #333333;
+        }
+        .urgency {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+        .urgency-darurat {
+            background-color: #dc3545;
+            color: #ffffff;
+        }
+        .urgency-tinggi {
+            background-color: #fd7e14;
+            color: #ffffff;
+        }
+        .urgency-sedang {
+            background-color: #ffc107;
+            color: #333333;
+        }
+        .urgency-rendah {
+            background-color: #28a745;
+            color: #ffffff;
+        }
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+        .btn:hover {
+            opacity: 0.9;
+        }
+        .footer {
+            background-color: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+            color: #6c757d;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="header">
+            <h1>📋 Laporan Baru Diterima</h1>
+        </div>
+        
+        <div class="content">
+            <p>Halo Admin,</p>
+            <p>Laporan baru telah dibuat di sistem Ruang Dengar dan menunggu verifikasi.</p>
+            
+            <div class="info-box">
+                <div class="info-row">
+                    <span class="label">Kode Laporan:</span>
+                    <span class="value">{{ kode_laporan }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="label">Jenis Kekerasan:</span>
+                    <span class="value">{{ jenis }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="label">Tingkat Urgensi:</span>
+                    <span class="urgency urgency-{{ urgency|lower }}">{{ urgency }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="label">Status:</span>
+                    <span class="value">{% if is_anonim %}Anonim{% else %}Non-Anonim{% endif %}</span>
+                </div>
+                <div class="info-row">
+                    <span class="label">Pelapor:</span>
+                    <span class="value">{{ pelapor_nama }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="label">Waktu Dibuat:</span>
+                    <span class="value">{{ created_at|date:"d M Y, H:i" }} WIB</span>
+                </div>
+            </div>
+            
+            {% if urgency == "DARURAT" %}
+            <p style="color: #dc3545; font-weight: bold;">
+                ⚠️ Laporan ini memerlukan perhatian segera! Mohon segera lakukan verifikasi dan tindak lanjut.
+            </p>
+            {% endif %}
+            
+            <center>
+                <a href="{{ laporan_url }}" class="btn">Lihat Detail Laporan</a>
+            </center>
+            
+            <p style="margin-top: 30px; color: #6c757d; font-size: 14px;">
+                Email ini dikirim secara otomatis oleh sistem Ruang Dengar.
+            </p>
+        </div>
+        
+        <div class="footer">
+            <p>Ruang Dengar - Platform Pelaporan Kekerasan</p>
+            <p>© 2025 Telkom University. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>

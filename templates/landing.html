@@ -1,0 +1,621 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruang Dengar - Platform Aman untuk Bersuara</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        
+        :root {
+            --color-primary: #04335c;
+            --color-accent-purple: #6b46c1;
+            --color-accent-green: #38a169;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7fafc;
+        }
+        
+        .bg-primary {
+            background-color: var(--color-primary);
+        }
+
+        .card-shadow {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .shape-decoration {
+            position: absolute;
+            z-index: 0;
+            width: 80px;
+            height: 80px;
+            border-radius: 25%;
+            opacity: 0.5;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header / Navigation Bar -->
+    <header class="sticky top-0 z-40 bg-white shadow-md">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <div class="flex items-center space-x-2">
+                    <img src="{% static 'images/logo.png' %}" alt="Logo" class="w-8 h-8 object-contain">
+                    <span class="text-xl font-bold text-gray-800">Ruang Dengar</span>
+                </div>
+
+                <!-- Desktop Navigation Links -->
+                <nav class="hidden md:flex space-x-8 text-gray-600 font-medium">
+                    <a href="#beranda" class="nav-link hover:text-[#483d8b] transition duration-150 border-b-2 border-[#483d8b] pb-1.5">Beranda</a>
+                    <a href="#fitur" class="nav-link hover:text-[#483d8b] transition duration-150 border-b-2 border-transparent pb-1.5">Fitur</a>
+                    <a href="#tentang" class="nav-link hover:text-[#483d8b] transition duration-150 border-b-2 border-transparent pb-1.5">Tentang</a>
+                    <a href="#kontak" class="nav-link hover:text-[#483d8b] transition duration-150 border-b-2 border-transparent pb-1.5">Kontak</a>
+                </nav>
+
+                <!-- Search + Action Buttons -->
+                <div class="hidden sm:flex items-center space-x-3">
+                    <a href="{% url 'select_role' %}" class="px-4 py-2 text-[#483d8b] border border-[#483d8b] rounded-lg hover:bg-purple-50 transition duration-300 font-semibold">Daftar</a>
+                    <a href="{% url 'login' %}" class="px-4 py-2 text-white bg-[#483d8b] rounded-lg hover:bg-[#5a4f9d] transition duration-300 shadow-md font-semibold">Masuk</a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <button class="md:hidden p-2 rounded-lg text-gray-600 hover:bg-gray-100 transition duration-150">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- 1. Hero Section -->
+        <section id="beranda" class="relative pt-12 pb-24 lg:pt-20 bg-gray-50 overflow-hidden">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="bg-primary text-white rounded-3xl p-6 md:p-10 lg:p-16 relative overflow-hidden">
+                    <!-- Background Shapes -->
+                    <div class="shape-decoration bg-blue-400 opacity-20 w-40 h-40 rounded-full right-0 top-0 transform translate-x-1/2 -translate-y-1/2 rotate-12"></div>
+                    <div class="shape-decoration bg-blue-600 opacity-20 w-60 h-60 rounded-full left-0 bottom-0 transform -translate-x-1/2 translate-y-1/2 -rotate-45"></div>
+
+                    <div class="relative z-10 flex flex-col lg:flex-row items-center lg:items-start space-y-8 lg:space-y-0 lg:space-x-12">
+                        <!-- Left: Image -->
+                        <div class="flex-shrink-0 w-full lg:w-2/5 max-w-md">
+                            <img 
+                                src="{% static 'images/cewe.png' %}" 
+                                alt="Mahasiswi menyapa" 
+                                class="w-full h-auto object-cover rounded-xl shadow-2xl lg:rounded-3xl"
+                                onerror="this.src='https://placehold.co/400x480/04335c/ffffff?text=Ruang+Dengar';"
+                            >
+                        </div>
+                        
+                        <!-- Right: Content -->
+                        <div class="lg:w-3/5 lg:pl-6 text-center lg:text-left">
+                            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold mb-6 leading-tight">
+                                Ruang Aman untuk Didengar dan Bersuara
+                            </h1>
+                            
+                            <p class="text-base text-blue-100 mb-4 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
+                                Ruang Dengar adalah platform resmi yang kami siapkan untuk kamu—mahasiswa Telkom University Purwokerto—ketika kamu membutuhkan tempat yang aman untuk bercerita, melapor, atau meminta bantuan. Di sini, kamu dapat menyampaikan pengalaman yang membuatmu merasa tidak aman, tertekan, atau tidak nyaman di lingkungan kampus, tanpa takut dihakimi.
+                            </p>
+                            
+                            <p class="text-base text-blue-100 mb-6 max-w-2xl mx-auto lg:mx-0 font-semibold">
+                                Kami di sini untuk mendengarkanmu. Privasimu adalah prioritas kami.
+                            </p>
+                            
+                            <div class="mb-6 max-w-2xl mx-auto lg:mx-0">
+                                <h2 class="text-xl font-bold text-white mb-3">Apa yang Kami Sediakan:</h2>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-blue-100">
+                                    <div class="flex items-start space-x-2">
+                                        <span class="text-blue-300 font-bold">✓</span>
+                                        <div>
+                                            <strong class="text-white">Melapor Secara Aman</strong><br/>
+                                            Sampaikan laporan dengan perlindungan penuh terhadap privasi dan identitasmu.
+                                        </div>
+                                    </div>
+                                    <div class="flex items-start space-x-2">
+                                        <span class="text-blue-300 font-bold">✓</span>
+                                        <div>
+                                            <strong class="text-white">Konsultasi Tanpa Tekanan</strong><br/>
+                                            Dapatkan ruang untuk bercerita secara bebas tanpa rasa takut.
+                                        </div>
+                                    </div>
+                                    <div class="flex items-start space-x-2">
+                                        <span class="text-blue-300 font-bold">✓</span>
+                                        <div>
+                                            <strong class="text-white">Pendampingan Profesional</strong><br/>
+                                            Tim pendamping siap membantu dengan pendekatan ramah dan terpercaya.
+                                        </div>
+                                    </div>
+                                    <div class="flex items-start space-x-2">
+                                        <span class="text-blue-300 font-bold">✓</span>
+                                        <div>
+                                            <strong class="text-white">Pantau Tindak Lanjut</strong><br/>
+                                            Lihat progres laporanmu secara transparan sesuai prosedur kampus.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-4 max-w-2xl mx-auto lg:mx-0">
+                                <p class="text-base text-blue-200 italic font-semibold mb-3">
+                                    "Dengarkan setiap suara, lindungi setiap cerita."
+                                </p>
+                                <p class="text-sm text-blue-100 leading-relaxed">
+                                    Ruang Dengar hadir agar kamu tidak merasa sendiri. Kami mendengarkan, mendampingi, dan memastikan setiap laporan mendapatkan perhatian yang layak.
+                                </p>
+                            </div>
+                            
+                            <div class="flex justify-center lg:justify-start space-x-4 mt-6">
+                                <a href="#fitur" class="px-6 py-3 bg-blue-400 text-white font-semibold rounded-lg hover:bg-blue-500 transition duration-300 shadow-lg">
+                                    Info Selengkapnya
+                                </a>
+                                <a href="{% url 'login' %}?next={% url 'dashboard_user' %}" class="px-6 py-3 border-2 border-white bg-transparent text-white font-semibold rounded-lg hover:bg-white hover:text-primary transition duration-300">
+                                    Lihat Modul
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Info Cards: Apa itu Ruang Dengar -->
+        <section id="tentang" class="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Card 1: Apa itu Ruang Dengar -->
+                <div class="bg-gradient-to-br from-purple-50 to-purple-100 p-8 rounded-2xl shadow-lg hover:shadow-xl transition duration-300">
+                    <div class="text-5xl mb-4">💜</div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4">Apa itu Ruang Dengar?</h3>
+                    <p class="text-gray-700 leading-relaxed">
+                        Tempat yang kami siapkan untuk kamu ketika butuh didengarkan. Ceritakan pengalamanmu tentang perundungan, kekerasan seksual, atau perilaku yang mengganggu rasa amanmu.
+                    </p>
+                </div>
+
+                <!-- Card 2: Kenapa Ruang Dengar Ada -->
+                <div class="bg-gradient-to-br from-blue-50 to-blue-100 p-8 rounded-2xl shadow-lg hover:shadow-xl transition duration-300">
+                    <div class="text-5xl mb-4">💬</div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4">Kenapa Ruang Dengar Ada?</h3>
+                    <p class="text-gray-700 leading-relaxed">
+                        Kami percaya setiap mahasiswa berhak merasakan kampus yang aman. Ada hal yang sulit diceritakan langsung—di sinilah Ruang Dengar menjadi jembatannya.
+                    </p>
+                </div>
+
+                <!-- Card 3: Yang Bisa Kamu Lakukan -->
+                <div class="bg-gradient-to-br from-green-50 to-green-100 p-8 rounded-2xl shadow-lg hover:shadow-xl transition duration-300">
+                    <div class="text-5xl mb-4">🌱</div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4">Yang Bisa Kamu Lakukan</h3>
+                    <p class="text-gray-700 leading-relaxed">
+                        Membuat laporan (anonim/identitas asli), melihat perkembangan, membaca artikel edukatif, dan terhubung dengan tim PPKPT bila membutuhkan bantuan langsung.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. Feature Cards Section -->
+        <section id="fitur" class="container mx-auto px-4 sm:px-6 lg:px-8 py-16 relative">
+            <!-- Background Shapes -->
+            <div class="shape-decoration bg-purple-600 top-10 left-0"></div>
+            <div class="shape-decoration bg-teal-500 top-20 left-10 transform -rotate-12"></div>
+            <div class="shape-decoration bg-pink-600 bottom-10 right-0 transform rotate-45"></div>
+            
+            <div class="relative z-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                
+                <!-- Card 1: Pelaporan Anonim -->
+                <div class="bg-white p-6 rounded-2xl card-shadow flex flex-col items-start hover:shadow-xl transition duration-300">
+                    <i data-lucide="file-text" class="w-8 h-8 text-purple-600 mb-3"></i>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Pelaporan Anonim</h3>
+                    <p class="text-gray-600 text-sm mb-4 flex-grow">
+                        Laporkan insiden dengan aman tanpa harus mengungkapkan identitas. Data dienkripsi end-to-end.
+                    </p>
+                    <a href="{% url 'login' %}?next={% url 'buat-laporan' %}" class="px-4 py-2 text-white bg-purple-600 rounded-lg text-sm font-semibold hover:bg-purple-700 transition duration-300">
+                        Buat Laporan
+                    </a>
+                </div>
+
+                <!-- Card 2: Booking Konseling -->
+                <div class="bg-white p-6 rounded-2xl card-shadow flex flex-col items-start hover:shadow-xl transition duration-300">
+                    <i data-lucide="users" class="w-8 h-8 text-blue-600 mb-3"></i>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Booking Konseling</h3>
+                    <p class="text-gray-600 text-sm mb-4 flex-grow">
+                        Jadwalkan sesi konseling dengan psikolog profesional secara rahasia dan aman.
+                    </p>
+                    <a href="{% url 'login' %}?next={% url 'booking-konseling' %}" class="px-4 py-2 border border-blue-600 text-blue-600 rounded-lg text-sm font-semibold hover:bg-blue-50 transition duration-300">
+                        Booking Konseling
+                    </a>
+                </div>
+
+                <!-- Card 3: Modul Pencegahan -->
+                <div class="bg-white p-6 rounded-2xl card-shadow flex flex-col items-start hover:shadow-xl transition duration-300">
+                    <i data-lucide="shield-check" class="w-8 h-8 text-green-600 mb-3"></i>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Modul Pencegahan</h3>
+                    <p class="text-gray-600 text-sm mb-4 flex-grow">
+                        Pelajari cara mencegah dan mengenali tanda-tanda kekerasan di kampus.
+                    </p>
+                    <a href="{% url 'login' %}?next={% url 'dashboard_user' %}" class="px-4 py-2 border border-green-600 text-green-600 rounded-lg text-sm font-semibold hover:bg-green-50 transition duration-300">
+                        Lihat Modul
+                    </a>
+                </div>
+
+                <!-- Card 4: Status Laporan -->
+                <div class="bg-white p-6 rounded-2xl card-shadow flex flex-col items-start hover:shadow-xl transition duration-300">
+                    <i data-lucide="clock" class="w-8 h-8 text-red-600 mb-3"></i>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Status Laporan</h3>
+                    <p class="text-gray-600 text-sm mb-4 flex-grow">
+                        Pantau perkembangan laporan Anda secara real-time dengan kode tracking anonim.
+                    </p>
+                    <a href="{% url 'login' %}?next={% url 'status-laporan' %}" class="px-4 py-2 text-white bg-red-600 rounded-lg text-sm font-semibold hover:bg-red-700 transition duration-300">
+                        Lihat Status
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- PPKPT Section -->
+        <section id="ppkpt" class="bg-gradient-to-br from-blue-50 to-indigo-50 py-20">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                
+                <!-- Header -->
+                <div class="text-center mb-12">
+                    <div class="text-6xl mb-4">🛡️</div>
+                    <h2 class="text-4xl font-extrabold text-gray-800 mb-2">Tentang PPKPT</h2>
+                    <h3 class="text-2xl font-bold text-primary mb-4">PPKPT Telkom University</h3>
+                    <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+                        Pencegahan dan Penanganan Kekerasan di Perguruan Tinggi
+                    </p>
+                </div>
+
+                <!-- Intro -->
+                <div class="bg-white p-8 rounded-2xl shadow-lg mb-12 max-w-4xl mx-auto">
+                    <p class="text-gray-700 leading-relaxed text-center">
+                        Lingkungan kampus seharusnya menjadi ruang yang aman, nyaman, dan mendukung perkembangan seluruh sivitas akademika. Tim PPKPT hadir sebagai langkah konkret dalam mencegah serta menangani berbagai bentuk kekerasan di lingkungan Telkom University.
+                    </p>
+                </div>
+
+                <!-- Dasar Hukum -->
+                <div class="bg-white p-8 rounded-2xl shadow-lg mb-12 max-w-4xl mx-auto">
+                    <div class="flex items-start space-x-4">
+                        <div class="text-4xl flex-shrink-0">📜</div>
+                        <div>
+                            <h4 class="text-2xl font-bold text-gray-800 mb-3">Dasar Hukum</h4>
+                            <p class="text-gray-700 leading-relaxed">
+                                Berdasarkan <strong>Permendikbudristek No. 55 Tahun 2024</strong>, Satuan Tugas PPKPT bekerja untuk melindungi warga kampus, pemimpin perguruan tinggi, dan mitra perguruan tinggi dari berbagai bentuk kekerasan.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Jenis Kekerasan -->
+                <div class="bg-white p-8 rounded-2xl shadow-lg mb-12">
+                    <div class="text-center mb-8">
+                        <div class="text-4xl mb-3">⚠️</div>
+                        <h4 class="text-2xl font-bold text-gray-800">Jenis Kekerasan yang Harus Diwaspadai</h4>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div class="flex items-center space-x-3 p-4 bg-red-50 rounded-lg">
+                            <span class="text-3xl">👊</span>
+                            <span class="font-semibold text-gray-800">Kekerasan Fisik</span>
+                        </div>
+                        <div class="flex items-center space-x-3 p-4 bg-purple-50 rounded-lg">
+                            <span class="text-3xl">🧠</span>
+                            <span class="font-semibold text-gray-800">Kekerasan Psikis</span>
+                        </div>
+                        <div class="flex items-center space-x-3 p-4 bg-yellow-50 rounded-lg">
+                            <span class="text-3xl">😢</span>
+                            <span class="font-semibold text-gray-800">Perundungan (Bullying)</span>
+                        </div>
+                        <div class="flex items-center space-x-3 p-4 bg-pink-50 rounded-lg">
+                            <span class="text-3xl">⚠️</span>
+                            <span class="font-semibold text-gray-800">Kekerasan Seksual</span>
+                        </div>
+                        <div class="flex items-center space-x-3 p-4 bg-orange-50 rounded-lg">
+                            <span class="text-3xl">🚫</span>
+                            <span class="font-semibold text-gray-800">Diskriminasi & Intoleransi</span>
+                        </div>
+                        <div class="flex items-center space-x-3 p-4 bg-gray-50 rounded-lg">
+                            <span class="text-3xl">📋</span>
+                            <span class="font-semibold text-gray-800">Kebijakan yang Merugikan</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Proses Penanganan -->
+                <div class="bg-white p-8 rounded-2xl shadow-lg mb-12">
+                    <div class="text-center mb-8">
+                        <div class="text-4xl mb-3">🔄</div>
+                        <h4 class="text-2xl font-bold text-gray-800 mb-4">Proses Penanganan oleh PPKPT</h4>
+                        <p class="text-gray-600 max-w-3xl mx-auto">
+                            Jika kamu atau orang di sekitarmu mengalami bentuk kekerasan, jangan ragu untuk melapor. PPKPT akan menangani laporan secara profesional, rahasia, dan berpihak pada korban.
+                        </p>
+                    </div>
+                    
+                    <!-- Process Flow -->
+                    <div class="flex flex-wrap justify-center items-center gap-4 max-w-5xl mx-auto">
+                        <div class="flex-1 min-w-[200px] bg-blue-50 p-6 rounded-xl text-center">
+                            <div class="text-3xl mb-2">📝</div>
+                            <h5 class="font-bold text-gray-800 mb-1">Pelaporan</h5>
+                            <p class="text-sm text-gray-600">Pelaporan oleh korban atau saksi</p>
+                        </div>
+                        <div class="text-2xl text-gray-400 hidden lg:block">→</div>
+                        <div class="flex-1 min-w-[200px] bg-green-50 p-6 rounded-xl text-center">
+                            <div class="text-3xl mb-2">🔄</div>
+                            <h5 class="font-bold text-gray-800 mb-1">Tindak Lanjut Awal</h5>
+                            <p class="text-sm text-gray-600">Tindak lanjut oleh tim</p>
+                        </div>
+                        <div class="text-2xl text-gray-400 hidden lg:block">→</div>
+                        <div class="flex-1 min-w-[200px] bg-yellow-50 p-6 rounded-xl text-center">
+                            <div class="text-3xl mb-2">🔍</div>
+                            <h5 class="font-bold text-gray-800 mb-1">Pemeriksaan</h5>
+                            <p class="text-sm text-gray-600">Pemeriksaan & Klarifikasi</p>
+                        </div>
+                        <div class="text-2xl text-gray-400 hidden lg:block">→</div>
+                        <div class="flex-1 min-w-[200px] bg-purple-50 p-6 rounded-xl text-center">
+                            <div class="text-3xl mb-2">⚖️</div>
+                            <h5 class="font-bold text-gray-800 mb-1">Penanganan</h5>
+                            <p class="text-sm text-gray-600">Rekomendasi Penanganan</p>
+                        </div>
+                        <div class="text-2xl text-gray-400 hidden lg:block">→</div>
+                        <div class="flex-1 min-w-[200px] bg-teal-50 p-6 rounded-xl text-center">
+                            <div class="text-3xl mb-2">✅</div>
+                            <h5 class="font-bold text-gray-800 mb-1">Tindak Lanjut</h5>
+                            <p class="text-sm text-gray-600">Hingga Selesai</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mari Bersama Ciptakan Zona Aman -->
+                <div class="bg-gradient-to-br from-indigo-100 to-blue-100 text-gray-800 p-10 rounded-2xl shadow-lg mb-12">
+                    <div class="text-center mb-8">
+                        <div class="text-5xl mb-3">🤝</div>
+                        <h4 class="text-3xl font-bold mb-4 text-gray-900">Mari Bersama Ciptakan Zona Aman</h4>
+                        <p class="text-gray-700 max-w-3xl mx-auto text-lg font-medium">
+                            PPKPT mengajak seluruh mahasiswa dan sivitas akademika untuk turut serta menciptakan lingkungan kampus yang aman dan nyaman bagi semua.
+                        </p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+                        <!-- Action 1 -->
+                        <div class="bg-white p-6 rounded-xl shadow-md">
+                            <div class="text-4xl mb-3">💛</div>
+                            <h5 class="text-xl font-bold mb-3 text-gray-800">Tunjukkan Empati</h5>
+                            <ul class="space-y-2 text-sm text-gray-700">
+                                <li>• Jadilah teman yang peduli. Jika ada yang curhat tentang kekerasan, dengarkan tanpa menghakimi.</li>
+                                <li>• Dukung teman yang jadi korban untuk melaporkan.</li>
+                            </ul>
+                        </div>
+
+                        <!-- Action 2 -->
+                        <div class="bg-white p-6 rounded-xl shadow-md">
+                            <div class="text-4xl mb-3">📚</div>
+                            <h5 class="text-xl font-bold mb-3 text-gray-800">Kenali dan Pahami</h5>
+                            <ul class="space-y-2 text-sm text-gray-700">
+                                <li>• Pelajari apa saja yang disebut dengan kekerasan (fisik, seksual, psikologis, bullying, diskriminasi).</li>
+                                <li>• Ketahui hak-hakmu sebagai mahasiswa dan jalur pengaduan kampus.</li>
+                            </ul>
+                        </div>
+
+                        <!-- Action 3 -->
+                        <div class="bg-white p-6 rounded-xl shadow-md">
+                            <div class="text-4xl mb-3">💪</div>
+                            <h5 class="text-xl font-bold mb-3 text-gray-800">Bertindak Berani</h5>
+                            <ul class="space-y-2 text-sm text-gray-700">
+                                <li>• Jangan takut untuk melapor! Kekerasan harus dihentikan bukan disembunyikan.</li>
+                                <li>• Laporkan kepada satgas PPKPT di kampus.</li>
+                            </ul>
+                        </div>
+
+                        <!-- Action 4 -->
+                        <div class="bg-white p-6 rounded-xl shadow-md">
+                            <div class="text-4xl mb-3">🌿</div>
+                            <h5 class="text-xl font-bold mb-3 text-gray-800">Ciptakan Zona Nyaman</h5>
+                            <ul class="space-y-2 text-sm text-gray-700">
+                                <li>• Buat kelompok diskusi anti-kekerasan di lingkaran pertemananmu.</li>
+                                <li>• Ajukan ide-ide positif ke kampus untuk meningkatkan keamanan.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Video Edukasi -->
+                <div class="bg-white p-8 rounded-2xl shadow-lg mb-12">
+                    <div class="text-center mb-6">
+                        <div class="text-4xl mb-3">📹</div>
+                        <h4 class="text-2xl font-bold text-gray-800 mb-2">Video Edukasi</h4>
+                        <p class="text-gray-600">Pelajari Lebih Lanjut Tentang PPKPT</p>
+                        <p class="text-sm text-gray-500 mt-2">Tonton video ini untuk memahami lebih dalam tentang pencegahan dan penanganan kekerasan di kampus.</p>
+                    </div>
+                    <div class="max-w-3xl mx-auto">
+                        <a href="https://www.youtube.com/watch?v=HJX38VEPzrM" target="_blank" rel="noopener noreferrer" class="block relative group">
+                            <img src="https://img.youtube.com/vi/HJX38VEPzrM/maxresdefault.jpg" alt="Video PPKPT" class="w-full rounded-xl shadow-lg object-cover">
+                            <div class="absolute inset-0 bg-black/30 group-hover:bg-black/50 transition duration-300 rounded-xl flex items-center justify-center">
+                                <div class="bg-red-600 rounded-full p-4 group-hover:scale-110 transition duration-300">
+                                    <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M8 5v14l11-7z"/>
+                                    </svg>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Kontak Darurat -->
+                <div class="bg-gradient-to-br from-red-500 to-red-600 text-white p-8 rounded-2xl shadow-lg">
+                    <div class="text-center mb-6">
+                        <div class="text-5xl mb-3">📞</div>
+                        <h4 class="text-2xl font-bold mb-2">Kontak Darurat & Bantuan</h4>
+                        <p class="text-red-100">Hubungi kami kapan saja kamu membutuhkan bantuan</p>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
+                        <div class="bg-white/10 backdrop-blur-sm p-6 rounded-xl text-center">
+                            <h5 class="font-bold text-xl mb-2">PPKS Telkom University</h5>
+                            <p class="text-3xl font-bold mb-1">0813-2332-3677</p>
+                            <p class="text-sm text-red-100">Tersedia 24/7</p>
+                        </div>
+                        <div class="bg-white/10 backdrop-blur-sm p-6 rounded-xl text-center">
+                            <h5 class="font-bold text-xl mb-2">Lokasi Konseling</h5>
+                            <p class="text-2xl font-bold mb-3">Ruang REK-407</p>
+                            <div class="space-y-1 text-sm text-red-100">
+                                <p><strong>Kepolisian:</strong> 110</p>
+                                <p><strong>Ambulans:</strong> 118 / 119</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- 3. Testimonial Section -->
+        <section class="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <div class="bg-white p-8 md:p-12 lg:p-20 rounded-2xl card-shadow">
+                <div class="flex flex-col lg:flex-row lg:space-x-12">
+                    <!-- Left: Title -->
+                    <div class="lg:w-1/3 mb-8 lg:mb-0">
+                        <h2 class="text-3xl lg:text-4xl font-extrabold text-gray-800">
+                            Mereka Berani Bersuara
+                        </h2>
+                    </div>
+
+                    <!-- Right: Quote -->
+                    <div class="lg:w-2/3 relative">
+                        <span class="absolute -top-10 left-0 text-6xl text-pink-500 font-serif opacity-75">"</span>
+                        <blockquote class="text-xl italic text-gray-700 leading-relaxed pl-6">
+                            "Setelah menggunakan Ruang Dengar, saya merasa akhirnya ada yang mendengarkan tanpa menghakimi. Prosesnya aman dan saya bisa melaporkan tanpa takut identitas saya terbuka."
+                            <footer class="mt-4 text-lg font-semibold text-gray-800">
+                                - Anonymous
+                            </footer>
+                        </blockquote>
+                        
+                        <!-- Navigation Arrows -->
+                        <div class="flex justify-end mt-6 space-x-4">
+                            <button class="p-3 rounded-full border border-gray-300 text-gray-600 hover:bg-gray-100 transition duration-300">
+                                <i data-lucide="arrow-left" class="w-5 h-5"></i>
+                            </button>
+                            <button class="p-3 rounded-full border border-gray-300 text-gray-600 hover:bg-gray-100 transition duration-300">
+                                <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. Secondary CTA Section -->
+        <section class="relative bg-primary py-24 overflow-hidden">
+            <!-- Background Shapes -->
+            <div class="shape-decoration bg-teal-500 w-32 h-32 rounded-full left-0 top-0 transform -translate-x-1/4 -translate-y-1/4 rotate-12"></div>
+            <div class="shape-decoration bg-pink-500 w-48 h-48 rounded-full right-0 bottom-0 transform translate-x-1/4 translate-y-1/4 -rotate-45"></div>
+
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+                <h2 class="text-4xl sm:text-5xl font-extrabold text-white mb-4">
+                    Ruang Aman untuk Bersuara
+                </h2>
+                <p class="text-lg text-blue-200 mb-8 max-w-2xl mx-auto">
+                    Platform terpercaya untuk melaporkan dan mendapatkan dukungan atas kekerasan di lingkungan kampus. Privasi Anda adalah prioritas kami.
+                </p>
+                <a href="{% url 'login' %}" class="px-8 py-3 bg-white text-primary font-semibold rounded-lg hover:bg-gray-100 transition duration-300 shadow-lg">
+                    Masuk
+                </a>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer id="kontak" class="bg-primary pt-12 pb-8 text-white">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12 border-b border-blue-800 pb-10 mb-8">
+                
+                <!-- Col 1: Logo & Description -->
+                <div class="space-y-4">
+                    <div class="flex items-center space-x-2">
+                        <img src="{% static 'images/logo.png' %}" alt="Logo" class="w-8 h-8 object-contain">
+                        <span class="text-xl font-bold">Ruang Dengar</span>
+                    </div>
+                    <p class="text-sm text-blue-200 max-w-xs">
+                        Kami berkomitmen menciptakan kampus yang aman dan bebas dari kekerasan. Platform ini menyediakan ruang aman, anonim, dan terpercaya untuk melapor dan mendapatkan dukungan.
+                    </p>
+                </div>
+                
+                <!-- Col 2: Quick Link -->
+                <div>
+                    <h4 class="text-lg font-bold mb-4">Quick Link</h4>
+                    <ul class="space-y-2 text-sm text-blue-200">
+                        <li><a href="#beranda" class="hover:text-white transition duration-150">Beranda</a></li>
+                        <li><a href="#fitur" class="hover:text-white transition duration-150">Fitur</a></li>
+                        <li><a href="#tentang" class="hover:text-white transition duration-150">Tentang</a></li>
+                        <li><a href="#kontak" class="hover:text-white transition duration-150">Kontak</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Col 3: Contact Us -->
+                <div>
+                    <h4 class="text-lg font-bold mb-4">Contact Us</h4>
+                    <ul class="space-y-3 text-sm text-blue-200">
+                        <li class="flex items-center space-x-3">
+                            <i data-lucide="phone" class="w-4 h-4 text-blue-400 flex-shrink-0"></i>
+                            <span>0813-2332-3677 (PPKS 24/7)</span>
+                        </li>
+                        <li class="flex items-center space-x-3">
+                            <i data-lucide="mail" class="w-4 h-4 text-blue-400 flex-shrink-0"></i>
+                            <span>support@ruangdengar.ac.id</span>
+                        </li>
+                        <li class="flex items-start space-x-3">
+                            <i data-lucide="map-pin" class="w-4 h-4 text-blue-400 flex-shrink-0 mt-0.5"></i>
+                            <span>Ruang REK-407, Telkom University Purwokerto</span>
+                        </li>
+                        <li class="flex items-center space-x-3">
+                            <i data-lucide="alert-circle" class="w-4 h-4 text-red-400 flex-shrink-0"></i>
+                            <span>Darurat: Kepolisian 110 | Ambulans 118/119</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="text-center text-sm text-blue-300">
+                &copy; 2024 Ruang Dengar. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Initialize Lucide Icons -->
+    <script>
+        lucide.createIcons();
+        
+        // Update active navigation link on scroll
+        const sections = document.querySelectorAll('section[id]');
+        const navLinks = document.querySelectorAll('nav a[href^="#"]');
+        
+        function updateActiveNav() {
+            let current = '';
+            
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (pageYOffset >= sectionTop - 200) {
+                    current = section.getAttribute('id');
+                }
+            });
+            
+            navLinks.forEach(link => {
+                link.classList.remove('text-[#483d8b]');
+                link.classList.add('text-gray-600');
+                link.style.borderBottomColor = 'transparent';
+                
+                if (link.getAttribute('href') === `#${current}`) {
+                    link.classList.remove('text-gray-600');
+                    link.classList.add('text-[#483d8b]');
+                    link.style.borderBottomColor = '#483d8b';
+                }
+            });
+        }
+        
+        window.addEventListener('scroll', updateActiveNav);
+        updateActiveNav();
+    </script>
+</body>
+</html>

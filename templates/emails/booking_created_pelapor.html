@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Konfirmasi Booking Konseling</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+        .email-container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #ffffff;
+            padding: 30px 20px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .content {
+            padding: 30px 20px;
+            color: #333333;
+        }
+        .info-box {
+            background-color: #e7f3ff;
+            border-left: 4px solid #007bff;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .info-row {
+            margin: 12px 0;
+            font-size: 16px;
+        }
+        .label {
+            font-weight: bold;
+            color: #0056b3;
+        }
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+        .footer {
+            background-color: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+            color: #6c757d;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="header">
+            <h1>✅ Booking Konseling Berhasil</h1>
+        </div>
+        
+        <div class="content">
+            <p>Halo {{ pelapor_nama }},</p>
+            <p>Booking konseling Anda telah <strong>berhasil dikonfirmasi</strong>. Berikut detail sesi konseling:</p>
+            
+            <div class="info-box">
+                <div class="info-row">
+                    <span class="label">Konselor:</span> {{ konselor_nama }}
+                </div>
+                <div class="info-row">
+                    <span class="label">Tanggal:</span> {{ tanggal|date:"d F Y" }}
+                </div>
+                <div class="info-row">
+                    <span class="label">Waktu:</span> {{ waktu_mulai }}
+                </div>
+                <div class="info-row">
+                    <span class="label">Tipe Sesi:</span> {{ tipe_sesi }}
+                </div>
+                <div class="info-row">
+                    <span class="label">Lokasi:</span> {{ lokasi }}
+                </div>
+            </div>
+            
+            <p><strong>Persiapan Sebelum Sesi:</strong></p>
+            <ul>
+                <li>Pastikan Anda datang 10 menit sebelum waktu sesi dimulai</li>
+                <li>Siapkan catatan atau pertanyaan yang ingin Anda diskusikan</li>
+                <li>Untuk sesi online, pastikan koneksi internet stabil</li>
+            </ul>
+            
+            <p style="color: #dc3545;">
+                <strong>Reschedule:</strong> Jika ada kendala, Anda dapat melakukan reschedule maksimal 24 jam sebelum sesi.
+            </p>
+            
+            <center>
+                <a href="{{ booking_url }}" class="btn">Lihat Detail Booking</a>
+            </center>
+        </div>
+        
+        <div class="footer">
+            <p>Ruang Dengar - Platform Konseling</p>
+            <p>© 2025 Telkom University. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>

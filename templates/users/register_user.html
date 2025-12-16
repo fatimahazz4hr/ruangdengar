@@ -83,10 +83,31 @@
             background-color: #f8f9fa;
         }
 
-        .form-group input::placeholder {
-            color: #999;
-            font-size: 13px;
+        .password-toggle-wrapper {
+            position: relative;
         }
+
+        .password-toggle-wrapper input {
+            padding-right: 45px;
+        }
+
+        .toggle-password-btn {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            color: #666;
+            padding: 5px;
+        }
+
+        .toggle-password-btn:hover {
+            color: #6c63ff;
+        }
+
 
         .errorlist {
             list-style-type: none;
@@ -241,6 +262,32 @@
             margin-top: 20px;
         }
 
+        .home-link {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            color: white;
+            font-weight: 600;
+            font-size: 15px;
+            z-index: 100;
+            padding: 12px 18px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            background: linear-gradient(135deg, #483d8b 0%, #5a4f9d 100%);
+            border: none;
+            box-shadow: 0 4px 15px rgba(72, 61, 139, 0.3);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .home-link:hover {
+            background: linear-gradient(135deg, #3a2f6f 0%, #483d8b 100%);
+            transform: translateX(-3px);
+            box-shadow: 0 6px 20px rgba(72, 61, 139, 0.4);
+        }
+
         @media (max-width: 968px) {
             .container {
                 flex-direction: column;
@@ -295,6 +342,7 @@
     </style>
 </head>
 <body>
+    <a href="{% url 'landing' %}" class="home-link">← Beranda</a>
     <div class="container">
         <div class="form-container">
             <h2>Registrasi</h2>
@@ -361,13 +409,19 @@
 
                 <div class="form-group">
                     {{ form.password1.label_tag }}
-                    {{ form.password1 }}
+                    <div class="password-toggle-wrapper">
+                        {{ form.password1 }}
+                        <button type="button" class="toggle-password-btn" data-target="id_password1">👁️</button>
+                    </div>
                     {{ form.password1.errors }}
                 </div>
 
                 <div class="form-group">
                     {{ form.password2.label_tag }}
-                    {{ form.password2 }}
+                    <div class="password-toggle-wrapper">
+                        {{ form.password2 }}
+                        <button type="button" class="toggle-password-btn" data-target="id_password2">👁️</button>
+                    </div>
                     {{ form.password2.errors }}
                 </div>
 
@@ -448,6 +502,22 @@
                 }
             });
         }
+
+        // Toggle password visibility
+        document.querySelectorAll('.toggle-password-btn').forEach(function(button) {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('data-target');
+                const input = document.getElementById(targetId);
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    this.textContent = '🙈';
+                } else {
+                    input.type = 'password';
+                    this.textContent = '👁️';
+                }
+            });
+        });
     </script>
 </body>
 </html>

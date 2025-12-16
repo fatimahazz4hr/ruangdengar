@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HIGH RISK ALERT</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+        .email-container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            border: 3px solid #dc3545;
+        }
+        .header {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            color: #ffffff;
+            padding: 30px 20px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .alert-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+        .content {
+            padding: 30px 20px;
+            color: #333333;
+        }
+        .alert-box {
+            background-color: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .alert-box strong {
+            color: #dc3545;
+        }
+        .info-box {
+            background-color: #f8d7da;
+            border-left: 4px solid #dc3545;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .info-row {
+            margin: 10px 0;
+        }
+        .label {
+            font-weight: bold;
+            color: #721c24;
+        }
+        .risk-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            background-color: #dc3545;
+            color: #ffffff;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 12px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background-color: #dc3545;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+        .footer {
+            background-color: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+            color: #6c757d;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="header">
+            <div class="alert-icon">🚨</div>
+            <h1>HIGH RISK ALERT</h1>
+            <p style="margin: 5px 0; font-size: 14px;">PERHATIAN SEGERA DIPERLUKAN</p>
+        </div>
+        
+        <div class="content">
+            <p><strong>Kepada Tim Management PPKPT,</strong></p>
+            
+            <div class="alert-box">
+                <p style="margin: 0; font-size: 16px;">
+                    <strong>⚠️ KLIEN DENGAN RISIKO TINGGI TERDETEKSI</strong><br>
+                    Segera lakukan review dan tindakan preventif.
+                </p>
+            </div>
+            
+            <div class="info-box">
+                <div class="info-row">
+                    <span class="label">Nama Klien:</span> {{ pelapor_nama }}
+                </div>
+                <div class="info-row">
+                    <span class="label">Konselor:</span> {{ konselor_nama }}
+                </div>
+                <div class="info-row">
+                    <span class="label">Sesi Ke-:</span> {{ sesi_ke }}
+                </div>
+                <div class="info-row">
+                    <span class="label">Tanggal Sesi:</span> {{ tanggal_sesi|date:"d F Y" }}
+                </div>
+                <hr style="border: 0; border-top: 1px solid #dc3545; margin: 15px 0;">
+                <div class="info-row">
+                    <span class="label">Risiko Bunuh Diri:</span> 
+                    <span class="risk-badge">{{ risk_bunuh_diri }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="label">Risiko Self-Harm:</span> 
+                    <span class="risk-badge">{{ risk_self_harm }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="label">Mood Klien:</span> {{ mood_klien }}/10
+                </div>
+            </div>
+            
+            <p style="color: #dc3545; font-weight: bold; font-size: 16px;">
+                🔴 TINDAKAN YANG DISARANKAN:
+            </p>
+            <ul style="color: #333;">
+                <li>Review rekam medis segera (maksimal 2 jam)</li>
+                <li>Koordinasi dengan konselor untuk tindak lanjut</li>
+                <li>Pertimbangkan rujukan ke psikolog/psikiater</li>
+                <li>Monitor kondisi klien secara berkala</li>
+                <li>Siapkan kontak darurat dan support system</li>
+            </ul>
+            
+            <center>
+                <a href="{{ rekam_medis_url }}" class="btn">LIHAT REKAM MEDIS LENGKAP</a>
+            </center>
+            
+            <p style="margin-top: 30px; color: #6c757d; font-size: 12px;">
+                Alert ini dikirim secara otomatis berdasarkan assessment risiko. Mohon segera lakukan verifikasi dan tindakan yang sesuai.
+            </p>
+        </div>
+        
+        <div class="footer">
+            <p style="color: #dc3545; font-weight: bold;">Ruang Dengar - High Risk Alert System</p>
+            <p>Email dikirim: {{ tanggal_sesi|date:"d M Y, H:i" }} WIB</p>
+        </div>
+    </div>
+</body>
+</html>
